@@ -202,6 +202,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_consents: {
+        Row: {
+          auth_consent: boolean | null
+          consented: boolean
+          consented_at: string | null
+          created_at: string | null
+          id: string
+          updated_at: string | null
+          user_id: string
+          username_consent: boolean | null
+          wallet_consent: boolean | null
+        }
+        Insert: {
+          auth_consent?: boolean | null
+          consented?: boolean
+          consented_at?: string | null
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id: string
+          username_consent?: boolean | null
+          wallet_consent?: boolean | null
+        }
+        Update: {
+          auth_consent?: boolean | null
+          consented?: boolean
+          consented_at?: string | null
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+          username_consent?: boolean | null
+          wallet_consent?: boolean | null
+        }
+        Relationships: []
+      }
       user_profiles: {
         Row: {
           avatar_url: string | null
