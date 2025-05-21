@@ -15,7 +15,7 @@ interface UserContextType {
   showAds: boolean;
   isAdmin: boolean;
   setIsAdmin: (value: boolean) => void;
-  refreshUserData: () => Promise<void>;
+  refreshUserData: () => Promise<void>;  // Expecting Promise<void>, not Promise<boolean>
   signOut: () => Promise<void>;
   updateProfile: (data: any) => Promise<void>;
   cancelSubscription: () => Promise<boolean>;
@@ -41,6 +41,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const showAds = isLoggedIn && !isAdmin && 
     (!subscription || subscription?.plan === "free" || subscription?.plan === "starter");
 
+  // Modified to return Promise<void> instead of Promise<boolean>
   const refreshUserData = useCallback(async () => {
     console.log("Refreshing user data...");
     try {
@@ -49,10 +50,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         refreshSubscription()
       ]);
       console.log("User data refreshed successfully");
-      return true;
+      // Don't return a boolean value
     } catch (error) {
       console.error("Error refreshing user data:", error);
-      return false;
+      // Don't return a boolean value
     }
   }, [refreshProfile, refreshSubscription]);
 
