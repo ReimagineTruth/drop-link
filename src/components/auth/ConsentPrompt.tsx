@@ -29,15 +29,11 @@ const ConsentPrompt = ({ isOpen, username, onAccept, onDecline }: ConsentPromptP
     try {
       setIsSubmitting(true);
       
+      // Record the acceptance in the console for debugging
+      console.log("User accepted consent");
+      
       // Here you could store the user's consent in the database if needed
-      // For example:
-      // await supabase.from("user_consents").insert({ 
-      //   user_id: auth.uid(), 
-      //   auth_consent: true,
-      //   username_consent: true,
-      //   wallet_consent: true,
-      //   consented_at: new Date() 
-      // });
+      // The actual database storage is handled in the useConsentStatus hook
       
       toast({
         title: "Consent accepted",
@@ -58,6 +54,9 @@ const ConsentPrompt = ({ isOpen, username, onAccept, onDecline }: ConsentPromptP
   };
 
   const handleDecline = () => {
+    // Record the declination in the console for debugging
+    console.log("User declined consent");
+    
     toast({
       title: "Consent declined",
       description: "You've declined to share your information. Some features may be limited.",
