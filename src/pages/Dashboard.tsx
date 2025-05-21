@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUser } from "@/context/UserContext";
+import { supabase } from "@/integrations/supabase/client";
 
 // Import dashboard components
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
@@ -18,6 +18,8 @@ import DashboardLoading from "@/components/dashboard/DashboardLoading";
 import SubscriptionDialog from "@/components/dashboard/SubscriptionDialog";
 import UpgradeModal from "@/components/UpgradeModal";
 import { UpgradeModalProvider } from "@/hooks/useUpgradeModal";
+import ConsentPrompt from "@/components/auth/ConsentPrompt";
+import { useConsentStatus } from "@/hooks/useConsentStatus";
 
 // Import custom hooks
 import { usePiPayment } from "@/hooks/usePiPayment";
@@ -38,17 +40,40 @@ const Dashboard = () => {
   
   const [billingCycle, setBillingCycle] = useState('annual'); // 'annual' or 'monthly'
   const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
+  const [showConsentCheck, setShowConsentCheck] = useState(false);
   
   const { pageViews, linkClicks, conversionRate } = useAnalyticsData();
   const { processingPayment, handlePiLogin, handleSubscribe } = usePiPayment();
+  const { hasConsented, isLoading: consentLoading, setConsent } = useConsentStatus();
   
   useEffect(() => {
     // Check if user is logged in
     if (!isLoading && !isLoggedIn) {
       // Redirect to login if not logged in
       navigate("/login");
+      return;
     }
-  }, [isLoading, isLoggedIn, navigate]);
+    
+    // Check consent status after login is confirmed
+    if (isLoggedIn && !consentLoading && hasConsented === false) {
+      setShowConsentCheck(true);
+    }
+  }, [isLoading, isLoggedIn, navigate, consentLoading, hasConsented]);
+  
+  const handleConsentAccepted = () => {
+    setConsent(true);
+    setShowConsentCheck(false);
+  };
+
+  const handleConsentDeclined = async () => {
+    // If user declines consent from dashboard, log them out
+    try {
+      await supabase.auth.signOut();
+      navigate('/');
+    } catch (error) {
+      console.error("Error signing out after consent declined:", error);
+    }
+  };
   
   const handleCancelSubscriptionConfirm = async () => {
     const success = await cancelSubscription();
@@ -57,7 +82,7 @@ const Dashboard = () => {
     }
   };
   
-  if (isLoading) {
+  if (isLoading || consentLoading) {
     return <DashboardLoading />;
   }
   
@@ -143,6 +168,16 @@ const Dashboard = () => {
           setConfirmCancelOpen={setConfirmCancelOpen}
           handleCancelSubscriptionConfirm={handleCancelSubscriptionConfirm}
         />
+        
+        {/* Consent Check Dialog */}
+        {profile && showConsentCheck && (
+          <ConsentPrompt
+            isOpen={showConsentCheck}
+            username={profile.username || "User"}
+            onAccept={handleConsentAccepted}
+            onDecline={handleConsentDeclined}
+          />
+        )}
       </div>
     </UpgradeModalProvider>
   );

@@ -7,9 +7,12 @@ import { authenticateWithPi, initPiNetwork } from "@/services/piPaymentService";
 import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/context/UserContext";
 import { isRunningInPiBrowser } from "@/utils/pi-sdk";
+import ConsentPrompt from "@/components/auth/ConsentPrompt";
 
 export function PiAuthButton() {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [showConsentPrompt, setShowConsentPrompt] = useState(false);
+  const [piAuthResult, setPiAuthResult] = useState<any>(null);
   const navigate = useNavigate();
   const { refreshUserData } = useUser();
   const isPiBrowser = isRunningInPiBrowser();
@@ -43,43 +46,9 @@ export function PiAuthButton() {
       if (authResult?.user) {
         console.log("Pi authentication successful:", authResult);
         
-        // Check if user exists
-        const { data: existingUser } = await supabase
-          .from('user_profiles')
-          .select('*')
-          .eq('id', authResult.user.uid)
-          .maybeSingle();
-          
-        if (existingUser) {
-          // User exists, sign them in with Pi credentials
-          const { data, error } = await supabase.auth.signInWithPassword({
-            email: `pi_${authResult.user.uid}@pinetwork.user`,
-            password: authResult.user.uid
-          });
-          
-          if (error) {
-            throw error;
-          }
-          
-          // Refresh user data
-          await refreshUserData();
-          
-          toast({
-            title: "Authentication Successful",
-            description: `Welcome back, @${authResult.user.username || "Pioneer"}!`,
-          });
-          
-          navigate('/dashboard');
-          return;
-        } else {
-          // User doesn't exist, redirect to signup
-          toast({
-            title: "Account Not Found",
-            description: "Please sign up to create an account",
-          });
-          navigate('/signup');
-          return;
-        }
+        // Set the auth result and show consent prompt
+        setPiAuthResult(authResult);
+        setShowConsentPrompt(true);
       } else {
         toast({
           title: "Authentication Failed",
@@ -99,16 +68,94 @@ export function PiAuthButton() {
     }
   };
 
+  const handleConsentAccepted = async () => {
+    try {
+      if (!piAuthResult?.user) return;
+      
+      // Check if user exists
+      const { data: existingUser } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', piAuthResult.user.uid)
+        .maybeSingle();
+        
+      if (existingUser) {
+        // User exists, sign them in with Pi credentials
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: `pi_${piAuthResult.user.uid}@pinetwork.user`,
+          password: piAuthResult.user.uid
+        });
+        
+        if (error) {
+          throw error;
+        }
+        
+        // Refresh user data
+        await refreshUserData();
+        
+        toast({
+          title: "Authentication Successful",
+          description: `Welcome back, @${piAuthResult.user.username || "Pioneer"}!`,
+        });
+        
+        setShowConsentPrompt(false);
+        navigate('/dashboard');
+      } else {
+        // User doesn't exist, redirect to signup
+        toast({
+          title: "Account Not Found",
+          description: "Please sign up to create an account",
+        });
+        setShowConsentPrompt(false);
+        navigate('/signup');
+      }
+    } catch (error) {
+      console.error("Error after consent:", error);
+      toast({
+        title: "Error",
+        description: "An error occurred while processing your information",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleConsentDeclined = async () => {
+    // If user declines, logout and redirect to home
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "Consent Declined",
+        description: "You've declined to share your information. You've been logged out.",
+        variant: "destructive",
+      });
+      setShowConsentPrompt(false);
+      navigate('/');
+    } catch (error) {
+      console.error("Error signing out after consent declined:", error);
+    }
+  };
+
   return (
-    <Button 
-      onClick={handlePiAuth}
-      className="w-full bg-gradient-hero hover:bg-secondary flex items-center justify-center gap-2"
-      disabled={isAuthenticating}
-    >
-      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8z"/>
-      </svg>
-      {isAuthenticating ? "Authenticating..." : "Sign in with Pi Network"}
-    </Button>
+    <>
+      <Button 
+        onClick={handlePiAuth}
+        className="w-full bg-gradient-hero hover:bg-secondary flex items-center justify-center gap-2"
+        disabled={isAuthenticating}
+      >
+        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8z"/>
+        </svg>
+        {isAuthenticating ? "Authenticating..." : "Sign in with Pi Network"}
+      </Button>
+      
+      {piAuthResult && (
+        <ConsentPrompt
+          isOpen={showConsentPrompt}
+          username={piAuthResult.user.username || "Pioneer"}
+          onAccept={handleConsentAccepted}
+          onDecline={handleConsentDeclined}
+        />
+      )}
+    </>
   );
 }

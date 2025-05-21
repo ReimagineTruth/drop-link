@@ -10,9 +10,12 @@ import { supabase } from "@/integrations/supabase/client";
 import PiBrowserPrompt from "@/components/PiBrowserPrompt";
 import PiBrowserDialog from "@/components/PiBrowserDialog";
 import { isRunningInPiBrowser } from "@/utils/pi-sdk";
+import ConsentPrompt from "@/components/auth/ConsentPrompt";
 
 const Signup = () => {
   const [piAuthenticating, setPiAuthenticating] = useState(false);
+  const [showConsentPrompt, setShowConsentPrompt] = useState(false);
+  const [piAuthResult, setPiAuthResult] = useState<any>(null);
   const navigate = useNavigate();
   const isPiBrowser = isRunningInPiBrowser();
 
@@ -38,49 +41,9 @@ const Signup = () => {
       if (authResult?.user) {
         console.log("Pi authentication successful:", authResult);
         
-        // Check if user already exists
-        const { data: existingUser } = await supabase
-          .from('user_profiles')
-          .select('*')
-          .eq('username', authResult.user.username)
-          .maybeSingle();
-          
-        if (existingUser) {
-          // User already exists, sign them in instead
-          toast({
-            title: "Account Already Exists",
-            description: "Signing you in with your existing account",
-          });
-          navigate('/dashboard');
-          return;
-        }
-        
-        // Create a random password for the Pi user
-        const randomPassword = Math.random().toString(36).slice(2) + Math.random().toString(36).toUpperCase().slice(2);
-        
-        // Use Supabase Auth to create a new user
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email: `pi_${authResult.user.uid}@pinetwork.user`, // Create a placeholder email
-          password: randomPassword,
-          options: {
-            data: {
-              username: authResult.user.username,
-              pi_uid: authResult.user.uid
-            }
-          }
-        });
-        
-        if (authError) {
-          throw new Error(authError.message);
-        }
-        
-        toast({
-          title: "Pi Authentication Successful",
-          description: `Welcome, @${authResult.user.username || "Pioneer"}! You're now registered with Pi Network.`,
-        });
-        
-        // Redirect to dashboard
-        navigate('/dashboard');
+        // Set auth result and show consent prompt
+        setPiAuthResult(authResult);
+        setShowConsentPrompt(true);
       } else {
         toast({
           title: "Authentication Failed",
@@ -98,6 +61,75 @@ const Signup = () => {
     } finally {
       setPiAuthenticating(false);
     }
+  };
+  
+  const handleConsentAccepted = async () => {
+    try {
+      if (!piAuthResult?.user) return;
+      
+      // Check if user already exists
+      const { data: existingUser } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('username', piAuthResult.user.username)
+        .maybeSingle();
+        
+      if (existingUser) {
+        // User already exists, sign them in instead
+        toast({
+          title: "Account Already Exists",
+          description: "Signing you in with your existing account",
+        });
+        navigate('/dashboard');
+        return;
+      }
+      
+      // Create a random password for the Pi user
+      const randomPassword = Math.random().toString(36).slice(2) + Math.random().toString(36).toUpperCase().slice(2);
+      
+      // Use Supabase Auth to create a new user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: `pi_${piAuthResult.user.uid}@pinetwork.user`, // Create a placeholder email
+        password: randomPassword,
+        options: {
+          data: {
+            username: piAuthResult.user.username,
+            pi_uid: piAuthResult.user.uid
+          }
+        }
+      });
+      
+      if (authError) {
+        throw new Error(authError.message);
+      }
+      
+      toast({
+        title: "Pi Authentication Successful",
+        description: `Welcome, @${piAuthResult.user.username || "Pioneer"}! You're now registered with Pi Network.`,
+      });
+      
+      // Redirect to dashboard
+      setShowConsentPrompt(false);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error("Error after consent:", error);
+      toast({
+        title: "Error",
+        description: "An error occurred while processing your information",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleConsentDeclined = async () => {
+    // If user declines during signup, just return to home
+    toast({
+      title: "Consent Declined",
+      description: "You need to accept the data sharing terms to use Droplink with Pi Network.",
+      variant: "destructive",
+    });
+    setShowConsentPrompt(false);
+    navigate('/');
   };
 
   return (
@@ -142,6 +174,16 @@ const Signup = () => {
       <PiBrowserDialog 
         redirectUrl="https://pinet.com/@droplink"
       />
+      
+      {/* Consent prompt */}
+      {piAuthResult && (
+        <ConsentPrompt
+          isOpen={showConsentPrompt}
+          username={piAuthResult.user.username || "Pioneer"}
+          onAccept={handleConsentAccepted}
+          onDecline={handleConsentDeclined}
+        />
+      )}
     </div>
   );
 };
