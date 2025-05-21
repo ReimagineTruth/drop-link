@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/context/UserContext';
 import { toast } from '@/hooks/use-toast';
-import { createSubscription } from '@/services/subscriptionService';
+import { createSubscription, SubscriptionPlan } from '@/services/subscriptionService';
 import { useSubscriptionNotification } from '@/components/subscription/SubscriptionNotification';
 
 export const planPricing = {
@@ -37,7 +37,7 @@ export const usePiSubscription = () => {
       // Create subscription in database
       const subscription = await createSubscription(
         user.id,
-        plan.toLowerCase(),
+        plan.toLowerCase() as SubscriptionPlan,
         billingCycle
       );
       

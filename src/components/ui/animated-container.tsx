@@ -2,13 +2,13 @@
 import React from 'react';
 import { motion, MotionProps } from 'framer-motion';
 
-export interface AnimatedContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface AnimatedContainerProps extends Omit<MotionProps, 'animate' | 'initial' | 'exit' | 'transition'> {
   children: React.ReactNode;
   animation?: 'fade' | 'slide' | 'scale' | 'none';
   delay?: number;
   duration?: number;
   className?: string;
-  motionProps?: MotionProps;
+  motionProps?: Omit<MotionProps, 'children' | 'className'>;
 }
 
 const animations = {
@@ -56,7 +56,7 @@ export function AnimatedContainer({
         ease: [0.25, 0.1, 0.25, 1.0] // Smooth cubic bezier curve
       }}
       className={className}
-      {...motionProps}
+      {...(motionProps || {})}
       {...props}
     >
       {children}

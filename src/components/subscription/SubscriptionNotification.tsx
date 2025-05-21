@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle, Calendar } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface SubscriptionNotificationProps {
   plan: string;
@@ -115,3 +115,4 @@ export const useSubscriptionNotification = () => {
   
   return { showSubscriptionNotification };
 };
+
