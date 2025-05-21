@@ -29,6 +29,8 @@ serve(async (req) => {
       });
     }
 
+    console.log(`Processing payment ${paymentId} with status ${status}`);
+
     // Update the payment in the database
     const { data: payment, error: paymentError } = await supabaseClient
       .from('payments')
@@ -42,14 +44,19 @@ serve(async (req) => {
       .single();
 
     if (paymentError) {
+      console.error("Payment update error:", paymentError);
       return new Response(JSON.stringify({ error: `Payment update failed: ${paymentError.message}` }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
       });
     }
 
+    console.log("Payment updated:", payment);
+
     // If payment is completed and has a subscription associated with it
     if (status === 'completed' && payment.subscription_id) {
+      console.log(`Activating subscription ${payment.subscription_id}`);
+      
       // Activate the subscription
       const { error: subscriptionError } = await supabaseClient
         .from('subscriptions')
@@ -61,7 +68,13 @@ serve(async (req) => {
 
       if (subscriptionError) {
         console.error("Error activating subscription:", subscriptionError);
+        return new Response(JSON.stringify({ error: `Subscription activation failed: ${subscriptionError.message}` }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 500,
+        });
       }
+      
+      console.log(`Subscription ${payment.subscription_id} activated successfully`);
     }
 
     return new Response(JSON.stringify({ 
@@ -74,6 +87,7 @@ serve(async (req) => {
     });
     
   } catch (error) {
+    console.error("Error processing payment:", error);
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

@@ -24,10 +24,15 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const { user, isLoading: authLoading, isLoggedIn, signOut } = useAuth();
+  const { user, isLoading: authLoading, isLoggedIn, signOut, isAdmin: authIsAdmin } = useAuth();
   const { profile, isLoading: profileLoading, updateProfile, refreshProfile } = useUserProfile(user);
   const { subscription, isLoading: subscriptionLoading, cancelSubscription, refreshSubscription } = useSubscription(user);
   const [isAdmin, setIsAdmin] = useState(false);
+  
+  // Update isAdmin state when authIsAdmin changes
+  React.useEffect(() => {
+    setIsAdmin(authIsAdmin);
+  }, [authIsAdmin]);
   
   // Overall loading state
   const isLoading = authLoading || profileLoading || subscriptionLoading;
@@ -37,10 +42,18 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     (!subscription || subscription?.plan === "free" || subscription?.plan === "starter");
 
   const refreshUserData = useCallback(async () => {
-    await Promise.all([
-      refreshProfile(),
-      refreshSubscription()
-    ]);
+    console.log("Refreshing user data...");
+    try {
+      await Promise.all([
+        refreshProfile(),
+        refreshSubscription()
+      ]);
+      console.log("User data refreshed successfully");
+      return true;
+    } catch (error) {
+      console.error("Error refreshing user data:", error);
+      return false;
+    }
   }, [refreshProfile, refreshSubscription]);
 
   const value: UserContextType = {

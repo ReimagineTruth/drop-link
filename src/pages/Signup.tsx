@@ -28,6 +28,7 @@ const Signup = () => {
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
+        console.log("User already logged in, redirecting to dashboard");
         navigate('/dashboard');
       }
     });
@@ -101,6 +102,19 @@ const Signup = () => {
       
       if (authError) {
         throw new Error(authError.message);
+      }
+      
+      // Create a user profile
+      const { error: profileError } = await supabase
+        .from('user_profiles')
+        .insert({
+          id: piAuthResult.user.uid,
+          username: piAuthResult.user.username,
+          display_name: piAuthResult.user.username
+        });
+        
+      if (profileError) {
+        console.error("Error creating profile:", profileError);
       }
       
       toast({

@@ -25,6 +25,7 @@ const Login = () => {
     
     // Check if user is already logged in
     if (isLoggedIn) {
+      console.log("User is already logged in, redirecting to dashboard");
       navigate('/dashboard');
     }
   }, [isLoggedIn, navigate]);

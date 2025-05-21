@@ -99,6 +99,8 @@ export function PiAuthButton() {
         });
         
         setShowConsentPrompt(false);
+        
+        // Always redirect to dashboard after successful login
         navigate('/dashboard');
       } else {
         // User doesn't exist, redirect to signup
