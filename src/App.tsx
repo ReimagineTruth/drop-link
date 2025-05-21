@@ -1,4 +1,3 @@
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
@@ -32,6 +31,7 @@ import Community from "./pages/Community";
 import CreatorDirectory from "./pages/CreatorDirectory";
 import Developers from "./pages/Developers";
 import AdminStatusProvider from "./components/admin/AdminStatusProvider";
+import Settings from "@/pages/Settings";
 
 // App component
 function App() {
@@ -75,6 +75,8 @@ function App() {
                 <Route path="/community" element={<Community />} />
                 <Route path="/creators" element={<CreatorDirectory />} />
                 <Route path="/developers" element={<Developers />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/settings/:section" element={<Settings />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Toaster />

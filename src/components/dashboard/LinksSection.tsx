@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUser } from "@/context/UserContext";
@@ -12,6 +13,9 @@ import LinkForm from "./LinkForm";
 import LinkItem from "./LinkItem";
 import AddLinkButton from "./AddLinkButton";
 import { useLinks } from "@/hooks/useLinks";
+import { Button } from "@/components/ui/button";
+import { Settings } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const LinksSection = () => {
   const [isAddingLink, setIsAddingLink] = useState(false);
@@ -22,6 +26,7 @@ const LinksSection = () => {
   const { links, isLoading, fetchLinks, handleReorderLink } = useLinks(user?.id);
   const { plan, limits } = useUserPlan();
   const { openUpgradeModal } = useUpgradeModal();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (profile?.username) {
@@ -55,6 +60,10 @@ const LinksSection = () => {
     }
     
     setIsAddingLink(true);
+  };
+
+  const navigateToDomainSettings = () => {
+    navigate('/settings/domains');
   };
 
   const renderContent = () => {
@@ -131,16 +140,24 @@ const LinksSection = () => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>My Links</CardTitle>
-        <CardDescription>
-          Manage and organize all your links in one place
-        </CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <CardTitle>My Links</CardTitle>
+          <CardDescription>
+            Manage and organize all your links in one place
+          </CardDescription>
+        </div>
+        <Button variant="outline" size="sm" onClick={navigateToDomainSettings}>
+          <Settings className="h-4 w-4 mr-2" />
+          Domain Settings
+        </Button>
       </CardHeader>
       <CardContent>
         <ProfileUrlDisplay 
           profileUrl={profileUrl} 
           username={profile?.username} 
+          piDomain={profile?.pi_domain}
+          customDomain={profile?.custom_domain}
         />
         
         {renderContent()}

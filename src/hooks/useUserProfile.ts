@@ -54,6 +54,8 @@ export const useUserProfile = (user: any) => {
         title: "Success",
         description: "Profile updated successfully",
       });
+      
+      return true;
     } catch (error) {
       console.error("Error updating profile:", error);
       toast({
@@ -61,6 +63,7 @@ export const useUserProfile = (user: any) => {
         description: "Failed to update profile",
         variant: "destructive",
       });
+      return false;
     }
   };
 
