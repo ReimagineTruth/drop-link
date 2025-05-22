@@ -8,6 +8,8 @@ import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
+import PiDomainSection from "@/components/PiDomainSection";
+import DemoPiProfile from "@/components/DemoPiProfile";
 
 const Index = () => {
   return (
@@ -16,7 +18,9 @@ const Index = () => {
       <main className="flex-grow">
         <Hero />
         <HowItWorks />
+        <PiDomainSection />
         <MobilePreview />
+        <DemoPiProfile />
         <Features />
         <Testimonials />
         <FAQ />

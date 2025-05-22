@@ -43,9 +43,7 @@ const Hero = () => {
     
     setTimeout(type, 500);
     
-    // Fix: Added a proper cleanup function
     return () => {
-      // Clear any pending timeouts
       const highestId = window.setTimeout(() => {}, 0);
       for (let i = 0; i < highestId; i++) {
         clearTimeout(i);
@@ -60,9 +58,15 @@ const Hero = () => {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
             Unify Your World with Droplink
           </h1>
-          <p className="text-xl md:text-2xl mb-10">
+          <p className="text-xl md:text-2xl mb-6">
             Empower <span ref={typedTextRef} className="font-semibold border-r-2 border-white"></span> on Pi Network with one link to share, sell, and connect seamlessly.
           </p>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-8 inline-block">
+            <p className="text-lg font-medium">
+              <span className="text-amber-300">yourdomain.pi</span> → <span className="text-green-300">droplink.space/@you</span>
+            </p>
+            <p className="text-sm opacity-75">Connect your Pi Network domain to your Droplink profile</p>
+          </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/signup" className="cta-button">Create Your Droplink</Link>
             <Link to="/demo" className="cta-button-outline">See It in Action</Link>
