@@ -91,9 +91,9 @@ const GetStartedSection = () => {
               </CardContent>
               <CardFooter>
                 <Button variant="secondary" size="sm" asChild className="w-full">
-                  <a href="/demo" className="flex items-center gap-2">
+                  <Link to="/demo" className="flex items-center gap-2">
                     See in Action
-                  </a>
+                  </Link>
                 </Button>
               </CardFooter>
             </Card>

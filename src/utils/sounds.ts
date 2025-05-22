@@ -18,4 +18,7 @@ export const playSound = (audioUrl: string, volume = 1): void => {
 export const sounds = {
   loadingComplete: "/sounds/loading-complete.mp3",
   setupComplete: "/sounds/setup-complete.mp3",
+  uiTap: "/sounds/ui-tap.mp3",
+  notification: "/sounds/notification.mp3",
+  success: "/sounds/success.mp3",
 };
