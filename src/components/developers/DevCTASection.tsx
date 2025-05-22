@@ -54,7 +54,7 @@ const DevCTASection = () => {
               <Button 
                 size="lg" 
                 variant="default" 
-                className="bg-white text-primary hover:bg-white/90 shadow-lg hover:shadow-xl transition-all" 
+                className="bg-gradient-hero text-white hover:bg-white/10 shadow-lg hover:shadow-xl transition-all" 
                 asChild
                 onClick={handleButtonClick}
               >
