@@ -19,8 +19,8 @@ const Index = () => {
       <Navbar />
       <main className="flex-grow">
         <Hero />
-        <HowItWorks />
         <PiDomainFeatures />
+        <HowItWorks />
         <PiDomainSection />
         <PiNetworkEcosystem />
         <MobilePreview />

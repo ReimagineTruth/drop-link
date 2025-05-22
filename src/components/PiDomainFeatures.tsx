@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { AnimatedContainer } from '@/components/ui/animated-container';
 
 const PiDomainFeatures = () => {
   return (
-    <section className="py-24 px-6 bg-gradient-to-b from-muted/50 to-white">
+    <section className="py-24 px-6 bg-gradient-to-b from-primary/5 to-background">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-16">
+        <AnimatedContainer animation="fade" className="text-center mb-16">
           <Badge className="mb-4 bg-primary/10 text-primary hover:bg-primary/20 py-1.5">Pi Network Integration</Badge>
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             What You Can Do With Your <span className="text-primary">.pi Domain</span>
@@ -17,11 +18,11 @@ const PiDomainFeatures = () => {
             Connect your Pi Network domain to Droplink and unlock powerful features
             to grow your audience and monetize your content.
           </p>
-        </div>
+        </AnimatedContainer>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {/* Feature Card 1 */}
-          <div className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
+          <AnimatedContainer animation="scale" delay={0.1} className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
             <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -36,10 +37,10 @@ const PiDomainFeatures = () => {
             <div className="bg-muted p-3 rounded-lg border border-border font-mono text-sm">
               <span className="text-primary font-bold">yourdomain.pi</span> → droplink.space/@username
             </div>
-          </div>
+          </AnimatedContainer>
 
           {/* Feature Card 2 */}
-          <div className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
+          <AnimatedContainer animation="scale" delay={0.2} className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
             <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -59,10 +60,10 @@ const PiDomainFeatures = () => {
                 <span>No redirection or technical setup required</span>
               </span>
             </div>
-          </div>
+          </AnimatedContainer>
 
           {/* Feature Card 3 */}
-          <div className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
+          <AnimatedContainer animation="scale" delay={0.3} className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
             <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
                 <line x1="12" y1="1" x2="12" y2="23"></line>
@@ -81,16 +82,16 @@ const PiDomainFeatures = () => {
                 <span>Seamless Pi payment integration</span>
               </span>
             </div>
-          </div>
+          </AnimatedContainer>
         </div>
 
-        <div className="bg-card rounded-xl p-8 border border-border">
+        <AnimatedContainer animation="fade" delay={0.4} className="bg-card rounded-xl p-8 border border-border">
           <div className="flex flex-col lg:flex-row gap-8 items-center">
             <div className="w-full lg:w-1/2 lg:pr-8">
               <h3 className="text-2xl font-bold mb-4">How to Connect Your .pi Domain</h3>
               <ol className="space-y-4 mb-6">
                 <li className="flex items-start gap-3">
-                  <div className="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-1">
+                  <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-1">
                     <span className="text-sm font-bold">1</span>
                   </div>
                   <div>
@@ -100,7 +101,7 @@ const PiDomainFeatures = () => {
                 </li>
                 
                 <li className="flex items-start gap-3">
-                  <div className="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-1">
+                  <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-1">
                     <span className="text-sm font-bold">2</span>
                   </div>
                   <div>
@@ -110,7 +111,7 @@ const PiDomainFeatures = () => {
                 </li>
                 
                 <li className="flex items-start gap-3">
-                  <div className="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-1">
+                  <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-1">
                     <span className="text-sm font-bold">3</span>
                   </div>
                   <div>
@@ -120,7 +121,7 @@ const PiDomainFeatures = () => {
                 </li>
                 
                 <li className="flex items-start gap-3">
-                  <div className="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-1">
+                  <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-1">
                     <span className="text-sm font-bold">4</span>
                   </div>
                   <div>
@@ -131,7 +132,7 @@ const PiDomainFeatures = () => {
               </ol>
               
               <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                <Button asChild className="bg-gradient-hero hover:bg-gradient-hero">
+                <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
                   <Link to="/signup">Connect Your .pi Domain <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
                 <Button asChild variant="outline">
@@ -148,13 +149,15 @@ const PiDomainFeatures = () => {
                 <div className="bg-background rounded-lg p-4 shadow-inner border border-border">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-10 h-10 rounded-full bg-primary/20"></div>
+                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span className="font-bold text-primary">π</span>
+                      </div>
                       <div>
                         <p className="font-semibold">User's Profile</p>
                         <p className="text-xs text-muted-foreground">Accessible via:</p>
                       </div>
                     </div>
-                    <Badge className="bg-primary">Connected</Badge>
+                    <Badge className="bg-primary text-primary-foreground">Connected</Badge>
                   </div>
                   
                   <div className="space-y-3 mb-4">
@@ -175,7 +178,7 @@ const PiDomainFeatures = () => {
               </div>
             </div>
           </div>
-        </div>
+        </AnimatedContainer>
       </div>
     </section>
   );

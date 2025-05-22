@@ -25,9 +25,9 @@ const Home = () => {
       <Navbar />
       <main>
         <Hero />
+        <PiDomainFeatures />
         <Features />
         <HowItWorks />
-        <PiDomainFeatures />
         <DemoSection />
         <Testimonials />
         <FAQ />

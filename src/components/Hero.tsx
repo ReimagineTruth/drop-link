@@ -116,17 +116,38 @@ const Hero = () => {
         </div>
       </div>
       
-      {/* Floating Icons with improved animation */}
-      <div className="absolute inset-0 z-10 pointer-events-none">
-        <div className="floating-icon top-[15%] left-[10%] text-5xl">
+      {/* Floating Icons with smooth animation */}
+      <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
+        <AnimatedContainer 
+          animation="fade" 
+          delay={0.2} 
+          className="floating-icon top-[15%] left-[10%] text-5xl"
+          motionProps={{ 
+            animate: { y: [0, -20, 0], transition: { duration: 5, repeat: Infinity, ease: "easeInOut" } }
+          }}
+        >
           <i className="fab fa-youtube">📺</i>
-        </div>
-        <div className="floating-icon top-[25%] right-[10%] text-5xl animation-delay-300">
+        </AnimatedContainer>
+        <AnimatedContainer 
+          animation="fade" 
+          delay={0.5} 
+          className="floating-icon top-[25%] right-[10%] text-5xl"
+          motionProps={{ 
+            animate: { y: [0, -15, 0], transition: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 } }
+          }}
+        >
           <i className="fab fa-telegram">✉️</i>
-        </div>
-        <div className="floating-icon top-[45%] left-[15%] text-5xl animation-delay-600">
+        </AnimatedContainer>
+        <AnimatedContainer 
+          animation="fade" 
+          delay={0.8} 
+          className="floating-icon top-[45%] left-[15%] text-5xl"
+          motionProps={{ 
+            animate: { y: [0, -10, 0], transition: { duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1 } }
+          }}
+        >
           <i className="fab fa-coins">💰</i>
-        </div>
+        </AnimatedContainer>
       </div>
     </section>
   );
