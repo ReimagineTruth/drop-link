@@ -16,19 +16,19 @@ interface DomainSettingsProps {
   onUpdate?: () => void;
 }
 
-// Define subscription plan type explicitly
-type SubscriptionPlanType = 'free' | 'starter' | 'pro' | 'premium' | null;
+// Define subscription plan type explicitly without circular references
+type SubscriptionPlanType = 'free' | 'starter' | 'pro' | 'premium';
 
-// Simplified profile type to avoid circular references
-type SimpleProfile = {
+// Simplified profile type 
+interface SimpleProfile {
   id?: string;
   pi_domain?: string | null;
   custom_domain?: string | null;
   username?: string | null;
   subscription?: {
-    plan: string; // Using string instead of SubscriptionPlanType to avoid potential circular reference
+    plan: string | null; // Using simple string type
   } | null;
-};
+}
 
 const DomainSettings = ({ onUpdate }: DomainSettingsProps) => {
   const { profile, updateProfile } = useUser();
@@ -37,8 +37,8 @@ const DomainSettings = ({ onUpdate }: DomainSettingsProps) => {
   const [isCustomDomain, setIsCustomDomain] = useState(!!profile?.custom_domain);
   const [customDomain, setCustomDomain] = useState(profile?.custom_domain || '');
   
-  // Use direct string comparison rather than type assertion to avoid deep instantiation
-  const planValue: string | null = profile?.subscription?.plan || null;
+  // Use simple string comparison without type assertions
+  const planValue = profile?.subscription?.plan || null;
   const isPremiumUser = planValue === 'pro' || planValue === 'premium';
 
   const handleSavePiDomain = async () => {
