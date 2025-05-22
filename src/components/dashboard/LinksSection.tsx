@@ -6,7 +6,7 @@ import { toast } from "@/hooks/use-toast";
 import { playSound, sounds } from '@/utils/sounds';
 import { useUpgradeModal } from "@/hooks/useUpgradeModal";
 import { useUserPlan } from "@/hooks/use-user-plan";
-import ProfileUrlDisplay from "./ProfileUrlDisplay";
+import ProfileUrlDisplay from "@/components/profile/ProfileUrlDisplay";
 import EmptyLinksState from "./EmptyLinksState";
 import LinksLoadingState from "./LinksLoadingState";
 import LinkForm from "./LinkForm";

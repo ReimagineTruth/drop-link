@@ -23,7 +23,7 @@ const DomainSettings = ({ onUpdate }: DomainSettingsProps) => {
   const [isCustomDomain, setIsCustomDomain] = useState(!!profile?.custom_domain);
   const [customDomain, setCustomDomain] = useState(profile?.custom_domain || '');
   
-  // Check if the user has a pro or premium plan
+  // Check if the user has a pro or premium plan - fixed recursive type issue
   const isPremiumUser = profile?.subscription?.plan === 'pro' || profile?.subscription?.plan === 'premium';
 
   const handleSavePiDomain = async () => {

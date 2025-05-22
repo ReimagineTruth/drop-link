@@ -15,7 +15,7 @@ interface UserContextType {
   showAds: boolean;
   isAdmin: boolean;
   setIsAdmin: (value: boolean) => void;
-  refreshUserData: () => Promise<void>;  // Expecting Promise<void>, not Promise<boolean>
+  refreshUserData: () => Promise<void>;
   signOut: () => Promise<void>;
   updateProfile: (data: any) => Promise<void>;
   cancelSubscription: () => Promise<boolean>;
@@ -25,7 +25,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const { user, isLoading: authLoading, isLoggedIn, signOut, isAdmin: authIsAdmin } = useAuth();
-  const { profile, isLoading: profileLoading, updateProfile, refreshProfile } = useUserProfile(user);
+  const { profile, isLoading: profileLoading, updateProfile: updateProfileOriginal, refreshProfile } = useUserProfile(user);
   const { subscription, isLoading: subscriptionLoading, cancelSubscription, refreshSubscription } = useSubscription(user);
   const [isAdmin, setIsAdmin] = useState(false);
   
@@ -41,6 +41,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const showAds = isLoggedIn && !isAdmin && 
     (!subscription || subscription?.plan === "free" || subscription?.plan === "starter");
 
+  // Wrapper for updateProfile that returns Promise<void> instead of Promise<boolean>
+  const updateProfile = async (data: any): Promise<void> => {
+    await updateProfileOriginal(data);
+  };
+
   // Modified to return Promise<void> instead of Promise<boolean>
   const refreshUserData = useCallback(async () => {
     console.log("Refreshing user data...");
@@ -50,10 +55,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         refreshSubscription()
       ]);
       console.log("User data refreshed successfully");
-      // Don't return a boolean value
     } catch (error) {
       console.error("Error refreshing user data:", error);
-      // Don't return a boolean value
     }
   }, [refreshProfile, refreshSubscription]);
 

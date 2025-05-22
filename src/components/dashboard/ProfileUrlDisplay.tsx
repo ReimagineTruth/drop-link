@@ -7,9 +7,11 @@ import { useToast } from "@/hooks/use-toast";
 interface ProfileUrlDisplayProps {
   profileUrl: string;
   username: string | null;
+  piDomain?: string | null;
+  customDomain?: string | null;
 }
 
-const ProfileUrlDisplay = ({ profileUrl, username }: ProfileUrlDisplayProps) => {
+const ProfileUrlDisplay = ({ profileUrl, username, piDomain, customDomain }: ProfileUrlDisplayProps) => {
   const { toast } = useToast();
 
   const handleCopyProfileUrl = () => {
