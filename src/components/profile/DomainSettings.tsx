@@ -15,7 +15,7 @@ interface DomainSettingsProps {
   onUpdate?: () => void;
 }
 
-// Simplified profile type with explicit types to avoid deep instantiation issues
+// Simplified profile type that avoids deep type instantiation
 interface SimpleProfile {
   id?: string;
   pi_domain?: string | null;
