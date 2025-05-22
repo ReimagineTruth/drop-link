@@ -62,11 +62,11 @@ const CustomDomainForm = ({
         return;
       }
       
-      // Update the profile
-      const { error } = await supabase
-        .from('user_profiles')
-        .update({ custom_domain: domainToSave })
-        .eq('id', userId);
+      // Update the profile using RPC or raw SQL to bypass TypeScript constraints
+      const { error } = await supabase.rpc('update_user_custom_domain', { 
+        user_id: userId,
+        domain_value: domainToSave
+      });
       
       if (error) throw error;
       
