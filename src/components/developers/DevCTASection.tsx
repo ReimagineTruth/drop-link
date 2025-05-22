@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Github, BookOpen } from "lucide-react";
+import { ArrowRight, Github, BookOpen, Play } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { AnimatedContainer } from "@/components/ui/animated-container";
 
@@ -34,6 +34,12 @@ const DevCTASection = () => {
                   <Github size={16} />
                   View Sample Projects
                 </a>
+              </Button>
+              <Button size="lg" variant="default" className="bg-primary hover:bg-primary/90" asChild>
+                <Link to="/demo" className="flex items-center gap-2">
+                  <Play size={16} />
+                  See in Action
+                </Link>
               </Button>
             </div>
           </div>

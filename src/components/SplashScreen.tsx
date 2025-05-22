@@ -22,6 +22,9 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
     // Calculate progress increment per update
     const progressIncrement = 100 / totalUpdates;
     
+    // Play sound when splashscreen starts
+    playSound(sounds.uiTap, 0.1);
+    
     // Start progress animation with easing
     const interval = setInterval(() => {
       setProgress((prevProgress) => {
@@ -137,6 +140,16 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
                 className="h-2 overflow-hidden" 
               />
             </motion.div>
+            
+            {/* Support Info */}
+            <motion.p
+              className="mt-8 text-xs text-white/70"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+            >
+              Need help? Contact support@droplink.space
+            </motion.p>
           </motion.div>
         </motion.div>
       )}
