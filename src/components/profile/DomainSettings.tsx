@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,6 +15,9 @@ interface DomainSettingsProps {
   onUpdate?: () => void;
 }
 
+// Define subscription plan type explicitly to avoid recursive type issues
+type SubscriptionPlanType = 'free' | 'starter' | 'pro' | 'premium' | null;
+
 const DomainSettings = ({ onUpdate }: DomainSettingsProps) => {
   const { profile, updateProfile } = useUser();
   const [piDomain, setPiDomain] = useState(profile?.pi_domain || '');
@@ -23,8 +25,9 @@ const DomainSettings = ({ onUpdate }: DomainSettingsProps) => {
   const [isCustomDomain, setIsCustomDomain] = useState(!!profile?.custom_domain);
   const [customDomain, setCustomDomain] = useState(profile?.custom_domain || '');
   
-  // Check if the user has a pro or premium plan - fixed recursive type issue
-  const isPremiumUser = profile?.subscription?.plan === 'pro' || profile?.subscription?.plan === 'premium';
+  // Check if the user has a pro or premium plan - fixed to avoid recursive type issue
+  const subscriptionPlan = profile?.subscription?.plan as SubscriptionPlanType;
+  const isPremiumUser = subscriptionPlan === 'pro' || subscriptionPlan === 'premium';
 
   const handleSavePiDomain = async () => {
     try {

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
@@ -35,58 +36,47 @@ import Settings from "@/pages/Settings";
 
 // App component
 function App() {
-  const [showSplash, setShowSplash] = React.useState(true);
-
-  const handleSplashComplete = () => {
-    setShowSplash(false);
-  };
-
-  if (showSplash) {
-    return <SplashScreen onComplete={handleSplashComplete} />;
-  }
-
+  // Removed duplicate SplashScreen handling as it's now in main.tsx
   return (
-    <HelmetProvider>
-      <UserProvider>
-        <AdminStatusProvider>
-          <UpgradeModalProvider>
-            <Router>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/features" element={<Features />} />
-                <Route path="/pricing" element={<Pricing />} />
-                <Route path="/templates" element={<Templates />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/@:username" element={<ProfilePage />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/careers" element={<Careers />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/cookies" element={<Cookies />} />
-                <Route path="/gdpr" element={<GDPR />} />
-                <Route path="/demo" element={<Demo />} />
-                <Route path="/help" element={<Help />} />
-                <Route path="/help/all-faqs" element={<AllFaqs />} />
-                <Route path="/community" element={<Community />} />
-                <Route path="/creators" element={<CreatorDirectory />} />
-                <Route path="/developers" element={<Developers />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/settings/:section" element={<Settings />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              <Toaster />
-              {/* Modal needs to be inside Router */}
-              <UpgradeModalConsumer />
-            </Router>
-          </UpgradeModalProvider>
-        </AdminStatusProvider>
-      </UserProvider>
-    </HelmetProvider>
+    <UserProvider>
+      <AdminStatusProvider>
+        <UpgradeModalProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/features" element={<Features />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/templates" element={<Templates />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/@:username" element={<ProfilePage />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/cookies" element={<Cookies />} />
+              <Route path="/gdpr" element={<GDPR />} />
+              <Route path="/demo" element={<Demo />} />
+              <Route path="/help" element={<Help />} />
+              <Route path="/help/all-faqs" element={<AllFaqs />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/creators" element={<CreatorDirectory />} />
+              <Route path="/developers" element={<Developers />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/settings/:section" element={<Settings />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <Toaster />
+            {/* Modal needs to be inside Router */}
+            <UpgradeModalConsumer />
+          </Router>
+        </UpgradeModalProvider>
+      </AdminStatusProvider>
+    </UserProvider>
   );
 }
 
