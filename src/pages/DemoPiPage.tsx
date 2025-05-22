@@ -126,32 +126,37 @@ const DemoPiPage = () => {
                     className={`block w-full p-4 rounded-lg border ${link.locked 
                       ? 'bg-gray-50 border-gray-200 cursor-not-allowed' 
                       : 'bg-white border-gray-200 hover:border-purple-300 hover:shadow-md'}`}
-                    onClick={() => {
-                      if (link.locked) {
-                        playSound(sounds.notification, 0.3);
-                        toast({
-                          title: "Premium Content",
-                          description: "This content requires payment to access",
-                          variant: "destructive"
-                        });
-                      } else {
-                        playSound(sounds.uiTap, 0.2);
-                      }
-                    }}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl">{link.icon}</div>
-                      <div className="flex-grow">
-                        <div className="font-medium">{link.title}</div>
-                        <div className="text-sm text-gray-500">
-                          {link.locked ? "Premium content (Pi payment required)" : link.url}
+                    {/* Wrap the content in a div with onClick handler instead of putting it on AnimatedContainer */}
+                    <div 
+                      className="w-full"
+                      onClick={() => {
+                        if (link.locked) {
+                          playSound(sounds.notification, 0.3);
+                          toast({
+                            title: "Premium Content",
+                            description: "This content requires payment to access",
+                            variant: "destructive"
+                          });
+                        } else {
+                          playSound(sounds.uiTap, 0.2);
+                        }
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="text-2xl">{link.icon}</div>
+                        <div className="flex-grow">
+                          <div className="font-medium">{link.title}</div>
+                          <div className="text-sm text-gray-500">
+                            {link.locked ? "Premium content (Pi payment required)" : link.url}
+                          </div>
                         </div>
+                        {link.locked && (
+                          <div className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                            1.0 Pi
+                          </div>
+                        )}
                       </div>
-                      {link.locked && (
-                        <div className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                          1.0 Pi
-                        </div>
-                      )}
                     </div>
                   </AnimatedContainer>
                 ))}
