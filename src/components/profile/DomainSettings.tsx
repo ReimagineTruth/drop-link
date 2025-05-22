@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,7 +26,7 @@ const DomainSettings = ({ onUpdate }: DomainSettingsProps) => {
   const [isCustomDomain, setIsCustomDomain] = useState(!!profile?.custom_domain);
   const [customDomain, setCustomDomain] = useState(profile?.custom_domain || '');
   
-  // Check if the user has a pro or premium plan - fixed to avoid recursive type issue
+  // Use the explicitly defined type to avoid infinite recursion
   const subscriptionPlan = profile?.subscription?.plan as SubscriptionPlanType;
   const isPremiumUser = subscriptionPlan === 'pro' || subscriptionPlan === 'premium';
 
