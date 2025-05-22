@@ -16,14 +16,25 @@ import PiIntegrationSection from "@/components/developers/PiIntegrationSection";
 import SdksSection from "@/components/developers/SdksSection";
 import GetStartedSection from "@/components/developers/GetStartedSection";
 import DevCTASection from "@/components/developers/DevCTASection";
+import { useUser } from "@/context/UserContext";
 
 const Developers = () => {
   const [activeTab, setActiveTab] = useState("api");
+  const { isLoading } = useUser();
   
   // Handler function for tab changes
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
+  
+  // Show loading state while checking user status
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-lg">Loading documentation...</div>
+      </div>
+    );
+  }
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -33,7 +44,7 @@ const Developers = () => {
       </Helmet>
       <Navbar />
       <main className="flex-grow">
-        {/* Admin Notice Banner */}
+        {/* Admin Notice Banner - Only visible to admins */}
         <AdminBanner />
       
         {/* Hero Section */}
