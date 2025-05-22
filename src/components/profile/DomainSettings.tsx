@@ -15,14 +15,14 @@ interface DomainSettingsProps {
   onUpdate?: () => void;
 }
 
-// Simplified profile type 
+// Simplified profile type with explicit types to avoid deep instantiation issues
 interface SimpleProfile {
   id?: string;
   pi_domain?: string | null;
   custom_domain?: string | null;
   username?: string | null;
   subscription?: {
-    plan: string; // Changed to simple string type and removed null option
+    plan: string; // Using simple string type without null
   } | null;
 }
 
@@ -33,7 +33,7 @@ const DomainSettings = ({ onUpdate }: DomainSettingsProps) => {
   const [isCustomDomain, setIsCustomDomain] = useState(!!profile?.custom_domain);
   const [customDomain, setCustomDomain] = useState(profile?.custom_domain || '');
   
-  // Use direct string comparison without type issues
+  // Use simple string comparison without type issues
   const planString = profile?.subscription?.plan || '';
   const isPremiumUser = planString === 'pro' || planString === 'premium';
 

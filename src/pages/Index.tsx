@@ -10,6 +10,7 @@ import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import PiDomainSection from "@/components/PiDomainSection";
 import DemoPiProfile from "@/components/DemoPiProfile";
+import PiNetworkEcosystem from "@/components/PiNetworkEcosystem";
 
 const Index = () => {
   return (
@@ -19,6 +20,7 @@ const Index = () => {
         <Hero />
         <HowItWorks />
         <PiDomainSection />
+        <PiNetworkEcosystem />
         <MobilePreview />
         <DemoPiProfile />
         <Features />
