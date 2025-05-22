@@ -1,146 +1,131 @@
 
-import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { authenticateWithPi, createPiPayment } from "@/services/piPaymentService";
-import { useUser } from "@/context/UserContext";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
+import { authenticateWithPi, createPiPayment } from '@/services/piPaymentService';
+import { useUser } from '@/context/UserContext';
 
-// Define consistent pricing across the application
+// Updated standardized pricing structure
 export const planPricing = {
   starter: { monthly: 10, annual: 8 },
   pro: { monthly: 15, annual: 12 },
   premium: { monthly: 22, annual: 18 }
 };
 
-export function usePiPayment() {
-  const { toast } = useToast();
-  const { user, refreshUserData } = useUser();
+export const usePiPayment = () => {
   const [processingPayment, setProcessingPayment] = useState(false);
+  const { refreshUserData } = useUser();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handlePiLogin = async () => {
     try {
-      const auth = await authenticateWithPi(["username", "payments", "wallet_address"]);
+      setProcessingPayment(true);
+      const auth = await authenticateWithPi();
+      
       if (auth) {
-        if (auth.accessToken) {
-          // Store access token for API calls
-          localStorage.setItem('pi_access_token', auth.accessToken);
-        }
-        
-        refreshUserData();
+        // Trigger a refresh of user data after successful login
+        await refreshUserData();
         
         toast({
-          title: "Logged in successfully",
-          description: `Welcome, ${auth.user.username || "User"}!`,
+          title: "Login Successful",
+          description: `Welcome back ${auth.user.username}!`,
+        });
+        
+        return auth;
+      } else {
+        toast({
+          title: "Login Failed",
+          description: "Could not authenticate with Pi Network.",
+          variant: "destructive",
         });
       }
-      return auth;
     } catch (error) {
-      console.error("Pi authentication failed:", error);
+      console.error("Pi Login error:", error);
       toast({
-        title: "Authentication failed",
-        description: "Could not log in with Pi Network",
+        title: "Login Error",
+        description: "An unexpected error occurred during login.",
         variant: "destructive",
       });
-      return null;
+    } finally {
+      setProcessingPayment(false);
     }
+    return null;
   };
-
-  const handleSubscribe = async (plan: string, billingCycle: string) => {
-    if (!user) {
-      toast({
-        title: "Login Required",
-        description: "Please log in to subscribe",
-        variant: "destructive", 
-      });
-      return;
-    }
-    
-    setProcessingPayment(true);
-    
+  
+  const handleSubscribe = async (plan: string, billingCycle: string = 'monthly') => {
     try {
-      // Make sure user is authenticated with Pi
-      const auth = await handlePiLogin();
-      if (!auth) {
-        throw new Error("Pi authentication required");
-      }
+      setProcessingPayment(true);
       
-      // Get plan pricing from consistent planPricing object
-      const planName = plan.toLowerCase();
-      let amount = 0;
+      // Convert plan to lowercase for consistency with backend
+      const planLower = plan.toLowerCase();
       
-      if (planName === "starter") {
-        amount = billingCycle === 'annual' ? planPricing.starter.annual * 12 : planPricing.starter.monthly;
-      } else if (planName === "pro") {
-        amount = billingCycle === 'annual' ? planPricing.pro.annual * 12 : planPricing.pro.monthly;
-      } else if (planName === "premium") {
-        amount = billingCycle === 'annual' ? planPricing.premium.annual * 12 : planPricing.premium.monthly;
-      }
+      // Get the appropriate price based on plan and billing cycle
+      const priceKey = planLower as keyof typeof planPricing;
+      const cycleKey = billingCycle as 'monthly' | 'annual';
       
-      // Calculate expiration date
-      const expireDate = new Date();
-      if (billingCycle === 'annual') {
-        expireDate.setFullYear(expireDate.getFullYear() + 1);
-      } else {
-        expireDate.setMonth(expireDate.getMonth() + 1);
-      }
+      // Get the price per month
+      const pricePerMonth = planPricing[priceKey][cycleKey];
       
-      // Create payment through Pi Network
+      // Calculate total payment amount based on billing cycle
+      const totalAmount = billingCycle === 'annual' 
+        ? pricePerMonth * 12 // Annual payment
+        : pricePerMonth;     // Monthly payment
+      
       const paymentData = {
-        amount,
+        amount: totalAmount,
         memo: `${plan} Plan Subscription (${billingCycle === 'annual' ? 'Annual' : 'Monthly'})`,
         metadata: {
           isSubscription: true,
-          plan: planName,
+          plan: planLower,
           duration: billingCycle,
-          expiresAt: expireDate.toISOString(),
-          sandbox: true // Set to true for testing, false for production
+          pricePerMonth
         }
       };
       
-      await createPiPayment(paymentData, user);
+      // Ensure user is authenticated with Pi Network
+      const authResult = await authenticateWithPi(['payments', 'username', 'wallet_address']);
       
-      // The payment flow will be handled by callbacks in piPaymentService
-      toast({
-        title: "Payment Processing",
-        description: "Follow the Pi payment flow to complete your subscription",
-      });
-      
-      // After a successful payment, refresh user data to get updated subscription
-      // This is now handled by the event listener in the payment service
-      
-      // Add event listener for subscription updates
-      const handleSubscriptionUpdate = () => {
-        console.log("Subscription update detected, refreshing user data");
-        refreshUserData();
-        
+      if (!authResult) {
         toast({
-          title: "Subscription Updated",
-          description: "Your subscription has been successfully updated",
+          title: "Authentication Failed",
+          description: "Please log in with Pi Network to subscribe.",
+          variant: "destructive",
         });
-      };
+        setProcessingPayment(false);
+        return;
+      }
       
-      window.addEventListener('subscription-updated', handleSubscriptionUpdate);
+      // Get current user data from Supabase
+      const userData = await refreshUserData();
       
-      // Clean up event listener after 10 minutes (in case payment flow takes time)
-      setTimeout(() => {
-        window.removeEventListener('subscription-updated', handleSubscriptionUpdate);
-      }, 10 * 60 * 1000);
+      if (!userData) {
+        toast({
+          title: "Error",
+          description: "Unable to retrieve user data. Please try again.",
+          variant: "destructive",
+        });
+        setProcessingPayment(false);
+        return;
+      }
+      
+      // Create the payment
+      await createPiPayment(paymentData, userData);
+      
+      // Note: The actual subscription update is handled by the Pi payment callbacks
+      // which will trigger a page refresh or state update once completed
       
     } catch (error) {
       console.error("Subscription error:", error);
       toast({
-        title: "Subscription failed",
-        description: "There was an error processing your subscription",
+        title: "Subscription Error",
+        description: "An error occurred while processing your subscription.",
         variant: "destructive",
       });
     } finally {
       setProcessingPayment(false);
     }
   };
-
-  return {
-    processingPayment,
-    handlePiLogin,
-    handleSubscribe,
-    planPricing
-  };
-}
+  
+  return { processingPayment, handlePiLogin, handleSubscribe };
+};
