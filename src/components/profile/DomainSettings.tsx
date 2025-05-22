@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,15 +16,14 @@ interface DomainSettingsProps {
   onUpdate?: () => void;
 }
 
-// Simplified profile type that avoids deep type instantiation
+// Completely flat profile type with no nested objects to avoid type instantiation issues
 interface SimpleProfile {
   id?: string;
   pi_domain?: string | null;
   custom_domain?: string | null;
   username?: string | null;
-  subscription?: {
-    plan: string; // Using simple string type without null
-  } | null;
+  // Use a string literal type instead of a nested object
+  subscriptionPlan?: string | null;
 }
 
 const DomainSettings = ({ onUpdate }: DomainSettingsProps) => {
@@ -33,7 +33,7 @@ const DomainSettings = ({ onUpdate }: DomainSettingsProps) => {
   const [isCustomDomain, setIsCustomDomain] = useState(!!profile?.custom_domain);
   const [customDomain, setCustomDomain] = useState(profile?.custom_domain || '');
   
-  // Use simple string comparison without type issues
+  // Use direct string comparison and optional chaining to avoid type issues
   const planString = profile?.subscription?.plan || '';
   const isPremiumUser = planString === 'pro' || planString === 'premium';
 
