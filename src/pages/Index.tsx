@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import PiDomainSection from "@/components/PiDomainSection";
 import DemoPiProfile from "@/components/DemoPiProfile";
 import PiNetworkEcosystem from "@/components/PiNetworkEcosystem";
+import PiDomainFeatures from "@/components/PiDomainFeatures";
 
 const Index = () => {
   return (
@@ -19,6 +20,7 @@ const Index = () => {
       <main className="flex-grow">
         <Hero />
         <HowItWorks />
+        <PiDomainFeatures />
         <PiDomainSection />
         <PiNetworkEcosystem />
         <MobilePreview />

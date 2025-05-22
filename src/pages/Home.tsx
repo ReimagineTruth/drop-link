@@ -9,6 +9,7 @@ import HowItWorks from "@/components/HowItWorks";
 import DemoSection from "@/components/DemoSection";
 import CTA from "@/components/CTA";
 import FAQ from "@/components/FAQ";
+import PiDomainFeatures from "@/components/PiDomainFeatures";
 import { Helmet } from "react-helmet-async";
 
 const Home = () => {
@@ -26,6 +27,7 @@ const Home = () => {
         <Hero />
         <Features />
         <HowItWorks />
+        <PiDomainFeatures />
         <DemoSection />
         <Testimonials />
         <FAQ />
