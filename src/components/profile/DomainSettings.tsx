@@ -26,7 +26,7 @@ type SimpleProfile = {
   custom_domain?: string | null;
   username?: string | null;
   subscription?: {
-    plan: SubscriptionPlanType;
+    plan: string; // Using string instead of SubscriptionPlanType to avoid potential circular reference
   } | null;
 };
 
@@ -37,9 +37,9 @@ const DomainSettings = ({ onUpdate }: DomainSettingsProps) => {
   const [isCustomDomain, setIsCustomDomain] = useState(!!profile?.custom_domain);
   const [customDomain, setCustomDomain] = useState(profile?.custom_domain || '');
   
-  // Safely extract the subscription plan with explicit typing
-  const subscriptionPlan = (profile?.subscription?.plan as SubscriptionPlanType) || null;
-  const isPremiumUser = subscriptionPlan === 'pro' || subscriptionPlan === 'premium';
+  // Use direct string comparison rather than type assertion to avoid deep instantiation
+  const planValue: string | null = profile?.subscription?.plan || null;
+  const isPremiumUser = planValue === 'pro' || planValue === 'premium';
 
   const handleSavePiDomain = async () => {
     try {
