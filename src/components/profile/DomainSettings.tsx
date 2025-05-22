@@ -22,7 +22,7 @@ interface SimpleProfile {
   custom_domain?: string | null;
   username?: string | null;
   subscription?: {
-    plan: string | null; // Using simple string type
+    plan: string; // Changed to simple string type and removed null option
   } | null;
 }
 
@@ -33,9 +33,9 @@ const DomainSettings = ({ onUpdate }: DomainSettingsProps) => {
   const [isCustomDomain, setIsCustomDomain] = useState(!!profile?.custom_domain);
   const [customDomain, setCustomDomain] = useState(profile?.custom_domain || '');
   
-  // Use simple string comparison without type assertions
-  const planValue = profile?.subscription?.plan || null;
-  const isPremiumUser = planValue === 'pro' || planValue === 'premium';
+  // Use direct string comparison without type issues
+  const planString = profile?.subscription?.plan || '';
+  const isPremiumUser = planString === 'pro' || planString === 'premium';
 
   const handleSavePiDomain = async () => {
     try {
