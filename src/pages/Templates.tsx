@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CTA from "@/components/CTA";
 import { Helmet } from "react-helmet-async";
+import { planPricing } from "@/hooks/usePiPayment";
 
 const Templates = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -153,6 +153,14 @@ const Templates = () => {
     }
   };
 
+  // Get pricing from centralized pricing structure
+  const starterMonthly = planPricing.starter.monthly;
+  const starterAnnual = planPricing.starter.annual;
+  const proMonthly = planPricing.pro.monthly;
+  const proAnnual = planPricing.pro.annual;
+  const premiumMonthly = planPricing.premium.monthly;
+  const premiumAnnual = planPricing.premium.annual;
+
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
@@ -249,7 +257,7 @@ const Templates = () => {
             <div className="grid md:grid-cols-3 gap-8">
               <div className="bg-card rounded-xl p-6 shadow-sm border border-blue-100">
                 <h3 className="text-2xl font-semibold mb-4">Starter</h3>
-                <p className="text-lg mb-2">6π/month</p>
+                <p className="text-lg mb-2">{starterAnnual}π/month</p>
                 <p className="mb-6 text-muted-foreground">Access to 5+ basic templates</p>
                 <ul className="space-y-2 mb-8">
                   <li className="flex items-center">
@@ -269,7 +277,7 @@ const Templates = () => {
               <div className="bg-card rounded-xl p-6 shadow-lg border-primary border-2 transform scale-[1.02]">
                 <div className="bg-primary text-white text-sm font-semibold py-1 px-3 rounded-full w-fit mx-auto -mt-10 mb-4">Most Popular</div>
                 <h3 className="text-2xl font-semibold mb-4">Pro</h3>
-                <p className="text-lg mb-2">10π/month</p>
+                <p className="text-lg mb-2">{proAnnual}π/month</p>
                 <p className="mb-6 text-muted-foreground">Access to 15+ premium templates</p>
                 <ul className="space-y-2 mb-8">
                   <li className="flex items-center">
@@ -292,7 +300,7 @@ const Templates = () => {
               
               <div className="bg-card rounded-xl p-6 shadow-sm border border-blue-100">
                 <h3 className="text-2xl font-semibold mb-4">Premium</h3>
-                <p className="text-lg mb-2">15π/month</p>
+                <p className="text-lg mb-2">{premiumAnnual}π/month</p>
                 <p className="mb-6 text-muted-foreground">Access to all 25+ templates</p>
                 <ul className="space-y-2 mb-8">
                   <li className="flex items-center">
