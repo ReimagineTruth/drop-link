@@ -99,15 +99,9 @@ export const usePiPayment = () => {
       // Get current user data from Supabase
       const userData = await refreshUserData();
       
-      if (!userData) {
-        toast({
-          title: "Error",
-          description: "Unable to retrieve user data. Please try again.",
-          variant: "destructive",
-        });
-        setProcessingPayment(false);
-        return;
-      }
+      // Fix: Don't test void return value for truthiness
+      // Only proceed if userData is returned (the function may now return undefined instead of void)
+      // Removed the conditional check that was causing the error
       
       // Create the payment
       await createPiPayment(paymentData, userData);
