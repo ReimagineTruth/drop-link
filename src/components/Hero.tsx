@@ -93,7 +93,7 @@ const Hero = () => {
               <Button 
                 asChild 
                 size="lg" 
-                className="text-white border-white hover:bg-white/10"
+                className="bg-white text-primary hover:bg-white/90 shadow-lg hover:shadow-xl transition-all"
                 onClick={handleButtonClick}
               >
                 <Link to="/demo.pi" className="flex items-center gap-2">
