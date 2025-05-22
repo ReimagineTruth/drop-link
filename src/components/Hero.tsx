@@ -85,7 +85,7 @@ const Hero = () => {
                 asChild 
                 size="lg" 
                 variant="outline" 
-                className="text-white border-white hover:bg-white/10"
+                className="bg-white text-primary hover:bg-white/90 shadow-lg hover:shadow-xl transition-all"
                 onClick={handleButtonClick}
               >
                 <Link to="/demo">See It in Action</Link>
