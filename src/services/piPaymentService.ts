@@ -174,6 +174,7 @@ export const createPiPayment = async (
     };
 
     // Store access token for server calls
+    const auth = await authenticateWithPi(["username", "payments", "wallet_address"]);
     if (auth?.accessToken) {
       localStorage.setItem('pi_access_token', auth.accessToken);
     }
@@ -194,11 +195,12 @@ export const createPiPayment = async (
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-// Get current auth context
+// Get current auth context - remove the reference to currentUser which doesn't exist
 let auth = null;
 try {
   if (typeof window !== 'undefined' && window.Pi) {
-    auth = window.Pi.currentUser;
+    // Fixed: Replace the nonexistent currentUser with a fresh authentication
+    auth = null; // Initialize as null, will be populated when needed
   }
 } catch (e) {
   console.error("Error getting Pi auth context:", e);

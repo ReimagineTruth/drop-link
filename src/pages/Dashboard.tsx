@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -156,7 +157,13 @@ const Dashboard = () => {
                 </Tabs>
               </>
             ) : (
-              <LoginPrompt handlePiLogin={handlePiLogin} />
+              <LoginPrompt 
+                // Fix: Wrap the handlePiLogin with a function that returns void
+                handlePiLogin={async () => {
+                  await handlePiLogin();
+                  return;
+                }} 
+              />
             )}
           </div>
         </main>
