@@ -29,7 +29,7 @@ const PiDomainSection = () => {
                 <div className="bg-primary rounded-full w-8 h-8 flex items-center justify-center text-white font-bold mt-1">2</div>
                 <div>
                   <h3 className="font-semibold text-lg">Go to Domain Settings</h3>
-                  <p className="text-muted-foreground">Navigate to Settings > Domains in your dashboard</p>
+                  <p className="text-muted-foreground">Navigate to Settings {'>'}{'>'} Domains in your dashboard</p>
                 </div>
               </div>
               
