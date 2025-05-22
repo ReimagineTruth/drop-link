@@ -57,11 +57,11 @@ const PiDomainForm = ({ initialDomain, userId, onUpdate }: PiDomainFormProps) =>
         return;
       }
       
-      // Update the profile using RPC or raw SQL to bypass TypeScript constraints
-      const { error } = await supabase.rpc('update_user_pi_domain', { 
-        user_id: userId,
-        domain_value: piDomain
-      });
+      // Update the profile directly
+      const { error } = await supabase
+        .from('user_profiles')
+        .update({ pi_domain: piDomain })
+        .eq('id', userId);
       
       if (error) throw error;
       

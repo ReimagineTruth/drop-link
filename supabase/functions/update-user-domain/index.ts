@@ -35,11 +35,10 @@ serve(async (req) => {
     }
 
     // Update the specified domain field for the user
-    const { data, error } = await supabaseClient.rpc('update_user_domain', {
-      user_id,
-      domain_field: field,
-      domain_value: value,
-    });
+    const { data, error } = await supabaseClient
+      .from('user_profiles')
+      .update({ [field]: value })
+      .eq('id', user_id);
 
     if (error) throw error;
 
