@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,9 +33,10 @@ const DomainSettings = ({ onUpdate }: DomainSettingsProps) => {
   const [isCustomDomain, setIsCustomDomain] = useState(!!profile?.custom_domain);
   const [customDomain, setCustomDomain] = useState(profile?.custom_domain || '');
   
-  // Avoid nested property access by using string comparison
-  const planString = profile?.subscription?.plan || '';
-  const isPremiumUser = planString === 'pro' || planString === 'premium';
+  // Get plan directly from subscription if exists, or fall back to empty string
+  // This avoids deep nesting that could cause type instantiation issues
+  const planType = profile?.subscription?.plan || '';
+  const isPremiumUser = planType === 'pro' || planType === 'premium';
 
   const handleSavePiDomain = async () => {
     try {
