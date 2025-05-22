@@ -19,6 +19,17 @@ interface DomainSettingsProps {
 // Define subscription plan type explicitly to avoid recursive type issues
 type SubscriptionPlanType = 'free' | 'starter' | 'pro' | 'premium' | null;
 
+// Define a simplified profile type to avoid circular references
+interface ProfileWithSubscription {
+  id?: string;
+  pi_domain?: string | null;
+  custom_domain?: string | null;
+  username?: string | null;
+  subscription?: {
+    plan: SubscriptionPlanType;
+  } | null;
+}
+
 const DomainSettings = ({ onUpdate }: DomainSettingsProps) => {
   const { profile, updateProfile } = useUser();
   const [piDomain, setPiDomain] = useState(profile?.pi_domain || '');
@@ -26,8 +37,8 @@ const DomainSettings = ({ onUpdate }: DomainSettingsProps) => {
   const [isCustomDomain, setIsCustomDomain] = useState(!!profile?.custom_domain);
   const [customDomain, setCustomDomain] = useState(profile?.custom_domain || '');
   
-  // Use the explicitly defined type to avoid infinite recursion
-  const subscriptionPlan = profile?.subscription?.plan as SubscriptionPlanType;
+  // Extract the plan with the proper type
+  const subscriptionPlan: SubscriptionPlanType = profile?.subscription?.plan || null;
   const isPremiumUser = subscriptionPlan === 'pro' || subscriptionPlan === 'premium';
 
   const handleSavePiDomain = async () => {
