@@ -4,9 +4,14 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Github, Play } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { AnimatedContainer } from "@/components/ui/animated-container";
+import { playSound, sounds } from "@/utils/sounds";
 
 const DevCTASection = () => {
   const { isLoggedIn } = useUser();
+  
+  const handleButtonClick = () => {
+    playSound(sounds.uiTap, 0.3);
+  };
   
   return (
     <section className="py-16 px-4">
@@ -18,7 +23,12 @@ const DevCTASection = () => {
               Our developer platform is open to everyone. Join our community and start integrating Pi Network payments into your applications today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" asChild>
+              <Button 
+                size="lg" 
+                variant="secondary" 
+                asChild
+                onClick={handleButtonClick}
+              >
                 {isLoggedIn ? (
                   <Link to="/dashboard" className="flex items-center gap-2">
                     Access Developer Dashboard <ArrowRight size={16} />
@@ -29,14 +39,26 @@ const DevCTASection = () => {
                   </Link>
                 )}
               </Button>
-              <Button size="lg" variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20" asChild>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="bg-white/10 text-white border-white/20 hover:bg-white/20" 
+                asChild
+                onClick={handleButtonClick}
+              >
                 <a href="https://github.com/droplink" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                   <Github size={16} />
                   View Sample Projects
                 </a>
               </Button>
-              <Button size="lg" variant="default" className="bg-primary hover:bg-primary/90" asChild>
-                <Link to="/demo" className="flex items-center gap-2">
+              <Button 
+                size="lg" 
+                variant="default" 
+                className="bg-white text-primary hover:bg-white/90" 
+                asChild
+                onClick={handleButtonClick}
+              >
+                <Link to="/demo.pi" className="flex items-center gap-2">
                   <Play size={16} />
                   See in Action
                 </Link>

@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { ArrowRight, Globe, MoveDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AnimatedContainer } from '@/components/ui/animated-container';
+import { playSound, sounds } from '@/utils/sounds';
 
 const Hero = () => {
   const typedTextRef = useRef<HTMLSpanElement>(null);
@@ -54,6 +55,10 @@ const Hero = () => {
     };
   }, []);
   
+  const handleButtonClick = () => {
+    playSound(sounds.uiTap, 0.3);
+  };
+  
   return (
     <section className="gradient-hero text-white py-28 px-6 md:py-32 min-h-[550px] md:min-h-[650px] flex items-center">
       <div className="container mx-auto relative z-20">
@@ -66,13 +71,34 @@ const Hero = () => {
               Empower <span ref={typedTextRef} className="font-semibold border-r-2 border-white"></span> on Pi Network with one link to share, sell, and connect seamlessly.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 shadow-lg hover:shadow-xl transition-all">
+              <Button 
+                asChild 
+                size="lg" 
+                className="bg-white text-primary hover:bg-white/90 shadow-lg hover:shadow-xl transition-all"
+                onClick={handleButtonClick}
+              >
                 <Link to="/signup" className="flex items-center gap-2">
                   Create Your Droplink <ArrowRight size={16} />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="text-white border-white hover:bg-white/10">
+              <Button 
+                asChild 
+                size="lg" 
+                variant="outline" 
+                className="text-white border-white hover:bg-white/10"
+                onClick={handleButtonClick}
+              >
                 <Link to="/demo">See It in Action</Link>
+              </Button>
+              <Button 
+                asChild 
+                size="lg" 
+                className="bg-white text-primary hover:bg-white/90 shadow-lg transition-all"
+                onClick={handleButtonClick}
+              >
+                <Link to="/demo.pi" className="flex items-center gap-2">
+                  Try Pi Domain Demo <ArrowRight size={16} />
+                </Link>
               </Button>
             </div>
           </AnimatedContainer>
@@ -86,6 +112,7 @@ const Hero = () => {
               variant="ghost" 
               className="text-white/80 hover:text-white hover:bg-transparent group flex flex-col items-center gap-1"
               asChild
+              onClick={handleButtonClick}
             >
               <a href="#pi-domain-features">
                 <span>Explore Pi Domain Features</span>

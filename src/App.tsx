@@ -26,6 +26,7 @@ import Privacy from "./pages/Privacy";
 import Cookies from "./pages/Cookies";
 import GDPR from "./pages/GDPR";
 import Demo from "./pages/Demo";
+import DemoPiPage from "./pages/DemoPiPage";
 import Help from "./pages/Help";
 import AllFaqs from "./pages/AllFaqs";
 import Community from "./pages/Community";
@@ -80,6 +81,7 @@ function App() {
               <Route path="/cookies" element={<Cookies />} />
               <Route path="/gdpr" element={<GDPR />} />
               <Route path="/demo" element={<Demo />} />
+              <Route path="/demo.pi" element={<DemoPiPage />} />
               <Route path="/help" element={<Help />} />
               <Route path="/help/all-faqs" element={<AllFaqs />} />
               <Route path="/community" element={<Community />} />
