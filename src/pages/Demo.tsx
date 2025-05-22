@@ -6,9 +6,10 @@ import DemoPreview from "@/components/DemoPreview";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowRight, Check, MousePointer, BarChart4, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowRight, Check, MousePointer, BarChart4, ChevronDown, ChevronUp, Globe, Link as LinkIcon, ShieldCheck } from "lucide-react";
 import { AnimatedContainer } from "@/components/ui/animated-container";
 import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Demo = () => {
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -47,7 +48,7 @@ const Demo = () => {
               </p>
               
               <div className="space-y-4 mt-4">
-                <Card className="p-4 hover:bg-muted/50 transition-all duration-300">
+                <Card className="p-4 hover:bg-muted/50 transition-all duration-300 transform hover:scale-[1.02]">
                   <div className="flex items-start gap-4">
                     <div className="bg-gradient-hero rounded-full p-3 text-white flex-shrink-0">
                       <MousePointer size={18} />
@@ -59,7 +60,7 @@ const Demo = () => {
                   </div>
                 </Card>
                 
-                <Card className="p-4 hover:bg-muted/50 transition-all duration-300">
+                <Card className="p-4 hover:bg-muted/50 transition-all duration-300 transform hover:scale-[1.02]">
                   <div className="flex items-start gap-4">
                     <div className="bg-gradient-hero rounded-full p-3 text-white flex-shrink-0">
                       <Check size={18} />
@@ -71,7 +72,7 @@ const Demo = () => {
                   </div>
                 </Card>
                 
-                <Card className="p-4 hover:bg-muted/50 transition-all duration-300">
+                <Card className="p-4 hover:bg-muted/50 transition-all duration-300 transform hover:scale-[1.02]">
                   <div className="flex items-start gap-4">
                     <div className="bg-gradient-hero rounded-full p-3 text-white flex-shrink-0">
                       <BarChart4 size={18} />
@@ -103,78 +104,120 @@ const Demo = () => {
             </AnimatedContainer>
           </div>
           
-          {/* Pi Domain Integration Section */}
+          {/* Demo.pi Domain Integration Section */}
           <AnimatedContainer animation="fade" delay={0.4} className="mt-24 mb-10">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Pi Domain Integration
+              <span className="bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-medium">NEW FEATURE</span>
+              <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-4">
+                Your Demo.pi Domain Integration
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Use your .pi domains with Droplink to create a seamless experience for your Pi Network audience
+                Connect your .pi domain with Droplink for a seamless experience in the Pi Browser
               </p>
             </div>
             
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-muted">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* Feature 1 */}
-                <Card className="p-6 hover:shadow-md transition-all">
-                  <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
-                    <span className="text-2xl font-bold text-primary">π</span>
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">One Memorable URL</h3>
-                  <p className="text-muted-foreground">
-                    Replace complex links with a simple, memorable yourdomain.pi address that works directly in Pi Browser.
-                  </p>
-                </Card>
-                
-                {/* Feature 2 */}
-                <Card className="p-6 hover:shadow-md transition-all">
-                  <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                      <line x1="2" y1="12" x2="22" y2="12"></line>
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">Native Browser Experience</h3>
-                  <p className="text-muted-foreground">
-                    Your .pi domain works directly in Pi Browser with no redirection or setup required.
-                  </p>
-                </Card>
-                
-                {/* Feature 3 */}
-                <Card className="p-6 hover:shadow-md transition-all">
-                  <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                      <line x1="12" y1="1" x2="12" y2="23"></line>
-                      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">Receive Pi Payments</h3>
-                  <p className="text-muted-foreground">
-                    Monetize your content by accepting Pi cryptocurrency directly through your .pi domain.
-                  </p>
-                </Card>
+            <Tabs defaultValue="features" className="w-full max-w-4xl mx-auto">
+              <div className="flex justify-center mb-6">
+                <TabsList className="grid w-full max-w-md grid-cols-2">
+                  <TabsTrigger value="features">Key Features</TabsTrigger>
+                  <TabsTrigger value="technical">Technical Details</TabsTrigger>
+                </TabsList>
               </div>
               
-              <div className="flex justify-center mt-8">
-                <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-                  <Link to="/signup" className="flex items-center gap-2">
-                    Connect Your .pi Domain <ArrowRight size={16} />
-                  </Link>
-                </Button>
-              </div>
-            </div>
+              <TabsContent value="features" className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-muted">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <Card className="p-6 hover:shadow-md transition-all transform hover:translate-y-[-5px]">
+                    <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                      <Globe size={24} className="text-primary" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">One Memorable URL</h3>
+                    <p className="text-muted-foreground">
+                      Replace complex links with a simple, memorable yourdomain.pi address that works directly in Pi Browser.
+                    </p>
+                  </Card>
+                  
+                  <Card className="p-6 hover:shadow-md transition-all transform hover:translate-y-[-5px]">
+                    <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                      <LinkIcon size={24} className="text-primary" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">Native Browser Experience</h3>
+                    <p className="text-muted-foreground">
+                      Your .pi domain works directly in Pi Browser with no redirection or setup required.
+                    </p>
+                  </Card>
+                  
+                  <Card className="p-6 hover:shadow-md transition-all transform hover:translate-y-[-5px]">
+                    <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                      <ShieldCheck size={24} className="text-primary" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">Secure Pi Payments</h3>
+                    <p className="text-muted-foreground">
+                      Monetize your content by accepting Pi cryptocurrency directly through your .pi domain.
+                    </p>
+                  </Card>
+                </div>
+                
+                <div className="flex justify-center mt-8">
+                  <Button asChild size="lg" className="bg-primary hover:bg-primary/90 shadow-md">
+                    <Link to="/signup" className="flex items-center gap-2">
+                      Get Your Demo.pi Domain <ArrowRight size={16} />
+                    </Link>
+                  </Button>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="technical" className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-muted">
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">How Pi Domains Work</h3>
+                    <p className="text-muted-foreground">
+                      Pi domains are part of the Pi Network ecosystem, providing a decentralized naming system that works natively in the Pi Browser. Droplink integrates seamlessly with these domains.
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <Card className="p-4 bg-muted/30">
+                      <h4 className="font-semibold mb-2">Domain Registration</h4>
+                      <p className="text-sm text-muted-foreground">Register your .pi domain directly through the Pi Browser or through our platform with a simple one-click process.</p>
+                    </Card>
+                    
+                    <Card className="p-4 bg-muted/30">
+                      <h4 className="font-semibold mb-2">Automatic DNS Configuration</h4>
+                      <p className="text-sm text-muted-foreground">Our platform automatically configures the necessary DNS settings to connect your Droplink profile to your .pi domain.</p>
+                    </Card>
+                    
+                    <Card className="p-4 bg-muted/30">
+                      <h4 className="font-semibold mb-2">Pi Browser Integration</h4>
+                      <p className="text-sm text-muted-foreground">Pi Browser recognizes .pi domains natively, allowing for direct access without any redirects or additional apps.</p>
+                    </Card>
+                    
+                    <Card className="p-4 bg-muted/30">
+                      <h4 className="font-semibold mb-2">Payment Processing</h4>
+                      <p className="text-sm text-muted-foreground">We handle all the technical aspects of Pi payment processing, making it seamless for both you and your audience.</p>
+                    </Card>
+                  </div>
+                </div>
+                
+                <div className="flex justify-center mt-8">
+                  <Button asChild size="lg" className="bg-primary hover:bg-primary/90 shadow-md">
+                    <Link to="/developers" className="flex items-center gap-2">
+                      Technical Documentation <ArrowRight size={16} />
+                    </Link>
+                  </Button>
+                </div>
+              </TabsContent>
+            </Tabs>
           </AnimatedContainer>
           
           {/* FAQ Accordion Section */}
           <AnimatedContainer animation="fade" delay={0.5} className="mt-20 mb-16">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold">Frequently Asked Questions</h2>
-              <p className="text-muted-foreground mt-2">Get quick answers to common questions about our demo</p>
+              <p className="text-muted-foreground mt-2">Get quick answers about our Demo.pi domain integration</p>
             </div>
             
             <div className="max-w-3xl mx-auto space-y-4">
-              <div className="border rounded-lg overflow-hidden">
+              <div className="border rounded-lg overflow-hidden shadow-sm transition-all hover:shadow-md">
                 <button 
                   onClick={() => toggleSection('faq1')} 
                   className="w-full flex justify-between items-center p-4 bg-muted/50 hover:bg-muted/80 transition-colors"
@@ -189,7 +232,7 @@ const Demo = () => {
                 )}
               </div>
               
-              <div className="border rounded-lg overflow-hidden">
+              <div className="border rounded-lg overflow-hidden shadow-sm transition-all hover:shadow-md">
                 <button 
                   onClick={() => toggleSection('faq2')} 
                   className="w-full flex justify-between items-center p-4 bg-muted/50 hover:bg-muted/80 transition-colors"
@@ -204,7 +247,7 @@ const Demo = () => {
                 )}
               </div>
               
-              <div className="border rounded-lg overflow-hidden">
+              <div className="border rounded-lg overflow-hidden shadow-sm transition-all hover:shadow-md">
                 <button 
                   onClick={() => toggleSection('faq3')} 
                   className="w-full flex justify-between items-center p-4 bg-muted/50 hover:bg-muted/80 transition-colors"
@@ -218,6 +261,21 @@ const Demo = () => {
                   </div>
                 )}
               </div>
+              
+              <div className="border rounded-lg overflow-hidden shadow-sm transition-all hover:shadow-md">
+                <button 
+                  onClick={() => toggleSection('faq4')} 
+                  className="w-full flex justify-between items-center p-4 bg-muted/50 hover:bg-muted/80 transition-colors"
+                >
+                  <span className="font-medium">How do I set up my Demo.pi domain?</span>
+                  {activeSection === 'faq4' ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                </button>
+                {activeSection === 'faq4' && (
+                  <div className="p-4 bg-white">
+                    <p>After signing up for Droplink, you'll find a dedicated section in your dashboard for domain management. From there, you can register a new .pi domain or connect an existing one with just a few clicks.</p>
+                  </div>
+                )}
+              </div>
             </div>
           </AnimatedContainer>
           
@@ -226,7 +284,7 @@ const Demo = () => {
             <p className="text-lg mb-6 max-w-2xl mx-auto">
               Sign up for free and start connecting with your audience through a beautiful, customizable link in bio page that accepts Pi payments.
             </p>
-            <Button asChild size="lg" className="bg-gradient-hero hover:opacity-90 transition-colors">
+            <Button asChild size="lg" className="bg-gradient-hero hover:opacity-90 transition-colors shadow-md">
               <Link to="/signup">Get Started for Free</Link>
             </Button>
           </AnimatedContainer>

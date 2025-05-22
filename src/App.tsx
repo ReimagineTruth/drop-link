@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { HelmetProvider } from "react-helmet-async";
@@ -36,7 +36,26 @@ import Settings from "@/pages/Settings";
 
 // App component
 function App() {
-  // Removed duplicate SplashScreen handling as it's now in main.tsx
+  const [showSplash, setShowSplash] = useState(true);
+  
+  // Check if splash screen has been shown already in this session
+  useEffect(() => {
+    const hasSeenSplash = sessionStorage.getItem("hasSeenSplash");
+    if (hasSeenSplash) {
+      setShowSplash(false);
+    }
+  }, []);
+  
+  // Handle splash screen completion
+  const handleSplashComplete = () => {
+    sessionStorage.setItem("hasSeenSplash", "true");
+    setShowSplash(false);
+  };
+  
+  if (showSplash) {
+    return <SplashScreen onComplete={handleSplashComplete} />;
+  }
+
   return (
     <UserProvider>
       <AdminStatusProvider>

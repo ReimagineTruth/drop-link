@@ -1,6 +1,7 @@
+
 import { Link } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Globe, MoveDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AnimatedContainer } from '@/components/ui/animated-container';
 
@@ -54,10 +55,10 @@ const Hero = () => {
   }, []);
   
   return (
-    <section className="gradient-hero text-white py-28 px-6 md:py-32 min-h-[500px] md:min-h-[600px] flex items-center">
+    <section className="gradient-hero text-white py-28 px-6 md:py-32 min-h-[550px] md:min-h-[650px] flex items-center">
       <div className="container mx-auto relative z-20">
         <div className="text-center max-w-3xl mx-auto">
-          <AnimatedContainer animation="fade" className="space-y-6">
+          <AnimatedContainer animation="scale" className="space-y-6">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               Unify Your World with Droplink
             </h1>
@@ -65,7 +66,7 @@ const Hero = () => {
               Empower <span ref={typedTextRef} className="font-semibold border-r-2 border-white"></span> on Pi Network with one link to share, sell, and connect seamlessly.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90">
+              <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 shadow-lg hover:shadow-xl transition-all">
                 <Link to="/signup" className="flex items-center gap-2">
                   Create Your Droplink <ArrowRight size={16} />
                 </Link>
@@ -75,13 +76,30 @@ const Hero = () => {
               </Button>
             </div>
           </AnimatedContainer>
+          
+          <AnimatedContainer 
+            animation="fade" 
+            delay={0.8} 
+            className="mt-16 flex justify-center"
+          >
+            <Button 
+              variant="ghost" 
+              className="text-white/80 hover:text-white hover:bg-transparent group flex flex-col items-center gap-1"
+              asChild
+            >
+              <a href="#pi-domain-features">
+                <span>Explore Pi Domain Features</span>
+                <MoveDown size={18} className="animate-bounce" />
+              </a>
+            </Button>
+          </AnimatedContainer>
         </div>
       </div>
       
       {/* Floating Icons with smooth animation */}
       <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
         <AnimatedContainer 
-          animation="fade" 
+          animation="scale" 
           delay={0.2} 
           className="floating-icon top-[15%] left-[10%] text-5xl"
           motionProps={{ 
@@ -91,7 +109,7 @@ const Hero = () => {
           <i className="fab fa-youtube">📺</i>
         </AnimatedContainer>
         <AnimatedContainer 
-          animation="fade" 
+          animation="scale" 
           delay={0.5} 
           className="floating-icon top-[25%] right-[10%] text-5xl"
           motionProps={{ 
@@ -101,7 +119,7 @@ const Hero = () => {
           <i className="fab fa-telegram">✉️</i>
         </AnimatedContainer>
         <AnimatedContainer 
-          animation="fade" 
+          animation="scale" 
           delay={0.8} 
           className="floating-icon top-[45%] left-[15%] text-5xl"
           motionProps={{ 
@@ -109,6 +127,16 @@ const Hero = () => {
           }}
         >
           <i className="fab fa-coins">💰</i>
+        </AnimatedContainer>
+        <AnimatedContainer 
+          animation="scale" 
+          delay={1} 
+          className="floating-icon bottom-[20%] right-[15%] text-5xl"
+          motionProps={{ 
+            animate: { y: [0, -12, 0], transition: { duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.8 } }
+          }}
+        >
+          <i className="fab fa-globe"><Globe size={28} className="text-white/90" /></i>
         </AnimatedContainer>
       </div>
     </section>

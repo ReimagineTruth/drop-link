@@ -25,7 +25,9 @@ const Home = () => {
       <Navbar />
       <main>
         <Hero />
-        <PiDomainFeatures />
+        <div id="pi-domain-features">
+          <PiDomainFeatures />
+        </div>
         <Features />
         <HowItWorks />
         <DemoSection />
