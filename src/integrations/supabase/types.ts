@@ -283,6 +283,18 @@ export type Database = {
         Args: Record<PropertyKey, never> | { user_id_param: string }
         Returns: number
       }
+      update_user_custom_domain: {
+        Args: { user_id: string; domain_value: string }
+        Returns: Json
+      }
+      update_user_domain: {
+        Args: { user_id: string; domain_field: string; domain_value: string }
+        Returns: Json
+      }
+      update_user_pi_domain: {
+        Args: { user_id: string; domain_value: string }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

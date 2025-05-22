@@ -40,7 +40,7 @@ const PiDomainForm = ({ initialDomain, userId, onUpdate }: PiDomainFormProps) =>
         return;
       }
       
-      // Check if domain is already taken - avoiding deep type instantiation with explicit type
+      // Check if domain is already taken - using maybeSingle to avoid type issues
       const { data: existingDomain, error: domainError } = await supabase
         .from('user_profiles')
         .select('id')
