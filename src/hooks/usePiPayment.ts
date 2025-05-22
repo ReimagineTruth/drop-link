@@ -18,8 +18,13 @@ export function usePiPayment() {
 
   const handlePiLogin = async () => {
     try {
-      const auth = await authenticateWithPi(["username", "payments"]);
+      const auth = await authenticateWithPi(["username", "payments", "wallet_address"]);
       if (auth) {
+        if (auth.accessToken) {
+          // Store access token for API calls
+          localStorage.setItem('pi_access_token', auth.accessToken);
+        }
+        
         refreshUserData();
         
         toast({
@@ -27,6 +32,7 @@ export function usePiPayment() {
           description: `Welcome, ${auth.user.username || "User"}!`,
         });
       }
+      return auth;
     } catch (error) {
       console.error("Pi authentication failed:", error);
       toast({
@@ -34,6 +40,7 @@ export function usePiPayment() {
         description: "Could not log in with Pi Network",
         variant: "destructive",
       });
+      return null;
     }
   };
 
@@ -50,6 +57,12 @@ export function usePiPayment() {
     setProcessingPayment(true);
     
     try {
+      // Make sure user is authenticated with Pi
+      const auth = await handlePiLogin();
+      if (!auth) {
+        throw new Error("Pi authentication required");
+      }
+      
       // Get plan pricing from consistent planPricing object
       const planName = plan.toLowerCase();
       let amount = 0;
@@ -78,7 +91,8 @@ export function usePiPayment() {
           isSubscription: true,
           plan: planName,
           duration: billingCycle,
-          expiresAt: expireDate.toISOString()
+          expiresAt: expireDate.toISOString(),
+          sandbox: true // Set to true for testing, false for production
         }
       };
       
@@ -91,9 +105,26 @@ export function usePiPayment() {
       });
       
       // After a successful payment, refresh user data to get updated subscription
-      setTimeout(() => {
+      // This is now handled by the event listener in the payment service
+      
+      // Add event listener for subscription updates
+      const handleSubscriptionUpdate = () => {
+        console.log("Subscription update detected, refreshing user data");
         refreshUserData();
-      }, 5000);
+        
+        toast({
+          title: "Subscription Updated",
+          description: "Your subscription has been successfully updated",
+        });
+      };
+      
+      window.addEventListener('subscription-updated', handleSubscriptionUpdate);
+      
+      // Clean up event listener after 10 minutes (in case payment flow takes time)
+      setTimeout(() => {
+        window.removeEventListener('subscription-updated', handleSubscriptionUpdate);
+      }, 10 * 60 * 1000);
+      
     } catch (error) {
       console.error("Subscription error:", error);
       toast({

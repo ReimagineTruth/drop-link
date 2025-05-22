@@ -7,6 +7,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const PI_API_URL = "https://api.minepi.com/v2";
+const PI_SANDBOX_URL = "https://api.sandbox.minepi.com/v2"; // For sandbox mode
+
 serve(async (req) => {
   // Handle CORS preflight request
   if (req.method === 'OPTIONS') {
@@ -19,7 +22,7 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    const { paymentData, user } = await req.json();
+    const { paymentData, user, accessToken } = await req.json();
 
     // Validate request data
     if (!paymentData || !user || !user.id) {
@@ -29,6 +32,51 @@ serve(async (req) => {
       });
     }
 
+    // Approve payment with Pi Network API
+    const apiUrl = paymentData.metadata?.sandbox ? PI_SANDBOX_URL : PI_API_URL;
+    const approveUrl = `${apiUrl}/payments/${paymentData.paymentId}/approve`;
+    
+    const piApiKey = Deno.env.get("PI_API_KEY") ?? "ckta3qej1mjqit2rlqt6nutpw089uynyotj3g9spwqlhrvvggqv7hoe6cn3plgb5";
+    
+    const headers = {
+      "Authorization": `Key ${piApiKey}`,
+      "Content-Type": "application/json"
+    };
+    
+    if (accessToken) {
+      // If we have a user access token, use it for additional verification
+      try {
+        const userUrl = `${apiUrl}/me`;
+        const userResponse = await fetch(userUrl, {
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
+          }
+        });
+        
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          console.log("Pi user verified:", userData.username);
+        }
+      } catch (error) {
+        console.error("Error verifying Pi user:", error);
+      }
+    }
+    
+    // Approve payment
+    const approveResponse = await fetch(approveUrl, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({})
+    });
+    
+    if (!approveResponse.ok) {
+      const errorData = await approveResponse.json();
+      throw new Error(`Payment approval failed: ${JSON.stringify(errorData)}`);
+    }
+    
+    const approveData = await approveResponse.json();
+    console.log("Payment approved:", approveData);
+
     // Store the payment in the database
     const { data: payment, error: paymentError } = await supabaseClient
       .from('payments')
@@ -37,7 +85,8 @@ serve(async (req) => {
         amount: paymentData.amount,
         pi_payment_id: paymentData.paymentId,
         status: 'pending',
-        memo: paymentData.memo
+        memo: paymentData.memo,
+        metadata: paymentData.metadata || {}
       })
       .select('*')
       .single();
@@ -88,23 +137,13 @@ serve(async (req) => {
           .insert({
             user_id: user.id,
             plan,
+            is_active: true,
             expires_at: expiresAt.toISOString(),
+            started_at: new Date().toISOString(),
             payment_id: payment.id,
             amount: paymentData.amount
           });
       }
-    }
-
-    // If this is a tip payment, record the tip
-    if (paymentData.metadata && paymentData.metadata.type === 'tip' && paymentData.metadata.recipientId) {
-      // Record the tip in a tips table if it exists, or you can just use the payments table
-      console.log("Recording tip to user:", paymentData.metadata.recipientId);
-
-      // You can add additional logic here for tips
-      // For example, updating recipient's total_tips count if such a field exists
-      
-      // You can also notify the recipient about the new tip
-      // For example, by inserting into a notifications table
     }
 
     return new Response(JSON.stringify({ 

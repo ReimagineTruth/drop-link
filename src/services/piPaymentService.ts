@@ -95,7 +95,7 @@ export const createPiPayment = async (
         // Call our server to record the payment
         try {
           const { data, error } = await supabase.functions.invoke('pi-payment', {
-            body: { paymentData: {...payment, paymentId}, user }
+            body: { paymentData: {...payment, paymentId}, user, accessToken: localStorage.getItem('pi_access_token') }
           });
           
           if (error) throw error;
@@ -110,7 +110,12 @@ export const createPiPayment = async (
         // Call our server to complete the payment
         try {
           const { data, error } = await supabase.functions.invoke('complete-payment', {
-            body: { paymentId, transactionId: txid, status: 'completed' }
+            body: { 
+              paymentId, 
+              transactionId: txid, 
+              status: 'completed',
+              accessToken: localStorage.getItem('pi_access_token')
+            }
           });
           
           if (error) throw error;
@@ -121,6 +126,14 @@ export const createPiPayment = async (
             title: "Payment Successful",
             description: `Your payment of ${paymentData.amount} Pi has been completed.`,
           });
+          
+          // If this was a subscription payment, refresh subscription data
+          if (paymentData.metadata?.isSubscription) {
+            // Wait a moment for the server to process everything
+            setTimeout(() => {
+              window.dispatchEvent(new CustomEvent('subscription-updated'));
+            }, 2000);
+          }
         } catch (error) {
           console.error("Error completing payment:", error);
         }
@@ -130,8 +143,12 @@ export const createPiPayment = async (
         
         // Call our server to cancel the payment
         try {
-          const { data, error } = await supabase.functions.invoke('complete-payment', {
-            body: { paymentId, status: 'cancelled' }
+          const { data, error } = await supabase.functions.invoke('cancel-payment', {
+            body: { 
+              paymentId, 
+              status: 'cancelled',
+              accessToken: localStorage.getItem('pi_access_token')
+            }
           });
           
           if (error) throw error;
@@ -156,6 +173,11 @@ export const createPiPayment = async (
       },
     };
 
+    // Store access token for server calls
+    if (auth?.accessToken) {
+      localStorage.setItem('pi_access_token', auth.accessToken);
+    }
+
     // Call Pi Network API to create payment
     return await window.Pi.createPayment(payment, callbacks);
   } catch (error) {
@@ -171,6 +193,16 @@ export const createPiPayment = async (
 
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+
+// Get current auth context
+let auth = null;
+try {
+  if (typeof window !== 'undefined' && window.Pi) {
+    auth = window.Pi.currentUser;
+  }
+} catch (e) {
+  console.error("Error getting Pi auth context:", e);
+}
 
 export default {
   initPiNetwork,
