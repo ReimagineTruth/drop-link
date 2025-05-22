@@ -14,9 +14,20 @@ type Template = {
 
 type TemplatesGridProps = {
   templates: Template[];
+  isLoading?: boolean;
 };
 
-const TemplatesGrid = ({ templates }: TemplatesGridProps) => {
+const TemplatesGrid = ({ templates, isLoading = false }: TemplatesGridProps) => {
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div key={i} className="bg-slate-100 animate-pulse rounded-xl h-72"></div>
+        ))}
+      </div>
+    );
+  }
+  
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
       {templates.map(template => (

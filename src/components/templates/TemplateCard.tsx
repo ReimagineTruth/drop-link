@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Star, Zap } from "lucide-react";
+import { useUser } from "@/context/UserContext";
+import { useUserPermissions } from "@/hooks/useUserPermissions";
+import { toast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 type TemplateCardProps = {
   template: {
@@ -31,6 +35,57 @@ export const getPlanBadge = (plan: string) => {
 };
 
 const TemplateCard = ({ template }: TemplateCardProps) => {
+  const { isLoggedIn } = useUser();
+  const { plan: userPlan, permissions } = useUserPermissions();
+  const [applying, setApplying] = useState(false);
+
+  const canUseTemplate = () => {
+    // Check if user's plan level is sufficient for this template
+    if (template.plan === "starter") return true; // All plans can use starter templates
+    if (template.plan === "pro" && (userPlan === "pro" || userPlan === "premium")) return true;
+    if (template.plan === "premium" && userPlan === "premium") return true;
+    return false;
+  };
+
+  const handleUseTemplate = async () => {
+    if (!isLoggedIn) {
+      toast({
+        title: "Login Required",
+        description: "You need to log in to use this template",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!canUseTemplate()) {
+      toast({
+        title: "Plan Upgrade Required",
+        description: `This template requires a ${template.plan} plan or higher`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setApplying(true);
+    try {
+      // Simulate applying template
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast({
+        title: "Template Applied",
+        description: `The ${template.name} template has been applied to your profile`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to apply template. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setApplying(false);
+    }
+  };
+
   return (
     <div className="group bg-background rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all">
       <div className="relative overflow-hidden">
@@ -73,7 +128,14 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
           >
             Preview <ArrowRight className="ml-1" size={16} />
           </Link>
-          <Button size="sm" className="bg-gradient-hero hover:scale-105 transition-transform">Use Template</Button>
+          <Button 
+            size="sm" 
+            className="bg-gradient-hero hover:scale-105 transition-transform"
+            onClick={handleUseTemplate}
+            disabled={applying}
+          >
+            {applying ? "Applying..." : "Use Template"}
+          </Button>
         </div>
       </div>
     </div>
