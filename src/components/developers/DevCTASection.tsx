@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Github, BookOpen, Play } from "lucide-react";
+import { ArrowRight, Github, Play } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { AnimatedContainer } from "@/components/ui/animated-container";
 
