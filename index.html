@@ -22,14 +22,99 @@
     <link rel="icon" href="/lovable-uploads/1dc40f50-2eba-46b0-a495-962b97bfaf8d.png" type="image/png">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-    
-    <!-- Pi Network SDK -->
+
+          <!-- Pi Network SDK -->
     <script>
  Pi.init({ version: "2.0", sandbox: <%= process.env.NODE_ENV !== 'true' %> })  
 </script>
-    <!-- No script initialization here - we'll do it in React -->
-  </head>
 
+    <!-- No script initialization here - we'll do it in React -->
+     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+</head>
+<body>
+  <h1>Pi Dev Kit Demo</h1>
+  <button id="loginBtn">Login with Pi</button>
+  <button id="payBtn" disabled>Make Payment (1 Pi)</button>
+  <pre id="output"></pre>
+
+<script>
+    Pi.init({ version: "2.0", sandbox: true });
+
+    const output = document.getElementById('output');
+    const loginBtn = document.getElementById('loginBtn');
+    const payBtn = document.getElementById('payBtn');
+    let paymentId = null;
+
+    function log(text) {
+      output.textContent += text + "\n";
+    }
+
+    loginBtn.onclick = async () => {
+      try {
+        const scopes = ['username', 'payments'];
+        function onIncompletePaymentFound(payment) {
+          log('Incomplete Payment Found: ' + JSON.stringify(payment));
+        }
+        const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+        log('Authenticated: ' + JSON.stringify(auth.user));
+
+        // Verify token on backend
+        const response = await fetch('http://localhost:8080/pi/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ accessToken: auth.accessToken })
+        });
+        const data = await response.json();
+        log('Verified on backend: ' + JSON.stringify(data));
+
+        payBtn.disabled = false;
+      } catch (e) {
+        log('Login error: ' + e.message);
+      }
+    };
+
+    payBtn.onclick = async () => {
+      try {
+        const paymentData = {
+          amount: 1,
+          memo: 'Test Payment',
+          metadata: { orderId: 1234 }
+        };
+        const paymentCallbacks = {
+          onReadyForServerApproval: async (id) => {
+            paymentId = id;
+            log('Payment ready for approval: ' + id);
+            // Approve payment on server
+            const res = await fetch('http://localhost:8080/pi/approve', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ paymentId: id })
+            });
+            const data = await res.json();
+            log('Payment approved: ' + JSON.stringify(data));
+          },
+          onReadyForServerCompletion: async (id, txid) => {
+            log(`Payment ready for completion: ${id}, txid: ${txid}`);
+            // Complete payment on server
+            const res = await fetch('http://localhost:8080/pi/complete', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ paymentId: id, txid })
+            });
+            const data = await res.json();
+            log('Payment completed: ' + JSON.stringify(data));
+          },
+          onCancel: (id) => log('Payment canceled: ' + id),
+          onError: (error, payment) => log('Payment error: ' + JSON.stringify(error))
+        };
+
+        const payment = await Pi.createPayment(paymentData, paymentCallbacks);
+        log('Payment created: ' + JSON.stringify(payment));
+      } catch (e) {
+        log('Payment error: ' + e.message);
+      }
+    };
+  </script>
   <body>
     <div id="root"></div>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
