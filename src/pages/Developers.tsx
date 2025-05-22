@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CTA from "@/components/CTA";
 import { Helmet } from "react-helmet-async";
-import { useUserPermissions } from "@/hooks/useUserPermissions";
-import { useAdminStatus } from "@/hooks/useAdminStatus";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AnimatedContainer } from "@/components/ui/animated-container";
 
 // Import developer components
 import AdminBanner from "@/components/developers/AdminBanner";
@@ -19,27 +19,6 @@ import DevCTASection from "@/components/developers/DevCTASection";
 
 const Developers = () => {
   const [activeTab, setActiveTab] = useState("api");
-  const { isAdmin, isLoading: adminLoading } = useAdminStatus();
-  
-  // Security improvement: Add console log for debugging permission status
-  useEffect(() => {
-    console.log("Developer page - Admin access status:", isAdmin);
-  }, [isAdmin]);
-  
-  // Check if user has admin access to view developer portal
-  if (adminLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-  
-  // If not an admin, redirect to home page
-  if (!isAdmin) {
-    console.log("User does not have admin access, redirecting to home");
-    return <Navigate to="/" replace />;
-  }
   
   // Handler function for tab changes
   const handleTabChange = (tab: string) => {
@@ -61,12 +40,27 @@ const Developers = () => {
         <HeroSection />
         
         {/* API Overview */}
-        <ApiDocsSection activeTab={activeTab} setActiveTab={handleTabChange} />
-        
-        {/* Other sections - These will be rendered based on active tab */}
-        {activeTab === "webhooks" && <WebhooksSection />}
-        {activeTab === "pi-integration" && <PiIntegrationSection />}
-        {activeTab === "sdks" && <SdksSection />}
+        <section id="api-docs" className="py-16 px-4">
+          <div className="container mx-auto max-w-4xl">
+            <h2 className="text-3xl font-semibold mb-8">API Documentation</h2>
+            
+            <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+              <TabsList className="grid grid-cols-4 mb-8">
+                <TabsTrigger value="api">REST API</TabsTrigger>
+                <TabsTrigger value="webhooks">Webhooks</TabsTrigger>
+                <TabsTrigger value="pi-integration">Pi Integration</TabsTrigger>
+                <TabsTrigger value="sdks">SDKs</TabsTrigger>
+              </TabsList>
+              
+              <AnimatedContainer animation="fade" className="mt-6">
+                <ApiDocsSection activeTab={activeTab} setActiveTab={handleTabChange} />
+                <WebhooksSection />
+                <PiIntegrationSection />
+                <SdksSection />
+              </AnimatedContainer>
+            </Tabs>
+          </div>
+        </section>
         
         {/* Get Started */}
         <GetStartedSection />
