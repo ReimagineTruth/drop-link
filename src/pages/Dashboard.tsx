@@ -83,6 +83,12 @@ const Dashboard = () => {
     }
   };
   
+  // Create a wrapper function that returns Promise<void> for LoginPrompt
+  const handlePiLoginWrapper = async (): Promise<void> => {
+    await handlePiLogin();
+    // No return value, so TypeScript infers Promise<void>
+  };
+  
   if (isLoading || consentLoading) {
     return <DashboardLoading />;
   }
@@ -157,7 +163,7 @@ const Dashboard = () => {
                 </Tabs>
               </>
             ) : (
-              <LoginPrompt handlePiLogin={handlePiLogin} />
+              <LoginPrompt handlePiLogin={handlePiLoginWrapper} />
             )}
           </div>
         </main>

@@ -14,7 +14,7 @@ export const planPricing = {
 
 export const usePiPayment = () => {
   const [processingPayment, setProcessingPayment] = useState(false);
-  const { refreshUserData } = useUser();
+  const { refreshUserData, user } = useUser();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -99,8 +99,7 @@ export const usePiPayment = () => {
       // Get current user data from Supabase - capture the return value for logging but don't check truthiness
       await refreshUserData();
       
-      // Create the payment - pass the current user context from the useUser hook
-      const { user } = useUser();
+      // Create the payment - use the current user from the hook
       await createPiPayment(paymentData, user);
       
       // Note: The actual subscription update is handled by the Pi payment callbacks
