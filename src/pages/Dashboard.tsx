@@ -157,13 +157,7 @@ const Dashboard = () => {
                 </Tabs>
               </>
             ) : (
-              <LoginPrompt 
-                // Fix: Wrap the handlePiLogin with a function that returns void
-                handlePiLogin={async () => {
-                  await handlePiLogin();
-                  return;
-                }} 
-              />
+              <LoginPrompt handlePiLogin={handlePiLogin} />
             )}
           </div>
         </main>

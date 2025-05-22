@@ -96,15 +96,12 @@ export const usePiPayment = () => {
         return;
       }
       
-      // Get current user data from Supabase
-      const userData = await refreshUserData();
+      // Get current user data from Supabase - capture the return value for logging but don't check truthiness
+      await refreshUserData();
       
-      // Fix: Don't test void return value for truthiness
-      // Only proceed if userData is returned (the function may now return undefined instead of void)
-      // Removed the conditional check that was causing the error
-      
-      // Create the payment
-      await createPiPayment(paymentData, userData);
+      // Create the payment - pass the current user context from the useUser hook
+      const { user } = useUser();
+      await createPiPayment(paymentData, user);
       
       // Note: The actual subscription update is handled by the Pi payment callbacks
       // which will trigger a page refresh or state update once completed

@@ -37,7 +37,7 @@ export const initPiNetwork = (): boolean => {
 
 // Authenticate user with Pi Network
 export const authenticateWithPi = async (
-  scopes: string[] = ["username", "payments"]
+  scopes: string[] = ["username", "payments", "wallet_address"]
 ): Promise<PiAuthResult | null> => {
   try {
     if (typeof window === 'undefined' || !window.Pi) {
