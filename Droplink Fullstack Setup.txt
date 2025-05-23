@@ -1,0 +1,46 @@
+📁 droplink/
+├── backend/
+│   ├── prisma/
+│   │   └── schema.prisma
+│   ├── src/
+│   │   ├── controllers/
+│   │   │   └── user.controller.ts
+│   │   ├── middlewares/
+│   │   │   ├── auth.middleware.ts
+│   │   │   └── error.middleware.ts
+│   │   ├── routes/
+│   │   │   └── user.routes.ts
+│   │   ├── services/
+│   │   │   └── user.service.ts
+│   │   ├── utils/
+│   │   │   └── jwt.ts
+│   │   └── app.ts
+│   ├── .env
+│   ├── package.json
+│   └── tsconfig.json
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   │   └── ProfilePage.tsx
+│   │   ├── pages/
+│   │   │   ├── index.tsx
+│   │   │   └── [username].tsx
+│   │   ├── lib/
+│   │   │   └── pi.ts (Pi SDK integration)
+│   │   ├── styles/
+│   │   ├── i18n/
+│   │   │   ├── en.json
+│   │   │   ├── tl.json
+│   │   │   └── es.json
+│   │   ├── hooks/
+│   │   │   └── useAuth.ts
+│   │   └── utils/
+│   │       └── seo.ts
+│   ├── .env.local
+│   ├── next.config.js
+│   └── package.json
+├── docker/
+│   └── docker-compose.yml
+├── README.md
+└── .gitignore
