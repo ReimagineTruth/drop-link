@@ -24,11 +24,11 @@ type TemplateCardProps = {
 export const getPlanBadge = (plan: string) => {
   switch(plan) {
     case "starter":
-      return <Badge variant="outline">Starter</Badge>;
+      return <Badge variant="outline" className="text-xs">Starter</Badge>;
     case "pro":
-      return <Badge variant="secondary">Pro</Badge>;
+      return <Badge variant="secondary" className="text-xs">Pro</Badge>;
     case "premium":
-      return <Badge className="bg-gradient-hero text-white">Premium</Badge>;
+      return <Badge className="bg-gradient-hero text-white text-xs">Premium</Badge>;
     default:
       return null;
   }
@@ -91,7 +91,7 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
       <div className="relative overflow-hidden">
         {/* Template preview with gradient overlay */}
         <div 
-          className="w-full h-56"
+          className="w-full h-48 md:h-56"
           style={{
             background: template.colors.length > 2 
               ? `linear-gradient(45deg, ${template.colors.join(', ')})`
@@ -99,38 +99,38 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
           }}
         >
           {/* Template mock content */}
-          <div className="flex flex-col items-center justify-center h-full">
-            <div className="w-16 h-16 bg-white rounded-full mb-2"></div>
-            <div className="w-24 h-3 bg-white/80 rounded-full mb-1.5"></div>
-            <div className="w-32 h-2 bg-white/60 rounded-full mb-3"></div>
-            <div className="w-32 h-6 bg-white/90 rounded-full mb-2"></div>
-            <div className="flex flex-col items-center gap-1.5 w-3/4">
-              <div className="w-full h-4 bg-white/50 rounded-md"></div>
-              <div className="w-full h-4 bg-white/50 rounded-md"></div>
-              <div className="w-full h-4 bg-white/50 rounded-md"></div>
+          <div className="flex flex-col items-center justify-center h-full px-4">
+            <div className="w-12 md:w-16 h-12 md:h-16 bg-white rounded-full mb-2"></div>
+            <div className="w-20 md:w-24 h-2.5 md:h-3 bg-white/80 rounded-full mb-1.5"></div>
+            <div className="w-24 md:w-32 h-1.5 md:h-2 bg-white/60 rounded-full mb-3"></div>
+            <div className="w-24 md:w-32 h-5 md:h-6 bg-white/90 rounded-full mb-2"></div>
+            <div className="flex flex-col items-center gap-1 md:gap-1.5 w-full max-w-[200px]">
+              <div className="w-full h-3 md:h-4 bg-white/50 rounded-md"></div>
+              <div className="w-full h-3 md:h-4 bg-white/50 rounded-md"></div>
+              <div className="w-full h-3 md:h-4 bg-white/50 rounded-md"></div>
             </div>
           </div>
         </div>
-        <div className="absolute top-3 left-3 flex gap-2">
-          {template.popular && <Badge className="bg-primary text-white"><Star className="h-3 w-3 mr-1" /> Popular</Badge>}
-          {template.new && <Badge variant="secondary"><Zap className="h-3 w-3 mr-1" /> New</Badge>}
+        <div className="absolute top-2 md:top-3 left-2 md:left-3 flex gap-1 md:gap-2">
+          {template.popular && <Badge className="bg-primary text-white text-xs"><Star className="h-2.5 w-2.5 md:h-3 md:w-3 mr-1" /> Popular</Badge>}
+          {template.new && <Badge variant="secondary" className="text-xs"><Zap className="h-2.5 w-2.5 md:h-3 md:w-3 mr-1" /> New</Badge>}
         </div>
       </div>
-      <div className="p-5">
-        <div className="flex justify-between items-center mb-3">
-          <h3 className="text-xl font-semibold">{template.name}</h3>
+      <div className="p-3 md:p-5">
+        <div className="flex justify-between items-start mb-2 md:mb-3">
+          <h3 className="text-lg md:text-xl font-semibold leading-tight">{template.name}</h3>
           {getPlanBadge(template.plan)}
         </div>
         <div className="flex justify-between items-center">
           <Link 
             to={`/templates/${template.id}`}
-            className="text-primary font-medium hover:underline flex items-center"
+            className="text-primary font-medium hover:underline flex items-center text-sm md:text-base"
           >
-            Preview <ArrowRight className="ml-1" size={16} />
+            Preview <ArrowRight className="ml-1" size={14} />
           </Link>
           <Button 
             size="sm" 
-            className="bg-gradient-hero hover:scale-105 transition-transform"
+            className="bg-gradient-hero hover:scale-105 transition-transform text-xs md:text-sm px-2 md:px-3"
             onClick={handleUseTemplate}
             disabled={applying}
           >

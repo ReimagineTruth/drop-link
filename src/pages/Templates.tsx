@@ -18,7 +18,7 @@ const Templates = () => {
     : templatesData.filter(template => template.category === activeTab);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col maximize-space">
       <Helmet>
         <title>Templates | Droplink.space - Link in Bio for Pi Network Creators</title>
         <meta name="description" content="Choose from our collection of professionally designed templates that make your Droplink profile stand out." />
@@ -27,15 +27,21 @@ const Templates = () => {
       <main className="flex-grow">
         <TemplateHeader setActiveTab={setActiveTab} />
         
-        <section className="py-16 px-4">
-          <div className="container mx-auto">
+        <section className="py-8 px-2 md:px-4">
+          <div className="container mx-auto max-w-7xl">
             <TemplatesGrid templates={filteredTemplates} />
           </div>
         </section>
         
-        <TemplatePricingSection />
-        <CustomTemplateSection />
-        <CTA />
+        <div className="py-8">
+          <TemplatePricingSection />
+        </div>
+        <div className="py-8">
+          <CustomTemplateSection />
+        </div>
+        <div className="py-8">
+          <CTA />
+        </div>
       </main>
       <Footer />
     </div>

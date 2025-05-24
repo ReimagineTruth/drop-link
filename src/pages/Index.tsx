@@ -16,22 +16,40 @@ import FloatingGoToTop from "@/components/ui/floating-go-to-top";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col maximize-space">
       <Navbar />
       <main className="flex-grow">
         <Hero />
-        <div id="pi-domain-features">
+        <div id="pi-domain-features" className="py-8 md:py-12">
           <PiDomainFeatures />
         </div>
-        <HowItWorks />
-        <PiDomainSection />
-        <PiNetworkEcosystem />
-        <MobilePreview />
-        <DemoPiProfile />
-        <Features />
-        <Testimonials />
-        <FAQ />
-        <CTA />
+        <div className="py-8 md:py-12">
+          <HowItWorks />
+        </div>
+        <div className="py-8 md:py-12">
+          <PiDomainSection />
+        </div>
+        <div className="py-8 md:py-12">
+          <PiNetworkEcosystem />
+        </div>
+        <div className="py-8 md:py-12">
+          <MobilePreview />
+        </div>
+        <div className="py-8 md:py-12">
+          <DemoPiProfile />
+        </div>
+        <div className="py-8 md:py-12">
+          <Features />
+        </div>
+        <div className="py-8 md:py-12">
+          <Testimonials />
+        </div>
+        <div className="py-8 md:py-12">
+          <FAQ />
+        </div>
+        <div className="py-8 md:py-12">
+          <CTA />
+        </div>
       </main>
       <Footer />
       <FloatingGoToTop />
