@@ -93,12 +93,10 @@ const DemoPiPage = () => {
         <section className="py-16 px-4 bg-gray-50">
           <div className="container mx-auto max-w-6xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-              {/* Mobile Preview */}
               <div className="flex justify-center">
                 <div className="relative">
                   <div className="w-[380px] h-[760px] bg-black rounded-3xl p-2 shadow-2xl">
                     <div className="w-full h-full bg-white rounded-2xl overflow-hidden relative">
-                      {/* Status Bar */}
                       <div className="bg-black text-white text-xs py-2 px-4 flex justify-between items-center">
                         <span>9:41</span>
                         <span className="font-semibold">demo.pi</span>
@@ -115,7 +113,6 @@ const DemoPiPage = () => {
                 </div>
               </div>
               
-              {/* Features Description */}
               <div className="space-y-8">
                 <AnimatedContainer animation="fade">
                   <h2 className="text-3xl font-bold mb-6">
@@ -219,10 +216,8 @@ const DemoPiPage = () => {
 const ProfileView = ({ onTip, onLinkClick, tipAmount }: { onTip: (amount: number) => void, onLinkClick: (title: string) => void, tipAmount: number }) => {
   return (
     <div className="h-full overflow-y-auto">
-      {/* Cover Image */}
       <div className="h-32 bg-gradient-to-r from-purple-500 to-indigo-600 relative"></div>
       
-      {/* Profile Section */}
       <div className="px-4 pb-6 -mt-12 relative z-10">
         <Avatar className="w-24 h-24 border-4 border-white shadow-lg mx-auto">
           <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face" />
@@ -251,7 +246,6 @@ const ProfileView = ({ onTip, onLinkClick, tipAmount }: { onTip: (amount: number
         </div>
       </div>
       
-      {/* Links Section */}
       <div className="px-4 space-y-3 pb-6">
         {[
           { title: "📚 Pi Network Beginner Guide", subtitle: "Everything you need to know", clicks: 1247 },
@@ -282,13 +276,11 @@ const ProfileView = ({ onTip, onLinkClick, tipAmount }: { onTip: (amount: number
 const DashboardView = () => {
   return (
     <div className="h-full overflow-y-auto bg-gray-50">
-      {/* Header */}
       <div className="bg-white p-4 shadow-sm">
         <h1 className="text-lg font-bold">Dashboard</h1>
         <p className="text-sm text-gray-500">Welcome back, Demo Pioneer!</p>
       </div>
       
-      {/* Stats Grid */}
       <div className="p-4 grid grid-cols-2 gap-3">
         <Card>
           <CardContent className="p-4 text-center">
@@ -320,7 +312,6 @@ const DashboardView = () => {
         </Card>
       </div>
       
-      {/* Quick Actions */}
       <div className="p-4">
         <h2 className="font-semibold mb-3">Quick Actions</h2>
         <div className="space-y-2">
@@ -339,7 +330,6 @@ const DashboardView = () => {
         </div>
       </div>
       
-      {/* Recent Activity */}
       <div className="p-4">
         <h2 className="font-semibold mb-3">Recent Activity</h2>
         <div className="space-y-2">
