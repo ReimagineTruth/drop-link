@@ -16,6 +16,7 @@ import DemoPiPage from './pages/DemoPiPage';
 import NotFound from './pages/NotFound';
 import { UserProvider } from './context/UserContext';
 import Admin from './pages/Admin';
+import AdminDashboard from './pages/AdminDashboard';
 import DemoPiProfilePage from "@/pages/DemoPiProfilePage";
 
 // Import existing pages that are referenced in footer
@@ -51,6 +52,7 @@ function App() {
               <Route path="/features" element={<Features />} />
               <Route path="/demo.pi" element={<DemoPiProfilePage />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
               
               {/* Footer pages */}
               <Route path="/about" element={<About />} />

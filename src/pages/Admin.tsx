@@ -1,108 +1,125 @@
-import React, { useEffect } from "react";
-import { Link, Navigate } from "react-router-dom";
+
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAdminStatus } from "@/hooks/useAdminStatus";
+import { BarChart3, Shield, Users, Settings } from "lucide-react";
+import PiDomainManager from "@/components/admin/PiDomainManager";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Code, Users, Settings, BarChart3 } from "lucide-react";
-import { Helmet } from "react-helmet-async";
-import { useAdminStatus } from "@/hooks/useAdminStatus";
-import { useUser } from "@/context/UserContext";
 
 const Admin = () => {
-  const { isLoading: userLoading } = useUser();
-  const { isAdmin, isLoading: adminLoading, error } = useAdminStatus();
-  const isLoading = userLoading || adminLoading;
-  
-  // If still loading, show loading state
+  const { isAdmin, isLoading } = useAdminStatus();
+  const navigate = useNavigate();
+
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-xl">Checking admin access...</div>
+      </div>
+    );
   }
-  
-  // Redirect non-admin users
+
   if (!isAdmin) {
-    return <Navigate to="/" replace />;
-  }
-  
-  return (
-    <div className="min-h-screen flex flex-col">
-      <Helmet>
-        <title>Admin Portal - Droplink</title>
-        <meta name="description" content="Admin management portal for Droplink.space" />
-      </Helmet>
-      <Navbar />
-      <main className="flex-grow py-12 px-6">
-        <div className="container mx-auto max-w-6xl">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">Admin Portal</h1>
-            <div className="flex gap-2">
-              <Button variant="outline" asChild>
-                <Link to="/developers" className="flex items-center gap-2">
-                  <Code size={16} />
-                  Developer Portal
-                </Link>
-              </Button>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <Card>
-              <CardHeader className="flex flex-row items-center gap-2">
-                <Users size={20} className="text-primary" />
-                <CardTitle>User Management</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-4">Manage user accounts, roles, and permissions.</p>
-                <Button variant="outline" size="sm">Access User Management</Button>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="flex flex-row items-center gap-2">
-                <Code size={20} className="text-primary" />
-                <CardTitle>Content Moderation</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-4">Review and moderate user-generated content.</p>
-                <Button variant="outline" size="sm">Review Content</Button>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="flex flex-row items-center gap-2">
-                <Settings size={20} className="text-primary" />
-                <CardTitle>System Settings</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-4">Configure global application settings.</p>
-                <Button variant="outline" size="sm">Configure Settings</Button>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="flex flex-row items-center gap-2">
-                <BarChart3 size={20} className="text-primary" />
-                <CardTitle>Analytics Dashboard</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-4">View detailed platform analytics and reports.</p>
-                <Button variant="outline" size="sm">View Analytics</Button>
-              </CardContent>
-            </Card>
-          </div>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>Admin Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p>This admin portal is under development. More features coming soon.</p>
-              <div className="flex gap-2">
-                <Button size="sm">Update System</Button>
-                <Button size="sm" variant="outline">Run Maintenance</Button>
-              </div>
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-grow flex items-center justify-center">
+          <Card className="max-w-md">
+            <CardContent className="p-6 text-center">
+              <Shield className="w-12 h-12 text-red-500 mx-auto mb-4" />
+              <h2 className="text-xl font-bold mb-2">Access Denied</h2>
+              <p className="text-gray-600">You need admin privileges to access this area.</p>
             </CardContent>
           </Card>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-grow py-12 px-4">
+        <div className="container mx-auto max-w-6xl space-y-8">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold mb-4">Admin Panel</h1>
+            <p className="text-xl text-gray-600">
+              Manage users, domains, and system settings
+            </p>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/admin/dashboard')}>
+              <CardContent className="p-6 text-center">
+                <BarChart3 className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+                <h3 className="font-bold text-lg mb-2">Analytics Dashboard</h3>
+                <p className="text-gray-600 text-sm">View comprehensive analytics and metrics</p>
+              </CardContent>
+            </Card>
+
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              <CardContent className="p-6 text-center">
+                <Users className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                <h3 className="font-bold text-lg mb-2">User Management</h3>
+                <p className="text-gray-600 text-sm">Manage user accounts and permissions</p>
+              </CardContent>
+            </Card>
+
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              <CardContent className="p-6 text-center">
+                <Settings className="w-12 h-12 text-purple-500 mx-auto mb-4" />
+                <h3 className="font-bold text-lg mb-2">System Settings</h3>
+                <p className="text-gray-600 text-sm">Configure system-wide settings</p>
+              </CardContent>
+            </Card>
+
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              <CardContent className="p-6 text-center">
+                <Shield className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                <h3 className="font-bold text-lg mb-2">Security</h3>
+                <p className="text-gray-600 text-sm">Monitor security and access logs</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Main Admin Tools */}
+          <div className="space-y-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  Quick Actions
+                </CardTitle>
+                <CardDescription>
+                  Access frequently used admin tools and features
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Button 
+                    onClick={() => navigate('/admin/dashboard')}
+                    className="w-full"
+                  >
+                    <BarChart3 className="w-4 h-4 mr-2" />
+                    View Analytics Dashboard
+                  </Button>
+                  <Button variant="outline" className="w-full">
+                    <Users className="w-4 h-4 mr-2" />
+                    Export User Data
+                  </Button>
+                  <Button variant="outline" className="w-full">
+                    <Settings className="w-4 h-4 mr-2" />
+                    System Backup
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <PiDomainManager />
+          </div>
         </div>
       </main>
       <Footer />
