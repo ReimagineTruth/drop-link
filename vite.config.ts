@@ -11,16 +11,13 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   plugins: [
-    react({
-      jsxImportSource: 'react',
-    }),
+    react(),
     mode === 'development' &&
     componentTagger(),
   ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "react/jsx-runtime": "react/jsx-runtime.js",
     },
   },
   build: {
@@ -30,7 +27,6 @@ export default defineConfig(({ mode }) => ({
   },
   optimizeDeps: {
     include: ['react', 'react-dom'],
-    force: true,
   },
   define: {
     global: 'globalThis',
