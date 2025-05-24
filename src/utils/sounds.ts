@@ -1,24 +1,32 @@
 
-// Helper function to play sounds with volume control
-export const playSound = (audioUrl: string, volume = 1): void => {
-  const audio = new Audio(audioUrl);
-  audio.volume = volume;
-  
-  // Handle Safari/iOS requirement for user interaction
-  const playPromise = audio.play();
-  
-  if (playPromise !== undefined) {
-    playPromise.catch((error) => {
-      console.error("Audio playback error:", error);
-    });
-  }
+// Define available sounds
+export const sounds = {
+  uiTap: '/sounds/ui-tap.wav',
+  success: '/sounds/success.wav',
+  error: '/sounds/error.wav'
 };
 
-// Predefined sound effects
-export const sounds = {
-  loadingComplete: "/sounds/loading-complete.mp3",
-  setupComplete: "/sounds/setup-complete.mp3",
-  uiTap: "/sounds/ui-tap.mp3",
-  notification: "/sounds/notification.mp3",
-  success: "/sounds/success.mp3",
+// Play sound function with error handling
+export const playSound = (soundPath: string, volume: number = 0.5) => {
+  try {
+    // Check if Audio is available
+    if (typeof Audio === 'undefined') {
+      console.log('Audio not available in this environment');
+      return;
+    }
+    
+    const audio = new Audio(soundPath);
+    audio.volume = Math.max(0, Math.min(1, volume)); // Clamp volume between 0 and 1
+    
+    // Handle audio play promise
+    const playPromise = audio.play();
+    
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.log('Audio playback failed:', error);
+      });
+    }
+  } catch (error) {
+    console.log('Sound initialization failed:', error);
+  }
 };

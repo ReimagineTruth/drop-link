@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
+import Index from './pages/Index';
 import Pricing from './pages/Pricing';
 import Contact from './pages/Contact';
 import Dashboard from './pages/Dashboard';
@@ -17,7 +17,7 @@ function App() {
       <UserProvider>
         <div className="App">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Index />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/dashboard" element={<Dashboard />} />
