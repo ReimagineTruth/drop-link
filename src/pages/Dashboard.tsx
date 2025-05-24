@@ -15,7 +15,12 @@ const Dashboard = () => {
   const { user, profile, subscription, isLoading, isLoggedIn } = useUser();
   const navigate = useNavigate();
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-  const { handlePiLogin } = usePiAuth();
+  const { handlePiLogin: originalHandlePiLogin } = usePiAuth();
+
+  // Create a wrapper function that matches the expected signature
+  const handlePiLogin = async (): Promise<void> => {
+    await originalHandlePiLogin();
+  };
 
   useEffect(() => {
     if (!isLoading && !isLoggedIn) {
