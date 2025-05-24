@@ -8,6 +8,7 @@ import TemplateHeader from "@/components/templates/TemplateHeader";
 import TemplatesGrid from "@/components/templates/TemplatesGrid";
 import TemplatePricingSection from "@/components/templates/TemplatePricingSection";
 import CustomTemplateSection from "@/components/templates/CustomTemplateSection";
+import FloatingGoToTop from "@/components/ui/floating-go-to-top";
 import { templatesData } from "@/data/templatesData";
 
 const Templates = () => {
@@ -44,6 +45,7 @@ const Templates = () => {
         </div>
       </main>
       <Footer />
+      <FloatingGoToTop />
     </div>
   );
 };
