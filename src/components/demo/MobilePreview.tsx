@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +39,10 @@ const MobilePreview = ({ selectedPlan, onTip, tipAmount }: MobilePreviewProps) =
   };
 
   const getDemoContent = () => {
-    if (selectedPlan === 'free') {
+    // Use type-safe comparison for free plan
+    const isFree = selectedPlan === 'free';
+    
+    if (isFree) {
       return [
         { 
           title: "My Website", 
@@ -49,7 +53,7 @@ const MobilePreview = ({ selectedPlan, onTip, tipAmount }: MobilePreviewProps) =
       ];
     }
 
-    const tipOptions = selectedPlan !== 'free' ? [
+    const tipOptions = !isFree ? [
       { title: "☕ Buy me coffee", amount: "1π", description: "Support my daily content creation", type: "tip" },
       { title: "🍕 Buy me lunch", amount: "5π", description: "Fuel my research and tutorials", type: "tip" },
       { title: "💝 Big support", amount: "25π", description: "Help me create premium content", type: "tip" }
