@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -21,6 +20,7 @@ import UpgradeModal from "@/components/UpgradeModal";
 import { UpgradeModalProvider } from "@/hooks/useUpgradeModal";
 import ConsentPrompt from "@/components/auth/ConsentPrompt";
 import { useConsentStatus } from "@/hooks/useConsentStatus";
+import MetadataSettings from "@/components/dashboard/MetadataSettings";
 
 // Import custom hooks
 import { usePiPayment } from "@/hooks/usePiPayment";
@@ -122,9 +122,10 @@ const Dashboard = () => {
                 />
                 
                 <Tabs defaultValue="overview">
-                  <TabsList className="grid w-full grid-cols-4 mb-8">
+                  <TabsList className="grid w-full grid-cols-5 mb-8">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="links">My Links</TabsTrigger>
+                    <TabsTrigger value="metadata">Metadata</TabsTrigger>
                     <TabsTrigger value="analytics">Analytics</TabsTrigger>
                     <TabsTrigger value="subscription">Subscription</TabsTrigger>
                   </TabsList>
@@ -146,6 +147,10 @@ const Dashboard = () => {
                   
                   <TabsContent value="links">
                     <LinksSection />
+                  </TabsContent>
+                  
+                  <TabsContent value="metadata">
+                    <MetadataSettings />
                   </TabsContent>
                   
                   <TabsContent value="analytics">
