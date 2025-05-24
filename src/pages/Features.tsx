@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { CheckIcon, Lock, Star, Crown, Zap, ArrowRight, Users, Shield, BarChart3, Palette, Globe, Smartphone } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -13,6 +12,7 @@ import { useUserPermissions } from "@/hooks/useUserPermissions";
 import { toast } from "@/hooks/use-toast";
 import { AnimatedContainer } from "@/components/ui/animated-container";
 import { Helmet } from "react-helmet-async";
+import { planPricing } from "@/hooks/usePiPayment";
 
 const Features = () => {
   const [selectedPlan, setSelectedPlan] = useState<'free' | 'starter' | 'pro' | 'premium'>('starter');
@@ -20,11 +20,16 @@ const Features = () => {
   const { isLoggedIn, isAdmin } = useUser();
   const { plan: userPlan, permissions } = useUserPermissions();
 
-  const planPricing = {
+  // Use pricing from the pricing hook
+  const getPlanPrice = (plan: 'starter' | 'pro' | 'premium', cycle: 'monthly' | 'annual' = 'monthly') => {
+    return planPricing[plan][cycle];
+  };
+
+  const planPricingDisplay = {
     free: { price: "Free", period: "forever" },
-    starter: { price: "$4.99", period: "/month" },
-    pro: { price: "$9.99", period: "/month" },
-    premium: { price: "$19.99", period: "/month" }
+    starter: { price: `${getPlanPrice('starter', 'monthly')}π`, period: "/month" },
+    pro: { price: `${getPlanPrice('pro', 'monthly')}π`, period: "/month" },
+    premium: { price: `${getPlanPrice('premium', 'monthly')}π`, period: "/month" }
   };
 
   const featureCategories = {
@@ -174,7 +179,7 @@ const Features = () => {
                           {planIcons[plan]}
                           <span className="font-medium capitalize">{plan}</span>
                         </div>
-                        <span className="text-xs text-gray-500">{planPricing[plan].price}</span>
+                        <span className="text-xs text-gray-500">{planPricingDisplay[plan].price}</span>
                       </TabsTrigger>
                     ))}
                   </TabsList>
@@ -188,6 +193,22 @@ const Features = () => {
                             {planIcons[selectedPlan]}
                             <span className="ml-2">{selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1)} Plan Features</span>
                           </Badge>
+                          
+                          {/* Pricing Display */}
+                          <div className="bg-gradient-to-r from-primary/5 to-blue-50 rounded-lg p-4 max-w-md mx-auto mt-4">
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-primary">
+                                {planPricingDisplay[selectedPlan].price}
+                                <span className="text-lg text-gray-600">{planPricingDisplay[selectedPlan].period}</span>
+                              </div>
+                              {selectedPlan !== 'free' && (
+                                <div className="text-sm text-gray-600 mt-1">
+                                  Annual: {getPlanPrice(selectedPlan as 'starter' | 'pro' | 'premium', 'annual')}π/month 
+                                  <span className="text-green-600 ml-1">(Save {Math.round(((getPlanPrice(selectedPlan as 'starter' | 'pro' | 'premium', 'monthly') - getPlanPrice(selectedPlan as 'starter' | 'pro' | 'premium', 'annual')) / getPlanPrice(selectedPlan as 'starter' | 'pro' | 'premium', 'monthly')) * 100)}%)</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
 
                         {Object.entries(featureCategories).map(([catKey, cat]) => {
@@ -323,7 +344,7 @@ const Features = () => {
                             <div className="flex flex-col items-center gap-2">
                               {planIcons[plan]}
                               <span className="font-semibold capitalize">{plan}</span>
-                              <span className="text-sm text-gray-500">{planPricing[plan].price}</span>
+                              <span className="text-sm text-gray-500">{planPricingDisplay[plan].price}</span>
                             </div>
                           </th>
                         ))}

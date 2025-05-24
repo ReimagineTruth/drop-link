@@ -77,11 +77,50 @@ const Demo = () => {
     }
   ];
 
+  const faqData = [
+    {
+      id: 'faq1',
+      question: "Can I try all premium features in the demo?",
+      answer: "Yes! Our demo gives you access to explore both free and premium features so you can experience the full potential of Droplink before signing up."
+    },
+    {
+      id: 'faq2', 
+      question: "How does Pi payment integration work?",
+      answer: "Droplink integrates directly with Pi Network's payment system, allowing you to accept Pi cryptocurrency for content, products, or services. The demo shows you exactly how this works."
+    },
+    {
+      id: 'faq3',
+      question: "Is my .pi domain compatible with Droplink?",
+      answer: "Absolutely! Any registered .pi domain can be connected to your Droplink profile. This creates a memorable URL that works natively in Pi Browser and redirects properly on other browsers."
+    },
+    {
+      id: 'faq4',
+      question: "How accurate is the demo data?",
+      answer: "The demo uses realistic sample data to show you exactly how your dashboard, analytics, and profile will look with real traffic and interactions."
+    },
+    {
+      id: 'faq5',
+      question: "Do I need a Pi Network account to use the demo?",
+      answer: "No! The demo is completely free and doesn't require any account. However, to create your own profile and accept Pi payments, you'll need a Pi Network account."
+    },
+    {
+      id: 'faq6',
+      question: "Can I export my demo data when I sign up?",
+      answer: "The demo uses sample data for demonstration purposes only. When you create your real account, you'll start fresh with your own analytics and content."
+    }
+  ];
+
   return (
     <>
       <Helmet>
         <title>Interactive Demo - Droplink | Try Our Pi Network Link Tool</title>
         <meta name="description" content="Experience Droplink with our interactive demo. See how our link-in-bio tool works with Pi Network integration, analytics, and payment features." />
+        <meta property="og:title" content="Interactive Demo - Droplink | Try Our Pi Network Link Tool" />
+        <meta property="og:description" content="Experience Droplink with our interactive demo. See how our link-in-bio tool works with Pi Network integration, analytics, and payment features." />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Interactive Demo - Droplink" />
+        <meta name="twitter:description" content="Try our interactive demo and see why creators choose Droplink" />
       </Helmet>
       
       <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/20 to-purple-50/20">
@@ -104,11 +143,11 @@ const Demo = () => {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <Button size="lg" className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white shadow-lg">
-                  <Link to="#demo" className="flex items-center gap-2">
+                  <a href="#demo" className="flex items-center gap-2">
                     Start Demo <ArrowRight size={18} />
-                  </Link>
+                  </a>
                 </Button>
-                <Button variant="outline" size="lg" className="border-primary text-primary hover:bg-primary/5">
+                <Button variant="outline" size="lg" className="border-primary text-primary hover:bg-primary/5" asChild>
                   <Link to="/signup">Create Free Account</Link>
                 </Button>
               </div>
@@ -354,28 +393,7 @@ const Demo = () => {
               </div>
               
               <div className="max-w-3xl mx-auto space-y-4">
-                {[
-                  {
-                    id: 'faq1',
-                    question: "Can I try all premium features in the demo?",
-                    answer: "Yes! Our demo gives you access to explore both free and premium features so you can experience the full potential of Droplink before signing up."
-                  },
-                  {
-                    id: 'faq2', 
-                    question: "How does Pi payment integration work?",
-                    answer: "Droplink integrates directly with Pi Network's payment system, allowing you to accept Pi cryptocurrency for content, products, or services. The demo shows you exactly how this works."
-                  },
-                  {
-                    id: 'faq3',
-                    question: "Is my .pi domain compatible with Droplink?",
-                    answer: "Absolutely! Any registered .pi domain can be connected to your Droplink profile. This creates a memorable URL that works natively in Pi Browser and redirects properly on other browsers."
-                  },
-                  {
-                    id: 'faq4',
-                    question: "How accurate is the demo data?",
-                    answer: "The demo uses realistic sample data to show you exactly how your dashboard, analytics, and profile will look with real traffic and interactions."
-                  }
-                ].map((faq) => (
+                {faqData.map((faq) => (
                   <Card key={faq.id} className="overflow-hidden hover:shadow-md transition-all duration-300">
                     <button 
                       onClick={() => toggleSection(faq.id)}
@@ -407,12 +425,12 @@ const Demo = () => {
                     </div>
                     
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                      <Button size="lg" className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white shadow-lg">
+                      <Button size="lg" className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white shadow-lg" asChild>
                         <Link to="/signup" className="flex items-center gap-2">
                           Start Free Today <ArrowRight size={18} />
                         </Link>
                       </Button>
-                      <Button variant="outline" size="lg" className="border-primary text-primary hover:bg-primary/5">
+                      <Button variant="outline" size="lg" className="border-primary text-primary hover:bg-primary/5" asChild>
                         <Link to="/features">Explore All Features</Link>
                       </Button>
                     </div>
