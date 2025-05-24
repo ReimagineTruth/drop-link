@@ -48,8 +48,8 @@ const SmoothFAB = ({
         "transition-all duration-300 ease-out",
         "transform-gpu touch-manipulation",
         variant === 'primary' 
-          ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-xl" 
-          : "bg-white text-gray-700 border border-gray-200 hover:shadow-md",
+          ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-xl dark:from-blue-600 dark:to-purple-700" 
+          : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:shadow-md dark:hover:shadow-gray-900/20",
         className
       )}
       style={{ touchAction: 'manipulation' }}

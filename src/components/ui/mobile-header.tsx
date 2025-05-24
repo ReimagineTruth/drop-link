@@ -11,7 +11,7 @@ const MobileHeader = ({ className, logoSrc }: MobileHeaderProps) => {
   return (
     <header className={cn(
       "w-full flex justify-center items-center py-4",
-      "bg-white dark:bg-gray-900",
+      "bg-white dark:bg-gray-900 transition-colors duration-300 ease-in-out",
       className
     )}>
       <div className="flex items-center justify-center">
@@ -19,11 +19,11 @@ const MobileHeader = ({ className, logoSrc }: MobileHeaderProps) => {
           <img 
             src={logoSrc}
             alt="Droplink Logo"
-            className="w-16 h-16"
+            className="w-16 h-16 transition-opacity duration-300"
           />
         ) : (
           <svg 
-            className="w-16 h-16 text-primary dark:text-blue-400" 
+            className="w-16 h-16 text-primary dark:text-blue-400 transition-colors duration-300" 
             viewBox="0 0 24 24" 
             fill="currentColor"
             aria-label="Droplink Logo"

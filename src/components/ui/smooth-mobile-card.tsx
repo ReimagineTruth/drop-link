@@ -63,10 +63,10 @@ const SmoothMobileCard = ({
         exit: "exit"
       })}
       className={cn(
-        "bg-white rounded-2xl shadow-md border border-gray-100",
+        "bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700",
         "transition-all duration-300 ease-in-out",
         "transform-gpu", // Use GPU acceleration
-        isPressed ? "scale-[0.97] shadow-lg" : "scale-100 hover:shadow-lg",
+        isPressed ? "scale-[0.97] shadow-lg dark:shadow-gray-900/20" : "scale-100 hover:shadow-lg dark:hover:shadow-gray-900/30",
         onClick && "cursor-pointer touch-manipulation", // Remove tap delays
         className
       )}

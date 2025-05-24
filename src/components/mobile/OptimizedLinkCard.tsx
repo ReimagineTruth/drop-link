@@ -52,7 +52,7 @@ const OptimizedLinkCard = ({
       )}>
         {/* Icon/Avatar */}
         <div className={cn(
-          "flex-shrink-0 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50",
+          "flex-shrink-0 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30",
           "flex items-center justify-center font-medium",
           compact ? "w-10 h-10 text-lg" : "w-12 h-12 text-xl"
         )}>
@@ -62,25 +62,25 @@ const OptimizedLinkCard = ({
         {/* Content */}
         <div className="flex-1 min-w-0">
           <h3 className={cn(
-            "text-gray-900 font-semibold truncate",
+            "text-gray-900 dark:text-gray-100 font-semibold truncate transition-colors duration-300",
             compact ? "text-sm" : "text-base"
           )}>
             {link.title}
           </h3>
           {!compact && link.description && (
-            <p className="text-xs text-gray-500 truncate mt-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-1 transition-colors duration-300">
               {link.description}
             </p>
           )}
           <div className="flex items-center gap-2 mt-1">
             <p className={cn(
-              "text-gray-400 truncate",
+              "text-gray-400 dark:text-gray-500 truncate transition-colors duration-300",
               compact ? "text-xs" : "text-xs"
             )}>
               {link.url.replace(/^https?:\/\//, '')}
             </p>
             {link.clicks !== undefined && (
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-gray-400 dark:text-gray-500 transition-colors duration-300">
                 • {link.clicks} clicks
               </span>
             )}
@@ -93,8 +93,8 @@ const OptimizedLinkCard = ({
             variant="ghost"
             size="icon"
             className={cn(
-              "rounded-full text-gray-400 hover:text-gray-600",
-              "hover:bg-gray-100 transition-colors duration-200",
+              "rounded-full text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300",
+              "hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200",
               compact ? "h-8 w-8" : "h-9 w-9"
             )}
             onClick={(e) => {
@@ -110,8 +110,8 @@ const OptimizedLinkCard = ({
               variant="ghost"
               size="icon"
               className={cn(
-                "rounded-full text-gray-400 hover:text-gray-600",
-                "hover:bg-gray-100 transition-colors duration-200",
+                "rounded-full text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300",
+                "hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200",
                 compact ? "h-8 w-8" : "h-9 w-9"
               )}
               onClick={handleMenuClick}
