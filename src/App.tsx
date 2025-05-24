@@ -9,8 +9,10 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ProfilePage from './pages/ProfilePage';
 import Settings from './pages/Settings';
+import DomainsSettings from './pages/DomainsSettings';
 import Pricing from './pages/Pricing';
 import DemoPiPage from './pages/DemoPiPage';
+import NotFound from './pages/NotFound';
 import { UserProvider } from './context/UserContext';
 import Admin from './pages/Admin';
 import DemoPiProfilePage from "@/pages/DemoPiProfilePage";
@@ -29,9 +31,11 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/@:username" element={<ProfilePage />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/settings/domains" element={<DomainsSettings />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/demo.pi" element={<DemoPiProfilePage />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
         </HelmetProvider>
@@ -41,4 +45,3 @@ function App() {
 }
 
 export default App;
-
