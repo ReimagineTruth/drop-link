@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import './App.css';
@@ -18,6 +18,7 @@ import { UserProvider } from './context/UserContext';
 import Admin from './pages/Admin';
 import AdminDashboard from './pages/AdminDashboard';
 import DemoPiProfilePage from "@/pages/DemoPiProfilePage";
+import SplashScreen from './components/SplashScreen';
 
 // Import existing pages that are referenced in footer
 import About from './pages/About';
@@ -34,6 +35,15 @@ import Cookies from './pages/Cookies';
 import GDPR from './pages/GDPR';
 
 function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+  };
+
+  if (showSplash) {
+    return <SplashScreen onComplete={handleSplashComplete} />;
+  }
 
   return (
     <UserProvider>
