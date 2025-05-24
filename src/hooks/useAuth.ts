@@ -12,7 +12,7 @@ export const useAuth = () => {
   // Admin emails - add your email here
   const ADMIN_EMAILS = ["admin@pidrop.dev"];
   
-  // Check for test user session
+  // Enhanced test session handling with full feature access
   const getTestUserSession = () => {
     try {
       const testSession = localStorage.getItem('test_user_session');
@@ -32,12 +32,12 @@ export const useAuth = () => {
   };
   
   useEffect(() => {
-    // Security improvement: Add authorization header and token validation
+    // Enhanced security with test mode support
     const checkAuthHeaders = async () => {
       // Check for test session first
       const testSession = getTestUserSession();
       if (testSession) {
-        console.log("Using test session");
+        console.log("Using test session with full access");
         return true;
       }
       
@@ -57,24 +57,28 @@ export const useAuth = () => {
       return false;
     };
     
-    // Set up auth state change listener with improved security
+    // Set up auth state change listener with enhanced test mode support
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth state change:", event, session?.user?.id);
         
-        // Check for test session first
+        // Check for test session first with enhanced admin detection
         const testSession = getTestUserSession();
         if (testSession) {
           setUser(testSession.user);
-          setIsAdmin(testSession.user.username === 'admin' || ADMIN_EMAILS.includes(testSession.user.email));
+          const isTestAdmin = testSession.testPlan === 'admin' || 
+                             testSession.user.username === 'admin' || 
+                             ADMIN_EMAILS.includes(testSession.user.email);
+          setIsAdmin(isTestAdmin);
           setIsLoading(false);
+          console.log("Test session active with plan:", testSession.testPlan, "Admin:", isTestAdmin);
           return;
         }
         
         const currentUser = session?.user ?? null;
         setUser(currentUser);
         
-        // Security enhancement: Strict admin validation with email verification
+        // Enhanced admin validation with email verification
         if (currentUser && currentUser.email && currentUser.email_confirmed_at) {
           const userIsAdmin = ADMIN_EMAILS.includes(currentUser.email);
           setIsAdmin(userIsAdmin);
@@ -90,16 +94,20 @@ export const useAuth = () => {
       }
     );
 
-    // Check current session with improved security
+    // Enhanced initialization with test mode support
     const initAuth = async () => {
       try {
-        // Check for test session first
+        // Check for test session first with full feature access
         const testSession = getTestUserSession();
         if (testSession) {
-          console.log("Found test session, using test user");
+          console.log("Found test session with plan:", testSession.testPlan);
           setUser(testSession.user);
-          setIsAdmin(testSession.user.username === 'admin' || ADMIN_EMAILS.includes(testSession.user.email));
+          const isTestAdmin = testSession.testPlan === 'admin' || 
+                             testSession.user.username === 'admin' || 
+                             ADMIN_EMAILS.includes(testSession.user.email);
+          setIsAdmin(isTestAdmin);
           setIsLoading(false);
+          console.log("Test mode active - Full access granted");
           return;
         }
         
@@ -108,7 +116,7 @@ export const useAuth = () => {
         const currentUser = session?.user ?? null;
         setUser(currentUser);
         
-        // Security enhancement: Strict admin validation with email verification
+        // Enhanced admin validation with email verification
         if (currentUser && currentUser.email && currentUser.email_confirmed_at) {
           const userIsAdmin = ADMIN_EMAILS.includes(currentUser.email);
           setIsAdmin(userIsAdmin);
@@ -138,13 +146,12 @@ export const useAuth = () => {
 
   const signOut = async () => {
     try {
-      // Clear test session first
+      // Enhanced cleanup including test sessions
       localStorage.removeItem('test_user_session');
       
       await supabase.auth.signOut();
       
-      // Clear all local storage items related to authentication
-      // Security improvement: More comprehensive cleanup
+      // Comprehensive cleanup of all auth-related storage
       localStorage.removeItem('userToken');
       localStorage.removeItem('username');
       localStorage.removeItem('userEmail');
@@ -162,7 +169,7 @@ export const useAuth = () => {
         document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
       });
       
-      console.log("User signed out successfully");
+      console.log("User signed out successfully (including test mode)");
       
       toast({
         title: "Signed Out",

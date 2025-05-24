@@ -6,9 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const TestLogin = () => {
   const [testUsername, setTestUsername] = useState('testuser');
+  const [testPlan, setTestPlan] = useState('premium');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -16,13 +18,13 @@ const TestLogin = () => {
     try {
       setIsLoading(true);
       
-      // Create a test user session directly
+      // Create comprehensive test user data with full access
       const testUserData = {
-        id: 'test-user-123',
+        id: testPlan === 'admin' ? 'admin-user-123' : `test-user-${testUsername}-123`,
         email: `${testUsername}@test.com`,
         user_metadata: {
           username: testUsername,
-          pi_uid: 'test-pi-uid-123'
+          pi_uid: `test-pi-uid-${testUsername}-123`
         },
         aud: 'authenticated',
         role: 'authenticated'
@@ -36,14 +38,16 @@ const TestLogin = () => {
         .maybeSingle();
 
       if (!existingProfile) {
-        // Create test profile
+        // Create test profile with comprehensive data
         const { error: profileError } = await supabase
           .from('user_profiles')
           .insert({
             id: testUserData.id,
             username: testUsername,
             display_name: testUsername,
-            email: testUserData.email
+            email: testUserData.email,
+            bio: `Test user - ${testPlan} plan`,
+            avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + testUsername
           });
 
         if (profileError) {
@@ -51,7 +55,54 @@ const TestLogin = () => {
         }
       }
 
-      // Store test user data in localStorage to simulate authentication
+      // Create test subscription for premium features
+      if (testPlan !== 'free' && testPlan !== 'admin') {
+        const { error: subscriptionError } = await supabase
+          .from('subscriptions')
+          .upsert({
+            user_id: testUserData.id,
+            plan: testPlan,
+            is_active: true,
+            started_at: new Date().toISOString(),
+            expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year
+            amount: testPlan === 'starter' ? 10 : testPlan === 'pro' ? 15 : 22
+          });
+
+        if (subscriptionError) {
+          console.error('Error creating test subscription:', subscriptionError);
+        }
+      }
+
+      // Add admin privileges if admin plan selected
+      if (testPlan === 'admin') {
+        const { error: adminError } = await supabase
+          .from('admin_users')
+          .upsert({
+            pi_user_id: testUserData.id,
+            username: testUsername
+          });
+
+        if (adminError) {
+          console.error('Error creating admin user:', adminError);
+        }
+      }
+
+      // Create test consent record
+      const { error: consentError } = await supabase
+        .from('user_consents')
+        .upsert({
+          user_id: testUserData.id,
+          consented: true,
+          auth_consent: true,
+          username_consent: true,
+          wallet_consent: true
+        });
+
+      if (consentError) {
+        console.error('Error creating consent record:', consentError);
+      }
+
+      // Store comprehensive test user data in localStorage
       localStorage.setItem('test_user_session', JSON.stringify({
         user: testUserData,
         session: {
@@ -59,12 +110,14 @@ const TestLogin = () => {
           refresh_token: 'test-refresh-token',
           expires_at: Date.now() + (24 * 60 * 60 * 1000), // 24 hours
           user: testUserData
-        }
+        },
+        testPlan: testPlan,
+        isAdmin: testPlan === 'admin'
       }));
 
       toast({
         title: "Test Login Successful",
-        description: `Logged in as test user: ${testUsername}`,
+        description: `Logged in as ${testUsername} with ${testPlan} access`,
       });
 
       // Force a page refresh to trigger auth state change
@@ -85,9 +138,9 @@ const TestLogin = () => {
   return (
     <Card className="w-full max-w-md mx-auto mt-6 border-yellow-200 bg-yellow-50">
       <CardHeader>
-        <CardTitle className="text-yellow-800">🧪 Test Login (Development Only)</CardTitle>
+        <CardTitle className="text-yellow-800">🧪 Test Login (Full Access)</CardTitle>
         <CardDescription className="text-yellow-700">
-          Bypass authentication for testing features and payments
+          Test all features including payments, admin functions, and premium plans
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -104,16 +157,46 @@ const TestLogin = () => {
             className="border-yellow-300 focus:border-yellow-500"
           />
         </div>
+
+        <div>
+          <label htmlFor="testPlan" className="block text-sm font-medium text-yellow-800 mb-1">
+            Test Plan/Access Level
+          </label>
+          <Select value={testPlan} onValueChange={setTestPlan}>
+            <SelectTrigger className="border-yellow-300 focus:border-yellow-500">
+              <SelectValue placeholder="Select test plan" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="free">Free Plan</SelectItem>
+              <SelectItem value="starter">Starter Plan (10π/month)</SelectItem>
+              <SelectItem value="pro">Pro Plan (15π/month)</SelectItem>
+              <SelectItem value="premium">Premium Plan (22π/month)</SelectItem>
+              <SelectItem value="admin">Admin Access (Full Control)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         
         <Button 
           onClick={handleTestLogin}
           disabled={isLoading || !testUsername.trim()}
           className="w-full bg-yellow-600 hover:bg-yellow-700 text-white"
         >
-          {isLoading ? 'Creating Test Session...' : 'Login as Test User'}
+          {isLoading ? 'Creating Test Session...' : `Login with ${testPlan.toUpperCase()} Access`}
         </Button>
+
+        <div className="text-xs text-yellow-600 space-y-1">
+          <p className="font-medium">Test Features Available:</p>
+          <ul className="list-disc list-inside space-y-0.5">
+            <li>All dashboard features</li>
+            <li>Payment system testing</li>
+            <li>Subscription management</li>
+            <li>Analytics and insights</li>
+            <li>Admin portal (if admin selected)</li>
+            <li>Premium features access</li>
+          </ul>
+        </div>
         
-        <p className="text-xs text-yellow-600 text-center">
+        <p className="text-xs text-red-600 text-center font-medium">
           ⚠️ Remove this component before production deployment
         </p>
       </CardContent>
