@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "autoprefixer": "^10.4.21",
     "lovable-tagger": "^1.1.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
