@@ -11,6 +11,7 @@ import PiBrowserPrompt from "@/components/PiBrowserPrompt";
 import PiBrowserDialog from "@/components/PiBrowserDialog";
 import { isRunningInPiBrowser } from "@/utils/pi-sdk";
 import ConsentPrompt from "@/components/auth/ConsentPrompt";
+import TestLogin from "@/components/auth/TestLogin";
 
 const Signup = () => {
   const [piAuthenticating, setPiAuthenticating] = useState(false);
@@ -180,6 +181,9 @@ const Signup = () => {
               </p>
             </div>
           </div>
+          
+          {/* Test Login Component */}
+          <TestLogin />
         </div>
       </main>
       <Footer />

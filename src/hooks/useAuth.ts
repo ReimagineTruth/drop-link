@@ -12,9 +12,35 @@ export const useAuth = () => {
   // Admin emails - add your email here
   const ADMIN_EMAILS = ["admin@pidrop.dev"];
   
+  // Check for test user session
+  const getTestUserSession = () => {
+    try {
+      const testSession = localStorage.getItem('test_user_session');
+      if (testSession) {
+        const parsedSession = JSON.parse(testSession);
+        if (parsedSession.session.expires_at > Date.now()) {
+          return parsedSession;
+        } else {
+          localStorage.removeItem('test_user_session');
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing test session:', error);
+      localStorage.removeItem('test_user_session');
+    }
+    return null;
+  };
+  
   useEffect(() => {
     // Security improvement: Add authorization header and token validation
     const checkAuthHeaders = async () => {
+      // Check for test session first
+      const testSession = getTestUserSession();
+      if (testSession) {
+        console.log("Using test session");
+        return true;
+      }
+      
       // Check if auth state includes valid tokens
       const { data } = await supabase.auth.getSession();
       
@@ -35,6 +61,16 @@ export const useAuth = () => {
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth state change:", event, session?.user?.id);
+        
+        // Check for test session first
+        const testSession = getTestUserSession();
+        if (testSession) {
+          setUser(testSession.user);
+          setIsAdmin(testSession.user.username === 'admin' || ADMIN_EMAILS.includes(testSession.user.email));
+          setIsLoading(false);
+          return;
+        }
+        
         const currentUser = session?.user ?? null;
         setUser(currentUser);
         
@@ -57,6 +93,16 @@ export const useAuth = () => {
     // Check current session with improved security
     const initAuth = async () => {
       try {
+        // Check for test session first
+        const testSession = getTestUserSession();
+        if (testSession) {
+          console.log("Found test session, using test user");
+          setUser(testSession.user);
+          setIsAdmin(testSession.user.username === 'admin' || ADMIN_EMAILS.includes(testSession.user.email));
+          setIsLoading(false);
+          return;
+        }
+        
         const { data: { session } } = await supabase.auth.getSession();
         console.log("Current session:", session?.user?.id);
         const currentUser = session?.user ?? null;
@@ -92,6 +138,9 @@ export const useAuth = () => {
 
   const signOut = async () => {
     try {
+      // Clear test session first
+      localStorage.removeItem('test_user_session');
+      
       await supabase.auth.signOut();
       
       // Clear all local storage items related to authentication
