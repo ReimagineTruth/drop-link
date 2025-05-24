@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { CheckIcon, ShieldCheck, BadgeDollarSign } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -9,6 +8,7 @@ import PiAdsNetwork from "@/components/PiAdsNetwork";
 import { useUser } from "@/context/UserContext";
 import { useToast } from "@/hooks/use-toast";
 import { usePiPayment } from "@/hooks/usePiPayment";
+import SubscriptionConfirmationDialog from "@/components/subscription/SubscriptionConfirmationDialog";
 
 const PricingCard = ({ 
   title, 
@@ -21,7 +21,8 @@ const PricingCard = ({
   ctaAction,
   currentPlan = false,
   processingPayment = false,
-  isAdmin = false
+  isAdmin = false,
+  onTestSubscribe
 }) => {
   // Calculate display price based on billing cycle
   const displayPrice = billingCycle === 'annual' ? annualPrice : price;
@@ -72,34 +73,50 @@ const PricingCard = ({
         ))}
       </ul>
       
-      <Button 
-        onClick={ctaAction}
-        className={`w-full ${
-          currentPlan 
-            ? 'bg-green-500 hover:bg-green-600 cursor-not-allowed' 
-            : isAdmin 
-              ? 'bg-green-600 hover:bg-green-700'
-              : isPopular 
-                ? 'bg-gradient-hero hover:bg-secondary' 
-                : 'bg-white border border-primary text-primary hover:bg-muted'
-        }`}
-        disabled={currentPlan || processingPayment || (isAdmin && title !== "Admin Portal")}
-      >
-        {processingPayment 
-          ? "Processing..." 
-          : currentPlan 
-            ? "Current Plan" 
-            : isAdmin 
-              ? "Included with Admin" 
-              : ctaText
-        }
-      </Button>
+      <div className="space-y-2">
+        <Button 
+          onClick={ctaAction}
+          className={`w-full ${
+            currentPlan 
+              ? 'bg-green-500 hover:bg-green-600 cursor-not-allowed' 
+              : isAdmin 
+                ? 'bg-green-600 hover:bg-green-700'
+                : isPopular 
+                  ? 'bg-gradient-hero hover:bg-secondary' 
+                  : 'bg-white border border-primary text-primary hover:bg-muted'
+          }`}
+          disabled={currentPlan || processingPayment || (isAdmin && title !== "Admin Portal")}
+        >
+          {processingPayment 
+            ? "Processing..." 
+            : currentPlan 
+              ? "Current Plan" 
+              : isAdmin 
+                ? "Included with Admin" 
+                : ctaText
+          }
+        </Button>
+        
+        {/* Test Subscribe Button */}
+        {!currentPlan && !isAdmin && (
+          <Button 
+            onClick={() => onTestSubscribe?.(title, billingCycle)}
+            variant="outline"
+            className="w-full text-sm"
+          >
+            Test Subscribe (Preview)
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
 
 const Pricing = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<string>('');
+  const [selectedBillingCycle, setSelectedBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   
   const { isLoggedIn, user, subscription, showAds, isAdmin } = useUser();
   const navigate = useNavigate();
@@ -179,6 +196,12 @@ const Pricing = () => {
     }
     
     handleSubscribe(plan, billingCycle);
+  };
+  
+  const handleTestSubscribe = (plan: string, cycle: 'monthly' | 'annual') => {
+    setSelectedPlan(plan);
+    setSelectedBillingCycle(cycle);
+    setShowConfirmationDialog(true);
   };
   
   // Calculate savings for display in the billing toggle section
@@ -279,6 +302,7 @@ const Pricing = () => {
               currentPlan={isPlanActive("starter") && userBillingCycle === billingCycle}
               processingPayment={processingPayment}
               isAdmin={isAdmin}
+              onTestSubscribe={handleTestSubscribe}
             />
             
             <PricingCard
@@ -299,6 +323,7 @@ const Pricing = () => {
               currentPlan={isPlanActive("pro") && userBillingCycle === billingCycle}
               processingPayment={processingPayment}
               isAdmin={isAdmin}
+              onTestSubscribe={handleTestSubscribe}
             />
             
             <PricingCard
@@ -318,6 +343,7 @@ const Pricing = () => {
               currentPlan={isPlanActive("premium") && userBillingCycle === billingCycle}
               processingPayment={processingPayment}
               isAdmin={isAdmin}
+              onTestSubscribe={handleTestSubscribe}
             />
           </div>
           
@@ -372,6 +398,14 @@ const Pricing = () => {
         </div>
       </main>
       <Footer />
+      
+      {/* Test Subscription Confirmation Dialog */}
+      <SubscriptionConfirmationDialog
+        isOpen={showConfirmationDialog}
+        onClose={() => setShowConfirmationDialog(false)}
+        plan={selectedPlan}
+        billingCycle={selectedBillingCycle}
+      />
     </div>
   );
 };
