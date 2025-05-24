@@ -1,5 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { BarChart3, Eye, MousePointerClick, TrendingUp, Users } from "lucide-react";
 import FeatureGate from "@/components/FeatureGate";
 import { useUserPermissions } from "@/hooks/useUserPermissions";

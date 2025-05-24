@@ -1,10 +1,10 @@
 
-import { Link as LinkType } from "@/pages/ProfilePage";
-import { ExternalLink, Instagram, Twitter, Facebook, Linkedin, Youtube, Link } from "lucide-react";
+import { Link } from "@/types/link";
+import { ExternalLink, Instagram, Twitter, Facebook, Linkedin, Youtube, Link as LinkIcon } from "lucide-react";
 
 interface LinktreeStyleProfileProps {
-  links: LinkType[];
-  onLinkClick: (link: LinkType) => void;
+  links: Link[];
+  onLinkClick: (link: Link) => void;
   username: string;
   displayName: string | null;
   bio: string | null;
@@ -26,7 +26,7 @@ const LinktreeStyleProfile = ({
     if (url.includes('facebook.com')) return <Facebook className="h-5 w-5" />;
     if (url.includes('linkedin.com')) return <Linkedin className="h-5 w-5" />;
     if (url.includes('youtube.com')) return <Youtube className="h-5 w-5" />;
-    return <Link className="h-5 w-5" />;
+    return <LinkIcon className="h-5 w-5" />;
   };
 
   return (
