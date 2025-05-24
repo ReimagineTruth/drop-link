@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -7,18 +8,11 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import MobileNavbar from "@/components/ui/mobile-navbar";
 
 const Navbar = () => {
-  const isMobile = useIsMobile();
-  
-  // Use mobile navbar for mobile devices
-  if (isMobile) {
-    return <MobileNavbar />;
-  }
-  
-  // Keep existing desktop navbar
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isLoggedIn, signOut, profile } = useUser();
   const navigate = useNavigate();
-
+  const isMobile = useIsMobile();
+  
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -27,6 +21,11 @@ const Navbar = () => {
     await signOut();
     navigate('/login');
   };
+
+  // Use mobile navbar for mobile devices - moved after all hooks
+  if (isMobile) {
+    return <MobileNavbar />;
+  }
 
   return (
     <header className="bg-white sticky top-0 z-50 shadow-sm px-6 md:px-12 py-4 flex justify-between items-center">

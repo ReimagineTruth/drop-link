@@ -73,6 +73,14 @@ const LinksSection = () => {
     navigate('/settings/domains');
   };
 
+  // Create a wrapper function that matches MobileLinkCard's expected signature
+  const handleMobileReorder = (linkId: string, direction: 'up' | 'down') => {
+    const link = links.find(l => l.id === linkId);
+    if (link) {
+      handleReorderLink(direction, linkId, link.position);
+    }
+  };
+
   const displayedLinks = isMobile && !showAllLinks ? links.slice(0, 3) : links;
   const hasMoreLinks = isMobile && links.length > 3;
 
@@ -85,7 +93,7 @@ const LinksSection = () => {
             link={link}
             onEdit={(linkId) => setIsEditingLink(linkId)}
             onDelete={fetchLinks}
-            onReorder={handleReorderLink}
+            onReorder={handleMobileReorder}
             isFirst={index === 0}
             isLast={index === displayedLinks.length - 1}
             compact={viewMode === 'grid'}
