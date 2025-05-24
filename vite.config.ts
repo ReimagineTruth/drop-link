@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     rollupOptions: {
-      external: [],
+      // Remove the external array that was causing the issue
     },
   },
   optimizeDeps: {
