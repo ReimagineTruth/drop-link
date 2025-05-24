@@ -22,22 +22,17 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     rollupOptions: {
-      // Ensure React dependencies are properly bundled
       output: {
         manualChunks: {
-          react: ['react', 'react-dom'],
+          vendor: ['react', 'react-dom'],
         },
       },
     },
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react/jsx-runtime'],
-    force: true,
+    include: ['react', 'react-dom'],
   },
   define: {
     global: 'globalThis',
-  },
-  esbuild: {
-    jsxInject: `import React from 'react'`,
   },
 }));
