@@ -5,6 +5,8 @@ import MinimalProfile from "./MinimalProfile";
 import GradientProfile from "./GradientProfile";
 import DarkProfile from "./DarkProfile";
 import NeonProfile from "./NeonProfile";
+import { DroplinkBadge } from "@/components/ui/droplink-badge";
+import useUserPermissions from "@/hooks/useUserPermissions";
 
 interface ThemeVariantsProps {
   theme: string | any;
@@ -25,6 +27,8 @@ const ThemeVariants = ({
   bio, 
   avatarUrl 
 }: ThemeVariantsProps) => {
+  
+  const { permissions } = useUserPermissions();
   
   const commonProps = {
     links,
@@ -50,10 +54,13 @@ const ThemeVariants = ({
   // Determine theme type based on category or name
   const themeType = themeData.category || themeData.name || theme || 'linktree';
 
+  let ProfileComponent;
+  
   switch (themeType) {
     case 'minimal':
     case 'basic':
-      return <MinimalProfile {...commonProps} theme={themeData} />;
+      ProfileComponent = <MinimalProfile {...commonProps} theme={themeData} />;
+      break;
     
     case 'gradient':
     case 'colorful':
@@ -61,24 +68,35 @@ const ThemeVariants = ({
     case 'tropical':
     case 'warm':
     case 'cool':
-      return <GradientProfile {...commonProps} theme={themeData} />;
+      ProfileComponent = <GradientProfile {...commonProps} theme={themeData} />;
+      break;
     
     case 'dark':
     case 'tech':
     case 'cosmic':
     case 'space':
-      return <DarkProfile {...commonProps} theme={themeData} />;
+      ProfileComponent = <DarkProfile {...commonProps} theme={themeData} />;
+      break;
     
     case 'neon':
     case 'retro':
     case 'futuristic':
     case 'dynamic':
-      return <NeonProfile {...commonProps} theme={themeData} />;
+      ProfileComponent = <NeonProfile {...commonProps} theme={themeData} />;
+      break;
     
     case 'linktree':
     default:
-      return <LinktreeStyleProfile {...commonProps} theme={themeData} />;
+      ProfileComponent = <LinktreeStyleProfile {...commonProps} theme={themeData} />;
+      break;
   }
+
+  return (
+    <div className="relative">
+      {ProfileComponent}
+      <DroplinkBadge show={permissions.showDroplinkBadge} />
+    </div>
+  );
 };
 
 export default ThemeVariants;

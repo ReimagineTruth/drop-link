@@ -81,6 +81,10 @@ export const useUserPermissions = () => {
     communityContributorStatus: isDeveloperMode || plan === 'premium',
     hasFileUploads: isDeveloperMode || plan === 'premium',
     
+    // Badge control - FREE shows badge, ANY PAID PLAN can remove it
+    showDroplinkBadge: isDeveloperMode ? false : plan === 'free', // Show badge only on free plan
+    canHideDroplinkBadge: isDeveloperMode || plan !== 'free', // Can hide on any paid plan
+    
     // Analytics permissions - all enabled in dev mode
     hasAnalytics: isDeveloperMode || plan !== 'free',
     canWithdrawTips: isDeveloperMode || plan !== 'free',

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,10 +12,10 @@ const DemoPiProfilePage = () => {
   const [tipAmount, setTipAmount] = useState(0);
 
   const planFeatures = {
-    free: ['1 Link Only', 'Basic Profile', 'Pi AdNetwork', 'No .pi Domain'],
-    starter: ['.pi Domain Connection', 'Unlimited Links', 'Pi Tips', 'Basic Analytics'],
-    pro: ['.pi Domain Connection', 'Pi Tips & Products', 'Digital Sales', 'Performance Analytics', 'Custom Themes'],
-    premium: ['.pi Domain Connection', 'Pi Payments Pro', 'Priority Support', 'Data Export', 'Whitelabel']
+    free: ['1 Link Only', 'Basic Profile', 'Pi AdNetwork', 'No .pi Domain', 'Shows Droplink Badge'],
+    starter: ['.pi Domain Connection', 'Unlimited Links', 'Pi Tips', 'Basic Analytics', 'Hide Droplink Badge'],
+    pro: ['.pi Domain Connection', 'Pi Tips & Products', 'Digital Sales', 'Performance Analytics', 'Custom Themes', 'Hide Droplink Badge'],
+    premium: ['.pi Domain Connection', 'Pi Payments Pro', 'Priority Support', 'Data Export', 'Whitelabel', 'Hide Droplink Badge']
   };
 
   const planColors = {
@@ -109,6 +108,7 @@ const DemoPiProfilePage = () => {
 
   const canUsePiDomain = selectedPlan !== 'free';
   const canSellProducts = selectedPlan === 'pro' || selectedPlan === 'premium';
+  const showDroplinkBadge = selectedPlan === 'free';
 
   const handleTip = (amount: string) => {
     const piAmount = parseFloat(amount.replace('π', ''));
@@ -181,7 +181,7 @@ const DemoPiProfilePage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Mobile Preview */}
             <div className="flex justify-center">
-              <div className="w-80 bg-white rounded-3xl shadow-2xl p-6 border">
+              <div className="w-80 bg-white rounded-3xl shadow-2xl p-6 border relative">
                 {/* Profile Header */}
                 <div className="text-center mb-6">
                   <Avatar className="w-24 h-24 mx-auto mb-4">
@@ -222,6 +222,18 @@ const DemoPiProfilePage = () => {
                     </div>
                   )}
                 </div>
+
+                {/* Droplink Badge */}
+                {showDroplinkBadge && (
+                  <div className="absolute bottom-4 right-4">
+                    <div className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-lg rounded-full px-3 py-1 flex items-center gap-1 text-xs">
+                      <span className="text-gray-600">Made with</span>
+                      <span className="font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                        Droplink
+                      </span>
+                    </div>
+                  </div>
+                )}
 
                 {/* Content & Products */}
                 <div className="space-y-3">
@@ -306,17 +318,17 @@ const DemoPiProfilePage = () => {
                       <div 
                         key={index} 
                         className={`flex items-center gap-2 p-2 rounded ${
-                          feature.includes('No .pi Domain') 
+                          feature.includes('No .pi Domain') || feature.includes('Shows Droplink Badge')
                             ? 'bg-red-50 text-red-700' 
-                            : feature.includes('.pi Domain') || feature.includes('Pi Tips') || feature.includes('Pi Payments')
+                            : feature.includes('.pi Domain') || feature.includes('Pi Tips') || feature.includes('Pi Payments') || feature.includes('Hide Droplink Badge')
                             ? 'bg-green-50 text-green-700' 
                             : 'bg-blue-50 text-blue-700'
                         }`}
                       >
                         <div className={`w-2 h-2 rounded-full ${
-                          feature.includes('No .pi Domain') 
+                          feature.includes('No .pi Domain') || feature.includes('Shows Droplink Badge')
                             ? 'bg-red-500' 
-                            : feature.includes('.pi Domain') || feature.includes('Pi Tips') || feature.includes('Pi Payments')
+                            : feature.includes('.pi Domain') || feature.includes('Pi Tips') || feature.includes('Pi Payments') || feature.includes('Hide Droplink Badge')
                             ? 'bg-green-500' 
                             : 'bg-blue-500'
                         }`}></div>
