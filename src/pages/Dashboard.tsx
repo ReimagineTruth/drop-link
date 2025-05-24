@@ -1,9 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useUser } from "@/context/UserContext";
+import { useUserPermissions } from "@/hooks/useUserPermissions";
 import DashboardLoading from "@/components/dashboard/DashboardLoading";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import LinksSection from "@/components/dashboard/LinksSection";
@@ -18,6 +18,7 @@ import ConsentPrompt from "@/components/auth/ConsentPrompt";
 
 const Dashboard = () => {
   const { profile, subscription, isLoading: userLoading, refreshUserData } = useUser();
+  const { isDeveloperMode } = useUserPermissions();
   const [isLoading, setIsLoading] = useState(true);
   const [showConsentPrompt, setShowConsentPrompt] = useState(false);
   const [piAuthResult, setPiAuthResult] = useState<any>(null);
@@ -45,6 +46,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     const checkAuthAndLoadDashboard = async () => {
+      // In developer mode, allow access without authentication
+      if (isDeveloperMode) {
+        console.log("🚀 DEVELOPER MODE: Dashboard access granted without authentication");
+        setIsLoading(false);
+        return;
+      }
+
       // Check for test session first
       const testSession = getTestUserSession();
       if (testSession) {
@@ -67,7 +75,7 @@ const Dashboard = () => {
     };
 
     checkAuthAndLoadDashboard();
-  }, []);
+  }, [isDeveloperMode]);
 
   const handlePiLogin = async () => {
     try {
@@ -145,8 +153,9 @@ const Dashboard = () => {
     });
   };
 
-  // Check if user is authenticated (either via Supabase or test session)
+  // Check if user is authenticated (either via Supabase, test session, or developer mode)
   const isAuthenticated = () => {
+    if (isDeveloperMode) return true;
     const testSession = getTestUserSession();
     return testSession || profile;
   };
@@ -155,7 +164,7 @@ const Dashboard = () => {
     return <DashboardLoading />;
   }
 
-  // Show login prompt only if not authenticated and no test session
+  // Show login prompt only if not authenticated, no test session, and not in developer mode
   if (!isAuthenticated()) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -179,21 +188,27 @@ const Dashboard = () => {
     );
   }
 
-  // If authenticated (either via profile or test session), show dashboard
+  // If authenticated (either via profile, test session, or developer mode), show dashboard
   const testSession = getTestUserSession();
-  const displayName = testSession ? testSession.user.username : profile?.username;
+  const displayName = isDeveloperMode ? "Developer" : (testSession ? testSession.user.username : profile?.username);
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow py-12 px-4">
         <div className="container mx-auto max-w-4xl space-y-8">
-          <DashboardHeader 
-            username={displayName || null} 
-            subscription={subscription || null} 
-          />
+          {isDeveloperMode && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+              <div className="flex items-center gap-2">
+                <span className="text-green-800 font-medium">🚀 DEVELOPER MODE ACTIVE</span>
+                <span className="text-green-700">
+                  All features unlocked for testing - No authentication required
+                </span>
+              </div>
+            </div>
+          )}
           
-          {testSession && (
+          {testSession && !isDeveloperMode && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
               <div className="flex items-center gap-2">
                 <span className="text-green-800 font-medium">🧪 Test Mode Active</span>
@@ -203,6 +218,11 @@ const Dashboard = () => {
               </div>
             </div>
           )}
+          
+          <DashboardHeader 
+            username={displayName || null} 
+            subscription={subscription || null} 
+          />
           
           <LinksSection />
           <AnalyticsSection subscription={subscription || null} />

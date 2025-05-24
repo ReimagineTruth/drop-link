@@ -13,7 +13,7 @@ interface FeatureGateProps {
 }
 
 const FeatureGate = ({ feature, fallback, children, featureName }: FeatureGateProps) => {
-  const { permissions } = useUserPermissions();
+  const { permissions, isDeveloperMode } = useUserPermissions();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const navigate = useNavigate();
 
@@ -22,6 +22,18 @@ const FeatureGate = ({ feature, fallback, children, featureName }: FeatureGatePr
   const handleNavigateToPricing = () => {
     navigate('/pricing');
   };
+
+  // In developer mode, always show children with a developer badge
+  if (isDeveloperMode) {
+    return (
+      <div className="relative">
+        {children}
+        <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded z-10">
+          🚀 DEV
+        </div>
+      </div>
+    );
+  }
 
   if (hasAccess) {
     return <>{children}</>;

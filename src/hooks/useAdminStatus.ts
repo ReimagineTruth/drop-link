@@ -17,8 +17,24 @@ export const useAdminStatus = () => {
   const [error, setError] = useState<string | null>(null);
   const { profile } = useUser();
 
+  // DEVELOPER BYPASS MODE - GRANT ADMIN ACCESS FOR TESTING
+  const isDeveloperMode = true; // Set to false for production
+
   useEffect(() => {
     const checkAdminStatus = async () => {
+      // In developer mode, grant admin access immediately
+      if (isDeveloperMode) {
+        console.log("🚀 DEVELOPER MODE: Admin access granted for testing");
+        setIsAdmin(true);
+        setAdminData({
+          id: 'dev-admin-001',
+          pi_user_id: 'developer-bypass',
+          username: 'developer'
+        });
+        setIsLoading(false);
+        return;
+      }
+
       if (!profile?.id) {
         setIsLoading(false);
         setIsAdmin(false);
@@ -56,9 +72,15 @@ export const useAdminStatus = () => {
     };
 
     checkAdminStatus();
-  }, [profile?.id, profile?.username]);
+  }, [profile?.id, profile?.username, isDeveloperMode]);
 
-  return { isAdmin, adminData, isLoading, error };
+  return { 
+    isAdmin, 
+    adminData, 
+    isLoading, 
+    error,
+    isDeveloperMode // Expose developer mode flag
+  };
 };
 
 export default useAdminStatus;

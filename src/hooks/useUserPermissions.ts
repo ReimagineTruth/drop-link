@@ -11,75 +11,82 @@ export const useUserPermissions = () => {
     profile
   } = useUser();
 
+  // DEVELOPER BYPASS MODE - ALL FEATURES UNLOCKED FOR TESTING
+  const isDeveloperMode = true; // Set to false for production
+
   // Enhanced security: Strict check for admin status with additional validation
   let plan: SubscriptionPlan = 'free'; // Default to free
   
-  if (isLoggedIn && isAdmin && profile?.id) {
+  // In developer mode, grant premium access
+  if (isDeveloperMode) {
+    plan = 'premium';
+    console.log("🚀 DEVELOPER MODE: All features unlocked for testing");
+  } else if (isLoggedIn && isAdmin && profile?.id) {
     plan = 'premium'; // Admin users get premium plan by default
     console.log("Admin privileges granted to authenticated admin user");
   } else if (isLoggedIn && subscription?.plan) {
     plan = subscription.plan as SubscriptionPlan;
   }
   
-  // Improved security: More strict check for subscription validity
+  // Improved security: More strict check for subscription validity (bypassed in dev mode)
   const subscriptionEnd = subscription?.expires_at ? new Date(subscription.expires_at) : null;
-  const isSubscriptionActive = isLoggedIn && subscription?.is_active && 
-    subscriptionEnd && new Date() < subscriptionEnd;
+  const isSubscriptionActive = isDeveloperMode || (isLoggedIn && subscription?.is_active && 
+    subscriptionEnd && new Date() < subscriptionEnd);
   
-  // Double check for subscription validity
-  if (!isSubscriptionActive && plan !== 'free' && !(isLoggedIn && isAdmin && profile?.id)) {
+  // Double check for subscription validity (bypassed in dev mode)
+  if (!isDeveloperMode && !isSubscriptionActive && plan !== 'free' && !(isLoggedIn && isAdmin && profile?.id)) {
     plan = 'free';
     console.log('Subscription invalid or expired. Treating as free plan.');
   }
   
   const username = profile?.username || null;
 
-  // Feature limitations based on actual pricing plan features
+  // Feature limitations based on actual pricing plan features (all unlocked in dev mode)
   const permissions = {
-    // Link limits
-    maxLinks: plan === 'free' ? 1 : Infinity,
-    maxSocialProfiles: plan === 'free' ? 1 : Infinity,
+    // Link limits (unlimited in dev mode)
+    maxLinks: isDeveloperMode ? Infinity : (plan === 'free' ? 1 : Infinity),
+    maxSocialProfiles: isDeveloperMode ? Infinity : (plan === 'free' ? 1 : Infinity),
     
-    // Starter features (8π/month)
-    unlimitedLinks: plan !== 'free',
-    connectAllSocialProfiles: plan !== 'free',
-    piAdNetwork: plan === 'free' || plan === 'starter', // Only free and starter show ads
-    basicAnalytics: plan !== 'free',
-    emailSupport: plan !== 'free',
-    communityForumsAccess: plan !== 'free',
+    // Starter features (8π/month) - all enabled in dev mode
+    unlimitedLinks: isDeveloperMode || plan !== 'free',
+    connectAllSocialProfiles: isDeveloperMode || plan !== 'free',
+    piAdNetwork: isDeveloperMode ? false : (plan === 'free' || plan === 'starter'), // No ads in dev mode
+    basicAnalytics: isDeveloperMode || plan !== 'free',
+    emailSupport: isDeveloperMode || plan !== 'free',
+    communityForumsAccess: isDeveloperMode || plan !== 'free',
     
-    // Pro features (12π/month) 
-    multiFactorAuth: plan === 'pro' || plan === 'premium',
-    hasQRCode: plan === 'pro' || plan === 'premium',
-    hasScheduling: plan === 'pro' || plan === 'premium',
-    hasLinkAnimations: plan === 'pro' || plan === 'premium',
-    customButtonStyles: plan === 'pro' || plan === 'premium',
-    spotlightLinks: plan === 'pro' || plan === 'premium',
-    performanceAnalytics: plan === 'pro' || plan === 'premium',
-    hasAdvancedThemes: plan === 'pro' || plan === 'premium',
-    locationAnalytics: plan === 'pro' || plan === 'premium',
-    emailPhoneCollection: plan === 'pro' || plan === 'premium',
-    hasSEOTools: plan === 'pro' || plan === 'premium',
-    communityRewards: plan === 'pro' || plan === 'premium',
-    hasCustomDomain: plan === 'pro' || plan === 'premium',
+    // Pro features (12π/month) - all enabled in dev mode
+    multiFactorAuth: isDeveloperMode || plan === 'pro' || plan === 'premium',
+    hasQRCode: isDeveloperMode || plan === 'pro' || plan === 'premium',
+    hasScheduling: isDeveloperMode || plan === 'pro' || plan === 'premium',
+    hasLinkAnimations: isDeveloperMode || plan === 'pro' || plan === 'premium',
+    customButtonStyles: isDeveloperMode || plan === 'pro' || plan === 'premium',
+    spotlightLinks: isDeveloperMode || plan === 'pro' || plan === 'premium',
+    performanceAnalytics: isDeveloperMode || plan === 'pro' || plan === 'premium',
+    hasAdvancedThemes: isDeveloperMode || plan === 'pro' || plan === 'premium',
+    locationAnalytics: isDeveloperMode || plan === 'pro' || plan === 'premium',
+    emailPhoneCollection: isDeveloperMode || plan === 'pro' || plan === 'premium',
+    hasSEOTools: isDeveloperMode || plan === 'pro' || plan === 'premium',
+    communityRewards: isDeveloperMode || plan === 'pro' || plan === 'premium',
+    hasCustomDomain: isDeveloperMode || plan === 'pro' || plan === 'premium',
     
-    // Premium features (18π/month)
-    canSellWithPiPayments: plan === 'premium',
-    tailoredOnboarding: plan === 'premium',
-    hasPrioritySupport: plan === 'premium',
-    historicalInsights: plan === 'premium',
-    hasDataExport: plan === 'premium',
-    hasWhitelabel: plan === 'premium',
-    advancedPiPayments: plan === 'premium',
-    communityContributorStatus: plan === 'premium',
-    hasFileUploads: plan === 'premium',
+    // Premium features (18π/month) - all enabled in dev mode
+    canSellWithPiPayments: isDeveloperMode || plan === 'premium',
+    tailoredOnboarding: isDeveloperMode || plan === 'premium',
+    hasPrioritySupport: isDeveloperMode || plan === 'premium',
+    historicalInsights: isDeveloperMode || plan === 'premium',
+    hasDataExport: isDeveloperMode || plan === 'premium',
+    hasWhitelabel: isDeveloperMode || plan === 'premium',
+    advancedPiPayments: isDeveloperMode || plan === 'premium',
+    communityContributorStatus: isDeveloperMode || plan === 'premium',
+    hasFileUploads: isDeveloperMode || plan === 'premium',
     
-    // Analytics permissions
-    hasAnalytics: plan !== 'free',
-    canWithdrawTips: plan !== 'free',
+    // Analytics permissions - all enabled in dev mode
+    hasAnalytics: isDeveloperMode || plan !== 'free',
+    canWithdrawTips: isDeveloperMode || plan !== 'free',
     
-    // Enhanced security: Require profile ID validation for full admin access
-    hasFullAdminAccess: isLoggedIn && isAdmin && !!profile?.id
+    // Enhanced security: Require profile ID validation for full admin access (bypassed in dev mode)
+    hasFullAdminAccess: isDeveloperMode || (isLoggedIn && isAdmin && !!profile?.id)
   };
 
   return {
@@ -88,7 +95,8 @@ export const useUserPermissions = () => {
     username,
     subscriptionEnd,
     isSubscriptionActive,
-    permissions
+    permissions,
+    isDeveloperMode // Expose developer mode flag
   };
 };
 
