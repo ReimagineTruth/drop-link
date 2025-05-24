@@ -1,377 +1,324 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { 
-  User, 
-  Globe, 
-  Palette, 
-  Bell, 
-  Shield, 
-  CreditCard, 
-  ArrowRight,
-  QrCode,
-  Download,
-  Eye
-} from "lucide-react";
-import { useUser } from "@/context/UserContext";
 import { useUserPermissions } from "@/hooks/useUserPermissions";
 import FeatureGate from "@/components/FeatureGate";
-import { toast } from "@/hooks/use-toast";
+import MetadataSettings from "@/components/dashboard/MetadataSettings";
+import DomainSettings from "@/components/profile/DomainSettings";
+import { Lock, Crown, Star, Zap } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Settings = () => {
-  const { profile, isAdmin } = useUser();
   const { permissions, plan } = useUserPermissions();
   const [settings, setSettings] = useState({
-    displayName: profile?.display_name || "",
-    bio: profile?.bio || "",
-    emailNotifications: true,
+    notifications: true,
+    analytics: true,
     publicProfile: true,
-    showAnalytics: false
+    darkMode: false
   });
 
-  const handleSave = () => {
-    toast({
-      title: "Settings Saved",
-      description: "Your profile settings have been updated",
-    });
-  };
-
-  const generateQRCode = () => {
-    toast({
-      title: "QR Code Generated",
-      description: "Your profile QR code has been created",
-    });
-  };
-
-  const exportData = () => {
-    toast({
-      title: "Data Export Started",
-      description: "Your data export will be emailed to you shortly",
-    });
+  const getPlanBadge = () => {
+    switch (plan) {
+      case 'premium':
+        return <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"><Crown className="w-3 h-3 mr-1" />Premium</Badge>;
+      case 'pro':
+        return <Badge className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white"><Star className="w-3 h-3 mr-1" />Pro</Badge>;
+      case 'starter':
+        return <Badge className="bg-gradient-to-r from-green-500 to-teal-500 text-white"><Zap className="w-3 h-3 mr-1" />Starter</Badge>;
+      default:
+        return <Badge variant="outline">Free</Badge>;
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-grow py-12 px-4">
+      <main className="flex-grow py-8 px-4">
         <div className="container mx-auto max-w-4xl">
-          <div className="flex items-center gap-4 mb-8">
-            <div>
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
               <h1 className="text-3xl font-bold">Settings</h1>
-              <p className="text-muted-foreground">Manage your account and preferences</p>
-              <div className="flex items-center gap-2 mt-2">
-                <Badge variant="outline">{plan}</Badge>
-                {isAdmin && <Badge variant="secondary">Admin</Badge>}
-              </div>
+              {getPlanBadge()}
             </div>
+            <p className="text-gray-600 mt-2">Manage your account and preferences</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Sidebar Navigation */}
-            <div className="space-y-2">
+          <Tabs defaultValue="general" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="general">General</TabsTrigger>
+              <TabsTrigger value="profile">Profile</TabsTrigger>
+              <TabsTrigger value="domains">Domains</TabsTrigger>
+              <TabsTrigger value="seo">SEO</TabsTrigger>
+              <TabsTrigger value="advanced">Advanced</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="general">
               <Card>
-                <CardContent className="p-4">
-                  <nav className="space-y-2">
-                    <a href="#profile" className="flex items-center gap-2 p-2 rounded-lg bg-primary/10 text-primary">
-                      <User className="w-4 h-4" />
-                      Profile
-                    </a>
-                    <Link to="/settings/domains" className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100">
-                      <Globe className="w-4 h-4" />
-                      Domains
-                      <ArrowRight className="w-4 h-4 ml-auto" />
-                    </Link>
-                    <a href="#appearance" className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100">
-                      <Palette className="w-4 h-4" />
-                      Appearance
-                    </a>
-                    <a href="#notifications" className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100">
-                      <Bell className="w-4 h-4" />
-                      Notifications
-                    </a>
-                    <a href="#privacy" className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100">
-                      <Shield className="w-4 h-4" />
-                      Privacy
-                    </a>
-                    <a href="#billing" className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100">
-                      <CreditCard className="w-4 h-4" />
-                      Billing
-                    </a>
-                  </nav>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Main Content */}
-            <div className="md:col-span-2 space-y-6">
-              {/* Profile Settings */}
-              <Card id="profile">
                 <CardHeader>
-                  <CardTitle>Profile Information</CardTitle>
-                  <CardDescription>
-                    Update your public profile information
-                  </CardDescription>
+                  <CardTitle>General Settings</CardTitle>
+                  <CardDescription>Basic account preferences and notifications</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="displayName">Display Name</Label>
-                    <Input
-                      id="displayName"
-                      value={settings.displayName}
-                      onChange={(e) => setSettings({...settings, displayName: e.target.value})}
-                      placeholder="Your display name"
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="username">Username</Label>
-                    <Input
-                      id="username"
-                      value={profile?.username || ""}
-                      disabled
-                      className="bg-gray-100"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Username cannot be changed
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="bio">Bio</Label>
-                    <Textarea
-                      id="bio"
-                      value={settings.bio}
-                      onChange={(e) => setSettings({...settings, bio: e.target.value})}
-                      placeholder="Tell people about yourself"
-                      rows={3}
-                    />
-                  </div>
-                  
-                  <Button onClick={handleSave}>Save Changes</Button>
-                </CardContent>
-              </Card>
-
-              {/* Appearance Settings */}
-              <Card id="appearance">
-                <CardHeader>
-                  <CardTitle>Appearance</CardTitle>
-                  <CardDescription>
-                    Customize how your profile looks
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <FeatureGate 
-                    feature="hasAdvancedThemes" 
-                    featureName="Custom Themes"
-                    fallback={
-                      <div className="p-4 bg-blue-50 rounded-lg text-center">
-                        <h4 className="font-medium mb-2">Custom Themes - Pro Feature</h4>
-                        <p className="text-gray-600 mb-3">
-                          Access premium themes and customization options
-                        </p>
-                        <Link to="/pricing">
-                          <Button size="sm" className="bg-gradient-hero hover:bg-secondary">
-                            Upgrade Plan
-                          </Button>
-                        </Link>
-                      </div>
-                    }
-                  >
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="p-3 border rounded-lg cursor-pointer hover:border-primary">
-                        <div className="w-full h-20 bg-gradient-to-br from-blue-400 to-purple-500 rounded mb-2"></div>
-                        <p className="text-xs text-center">Gradient</p>
-                      </div>
-                      <div className="p-3 border rounded-lg cursor-pointer hover:border-primary">
-                        <div className="w-full h-20 bg-gray-900 rounded mb-2"></div>
-                        <p className="text-xs text-center">Dark</p>
-                      </div>
-                      <div className="p-3 border rounded-lg cursor-pointer hover:border-primary">
-                        <div className="w-full h-20 bg-white border rounded mb-2"></div>
-                        <p className="text-xs text-center">Minimal</p>
-                      </div>
+                <CardContent className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Email Notifications</Label>
+                      <p className="text-sm text-muted-foreground">Receive updates about your account</p>
                     </div>
-                  </FeatureGate>
-                </CardContent>
-              </Card>
+                    <Switch
+                      checked={settings.notifications}
+                      onCheckedChange={(checked) => setSettings({...settings, notifications: checked})}
+                    />
+                  </div>
 
-              {/* QR Code */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>QR Code</CardTitle>
-                  <CardDescription>
-                    Generate a QR code for your profile
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
                   <FeatureGate 
-                    feature="hasQRCode" 
-                    featureName="QR Code Generator"
+                    feature="basicAnalytics" 
+                    featureName="Analytics Tracking"
                     fallback={
-                      <div className="text-center p-6 bg-blue-50 rounded-lg">
-                        <QrCode className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                        <h4 className="font-medium mb-2">QR Code - Pro Feature</h4>
-                        <p className="text-gray-600 mb-3">
-                          Generate QR codes to share your profile offline
-                        </p>
-                        <Link to="/pricing">
-                          <Button size="sm" className="bg-gradient-hero hover:bg-secondary">
-                            Upgrade to Pro
-                          </Button>
-                        </Link>
+                      <div className="flex items-center justify-between opacity-50">
+                        <div className="space-y-0.5">
+                          <Label className="flex items-center gap-2">
+                            <Lock className="w-4 h-4" />
+                            Analytics Tracking
+                          </Label>
+                          <p className="text-sm text-muted-foreground">Track visitor analytics (Starter+ feature)</p>
+                        </div>
+                        <Switch disabled />
                       </div>
                     }
                   >
                     <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-gray-600 mb-2">
-                          Generate a QR code for easy sharing of your profile
-                        </p>
-                        <Button onClick={generateQRCode} variant="outline">
-                          <QrCode className="w-4 h-4 mr-2" />
-                          Generate QR Code
-                        </Button>
+                      <div className="space-y-0.5">
+                        <Label>Analytics Tracking</Label>
+                        <p className="text-sm text-muted-foreground">Track visitor analytics</p>
                       </div>
+                      <Switch
+                        checked={settings.analytics}
+                        onCheckedChange={(checked) => setSettings({...settings, analytics: checked})}
+                      />
                     </div>
                   </FeatureGate>
-                </CardContent>
-              </Card>
 
-              {/* Privacy Settings */}
-              <Card id="privacy">
-                <CardHeader>
-                  <CardTitle>Privacy Settings</CardTitle>
-                  <CardDescription>
-                    Control your profile visibility and data
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div>
+                    <div className="space-y-0.5">
                       <Label>Public Profile</Label>
-                      <p className="text-sm text-gray-500">
-                        Make your profile visible to everyone
-                      </p>
+                      <p className="text-sm text-muted-foreground">Make your profile discoverable</p>
                     </div>
                     <Switch
                       checked={settings.publicProfile}
                       onCheckedChange={(checked) => setSettings({...settings, publicProfile: checked})}
                     />
                   </div>
-                  
+
                   <FeatureGate 
-                    feature="hasAnalytics" 
-                    featureName="Analytics Visibility"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label>Show Analytics Badge</Label>
-                        <p className="text-sm text-gray-500">
-                          Display view count on your profile
-                        </p>
-                      </div>
-                      <Switch
-                        checked={settings.showAnalytics}
-                        onCheckedChange={(checked) => setSettings({...settings, showAnalytics: checked})}
-                      />
-                    </div>
-                  </FeatureGate>
-                  
-                  <FeatureGate 
-                    feature="hasDataExport" 
-                    featureName="Data Export"
+                    feature="hasAdvancedThemes" 
+                    featureName="Dark Mode"
                     fallback={
-                      <div className="p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-medium text-gray-400">Export Your Data</p>
-                            <p className="text-sm text-gray-400">Premium feature</p>
-                          </div>
-                          <Button disabled size="sm" variant="outline">
-                            <Download className="w-4 h-4 mr-2" />
-                            Export
-                          </Button>
+                      <div className="flex items-center justify-between opacity-50">
+                        <div className="space-y-0.5">
+                          <Label className="flex items-center gap-2">
+                            <Lock className="w-4 h-4" />
+                            Dark Mode
+                          </Label>
+                          <p className="text-sm text-muted-foreground">Dark theme support (Pro+ feature)</p>
                         </div>
+                        <Switch disabled />
                       </div>
                     }
                   >
                     <div className="flex items-center justify-between">
-                      <div>
-                        <Label>Export Your Data</Label>
-                        <p className="text-sm text-gray-500">
-                          Download all your profile and analytics data
-                        </p>
+                      <div className="space-y-0.5">
+                        <Label>Dark Mode</Label>
+                        <p className="text-sm text-muted-foreground">Use dark theme</p>
                       </div>
-                      <Button onClick={exportData} size="sm" variant="outline">
-                        <Download className="w-4 h-4 mr-2" />
-                        Export
-                      </Button>
+                      <Switch
+                        checked={settings.darkMode}
+                        onCheckedChange={(checked) => setSettings({...settings, darkMode: checked})}
+                      />
                     </div>
                   </FeatureGate>
                 </CardContent>
               </Card>
+            </TabsContent>
 
-              {/* Notifications */}
-              <Card id="notifications">
+            <TabsContent value="profile">
+              <Card>
                 <CardHeader>
-                  <CardTitle>Notifications</CardTitle>
-                  <CardDescription>
-                    Manage your notification preferences
-                  </CardDescription>
+                  <CardTitle>Profile Settings</CardTitle>
+                  <CardDescription>Customize your public profile information</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label>Email Notifications</Label>
-                      <p className="text-sm text-gray-500">
-                        Receive updates about your account
-                      </p>
+                      <Label htmlFor="display-name">Display Name</Label>
+                      <Input id="display-name" placeholder="Your Name" />
                     </div>
-                    <Switch
-                      checked={settings.emailNotifications}
-                      onCheckedChange={(checked) => setSettings({...settings, emailNotifications: checked})}
-                    />
+                    <div>
+                      <Label htmlFor="username">Username</Label>
+                      <Input id="username" placeholder="username" />
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
+                  
+                  <div>
+                    <Label htmlFor="bio">Bio</Label>
+                    <Textarea id="bio" placeholder="Tell people about yourself..." />
+                  </div>
 
-              {/* Billing */}
-              <Card id="billing">
-                <CardHeader>
-                  <CardTitle>Billing & Subscription</CardTitle>
-                  <CardDescription>
-                    Manage your subscription and billing
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center p-6">
-                    <CreditCard className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                    <h4 className="font-medium mb-2">Current Plan: {plan}</h4>
-                    <p className="text-gray-600 mb-4">
-                      {plan === 'free' ? 
-                        'Upgrade to unlock premium features' : 
-                        'Manage your subscription and billing settings'
-                      }
-                    </p>
-                    <Link to="/pricing">
-                      <Button className="bg-gradient-hero hover:bg-secondary">
-                        {plan === 'free' ? 'Upgrade Plan' : 'Manage Subscription'}
-                      </Button>
-                    </Link>
-                  </div>
+                  <FeatureGate 
+                    feature="emailPhoneCollection" 
+                    featureName="Contact Information"
+                    fallback={
+                      <div className="space-y-2 opacity-50">
+                        <Label className="flex items-center gap-2">
+                          <Lock className="w-4 h-4" />
+                          Contact Information
+                        </Label>
+                        <div className="grid grid-cols-2 gap-4">
+                          <Input placeholder="Email" disabled />
+                          <Input placeholder="Phone" disabled />
+                        </div>
+                        <p className="text-xs text-muted-foreground">Contact collection available with Pro plan</p>
+                      </div>
+                    }
+                  >
+                    <div className="space-y-2">
+                      <Label>Contact Information</Label>
+                      <div className="grid grid-cols-2 gap-4">
+                        <Input placeholder="Contact Email" />
+                        <Input placeholder="Phone Number" />
+                      </div>
+                    </div>
+                  </FeatureGate>
+                  
+                  <Button>Save Profile</Button>
                 </CardContent>
               </Card>
-            </div>
-          </div>
+            </TabsContent>
+
+            <TabsContent value="domains">
+              <DomainSettings />
+            </TabsContent>
+
+            <TabsContent value="seo">
+              <MetadataSettings />
+            </TabsContent>
+
+            <TabsContent value="advanced">
+              <div className="space-y-6">
+                <FeatureGate 
+                  feature="hasDataExport" 
+                  featureName="Data Export"
+                  fallback={
+                    <Card className="opacity-75">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Lock className="w-5 h-5" />
+                          Data Export
+                        </CardTitle>
+                        <CardDescription>Export your profile data (Premium feature)</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-center p-6 bg-purple-50 rounded-lg">
+                          <h3 className="font-medium mb-2">Premium Feature</h3>
+                          <p className="text-gray-600 mb-4">Export all your data including analytics, links, and insights</p>
+                          <Link to="/pricing">
+                            <Button className="bg-gradient-hero hover:bg-secondary">
+                              Upgrade to Premium
+                            </Button>
+                          </Link>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  }
+                >
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Data Export</CardTitle>
+                      <CardDescription>Export your profile data and analytics</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <p className="text-sm text-gray-600">Download all your data including links, analytics, and profile information.</p>
+                        <Button>Export Data</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </FeatureGate>
+
+                <FeatureGate 
+                  feature="hasWhitelabel" 
+                  featureName="Whitelabel Options"
+                  fallback={
+                    <Card className="opacity-75">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Lock className="w-5 h-5" />
+                          Whitelabel Options
+                        </CardTitle>
+                        <CardDescription>Remove Droplink branding (Premium feature)</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-center p-6 bg-purple-50 rounded-lg">
+                          <h3 className="font-medium mb-2">Premium Feature</h3>
+                          <p className="text-gray-600 mb-4">Remove all Droplink branding from your profile</p>
+                          <Link to="/pricing">
+                            <Button className="bg-gradient-hero hover:bg-secondary">
+                              Upgrade to Premium
+                            </Button>
+                          </Link>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  }
+                >
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Whitelabel Options</CardTitle>
+                      <CardDescription>Customize branding and remove Droplink attribution</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-0.5">
+                            <Label>Remove Droplink Branding</Label>
+                            <p className="text-sm text-muted-foreground">Hide "Powered by Droplink" footer</p>
+                          </div>
+                          <Switch />
+                        </div>
+                        <Button>Save Settings</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </FeatureGate>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-red-600">Danger Zone</CardTitle>
+                    <CardDescription>Irreversible actions</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="border border-red-200 rounded-lg p-4">
+                        <h3 className="font-medium text-red-600 mb-2">Delete Account</h3>
+                        <p className="text-sm text-gray-600 mb-4">
+                          Permanently delete your account and all associated data. This action cannot be undone.
+                        </p>
+                        <Button variant="destructive">Delete Account</Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
       <Footer />

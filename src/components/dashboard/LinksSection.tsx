@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, ExternalLink, Trash2, GripVertical, Eye, EyeOff } from "lucide-react";
+import { Plus, ExternalLink, Trash2, GripVertical, Eye, EyeOff, Lock } from "lucide-react";
 import { useUserPermissions } from "@/hooks/useUserPermissions";
 import FeatureGate from "@/components/FeatureGate";
 import { toast } from "@/hooks/use-toast";
@@ -20,14 +20,19 @@ const LinksSection = () => {
   const [showAddForm, setShowAddForm] = useState(false);
 
   const canAddMoreLinks = () => {
-    return links.length < permissions.maxLinks;
+    if (plan === 'free') {
+      return links.length < permissions.maxLinks;
+    }
+    return permissions.unlimitedLinks;
   };
 
   const handleAddLink = () => {
     if (!canAddMoreLinks()) {
       toast({
         title: "Link Limit Reached",
-        description: `You can only have ${permissions.maxLinks} link(s) on the free plan. Upgrade to add more.`,
+        description: plan === 'free' 
+          ? `You can only have ${permissions.maxLinks} link(s) on the free plan. Upgrade to Starter to get unlimited links.`
+          : "You've reached your link limit for this plan.",
         variant: "destructive",
       });
       return;
@@ -65,12 +70,19 @@ const LinksSection = () => {
     ));
   };
 
+  const getLinkLimitText = () => {
+    if (plan === 'free') {
+      return `(${links.length}/${permissions.maxLinks} used)`;
+    }
+    return `(${links.length} links - Unlimited)`;
+  };
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Links</CardTitle>
         <CardDescription>
-          Manage your profile links {plan === 'free' && `(${links.length}/${permissions.maxLinks} used)`}
+          Manage your profile links {getLinkLimitText()}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -81,7 +93,7 @@ const LinksSection = () => {
                 <FeatureGate 
                   feature="hasLinkAnimations" 
                   featureName="Link Reordering"
-                  fallback={<div className="w-5 h-5 text-gray-300">⋮⋮</div>}
+                  fallback={<div className="w-5 h-5 text-gray-300 flex items-center justify-center"><Lock size={16} /></div>}
                 >
                   <GripVertical className="w-5 h-5 text-gray-400 cursor-move" />
                 </FeatureGate>
@@ -94,9 +106,9 @@ const LinksSection = () => {
                   <p className="text-sm text-gray-500 truncate max-w-64">{link.url}</p>
                   
                   <FeatureGate 
-                    feature="hasAnalytics" 
+                    feature="basicAnalytics" 
                     featureName="Link Analytics"
-                    fallback={<span className="text-xs text-gray-400">Analytics available with Pro plan</span>}
+                    fallback={<span className="text-xs text-gray-400">Analytics available with Starter plan</span>}
                   >
                     <span className="text-xs text-green-600">{link.clicks} clicks</span>
                   </FeatureGate>
@@ -107,6 +119,7 @@ const LinksSection = () => {
                 <FeatureGate 
                   feature="hasScheduling" 
                   featureName="Link Scheduling"
+                  fallback={<Button variant="outline" size="sm" disabled><Lock className="w-4 h-4" /></Button>}
                 >
                   <Button 
                     variant="outline" 
@@ -165,7 +178,9 @@ const LinksSection = () => {
             <Button 
               onClick={() => canAddMoreLinks() ? setShowAddForm(true) : toast({
                 title: "Upgrade Required",
-                description: `You've reached the ${permissions.maxLinks} link limit for the ${plan} plan`,
+                description: plan === 'free' 
+                  ? `You've reached the ${permissions.maxLinks} link limit for the free plan. Upgrade to Starter for unlimited links.`
+                  : "You've reached your link limit for this plan",
                 variant: "destructive"
               })}
               variant="outline" 
@@ -173,16 +188,26 @@ const LinksSection = () => {
               disabled={!canAddMoreLinks() && plan === 'free'}
             >
               <Plus className="w-4 h-4 mr-2" />
-              {canAddMoreLinks() ? 'Add New Link' : `Upgrade to add more links (${links.length}/${permissions.maxLinks})`}
+              {canAddMoreLinks() 
+                ? 'Add New Link' 
+                : plan === 'free'
+                  ? `Upgrade for unlimited links (${links.length}/${permissions.maxLinks})`
+                  : 'Upgrade to add more links'
+              }
             </Button>
           )}
           
-          {!canAddMoreLinks() && plan === 'free' && (
+          {!canAddMoreLinks() && (
             <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-blue-800 mb-2">Want to add more links?</p>
+              <p className="text-sm text-blue-800 mb-2">
+                {plan === 'free' 
+                  ? "Want unlimited links?"
+                  : "Need more links?"
+                }
+              </p>
               <Link to="/pricing">
                 <Button size="sm" className="bg-gradient-hero hover:bg-secondary">
-                  Upgrade Plan
+                  {plan === 'free' ? 'Upgrade to Starter' : 'Upgrade Plan'}
                 </Button>
               </Link>
             </div>

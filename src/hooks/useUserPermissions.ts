@@ -34,24 +34,50 @@ export const useUserPermissions = () => {
   
   const username = profile?.username || null;
 
-  // Feature limitations based on plan
+  // Feature limitations based on actual pricing plan features
   const permissions = {
+    // Link limits
     maxLinks: plan === 'free' ? 1 : Infinity,
     maxSocialProfiles: plan === 'free' ? 1 : Infinity,
-    canWithdrawTips: plan !== 'free',
-    hasAnalytics: plan !== 'free',
+    
+    // Starter features (8π/month)
+    unlimitedLinks: plan !== 'free',
+    connectAllSocialProfiles: plan !== 'free',
+    piAdNetwork: plan === 'free' || plan === 'starter', // Only free and starter show ads
+    basicAnalytics: plan !== 'free',
+    emailSupport: plan !== 'free',
+    communityForumsAccess: plan !== 'free',
+    
+    // Pro features (12π/month) 
+    multiFactorAuth: plan === 'pro' || plan === 'premium',
     hasQRCode: plan === 'pro' || plan === 'premium',
-    hasAdvancedThemes: plan !== 'free',
-    hasCustomDomain: plan !== 'free',
-    hasLinkAnimations: plan === 'pro' || plan === 'premium',
     hasScheduling: plan === 'pro' || plan === 'premium',
+    hasLinkAnimations: plan === 'pro' || plan === 'premium',
+    customButtonStyles: plan === 'pro' || plan === 'premium',
+    spotlightLinks: plan === 'pro' || plan === 'premium',
+    performanceAnalytics: plan === 'pro' || plan === 'premium',
+    hasAdvancedThemes: plan === 'pro' || plan === 'premium',
+    locationAnalytics: plan === 'pro' || plan === 'premium',
+    emailPhoneCollection: plan === 'pro' || plan === 'premium',
     hasSEOTools: plan === 'pro' || plan === 'premium',
-    hasFileUploads: plan === 'premium',
-    hasWhitelabel: plan === 'premium',
-    hasDataExport: plan === 'premium',
-    hasPrioritySupport: plan === 'premium',
-    canUsePiAdNetwork: plan === 'free' || plan === 'starter',
+    communityRewards: plan === 'pro' || plan === 'premium',
+    hasCustomDomain: plan === 'pro' || plan === 'premium',
+    
+    // Premium features (18π/month)
     canSellWithPiPayments: plan === 'premium',
+    tailoredOnboarding: plan === 'premium',
+    hasPrioritySupport: plan === 'premium',
+    historicalInsights: plan === 'premium',
+    hasDataExport: plan === 'premium',
+    hasWhitelabel: plan === 'premium',
+    advancedPiPayments: plan === 'premium',
+    communityContributorStatus: plan === 'premium',
+    hasFileUploads: plan === 'premium',
+    
+    // Analytics permissions
+    hasAnalytics: plan !== 'free',
+    canWithdrawTips: plan !== 'free',
+    
     // Enhanced security: Require profile ID validation for full admin access
     hasFullAdminAccess: isLoggedIn && isAdmin && !!profile?.id
   };
