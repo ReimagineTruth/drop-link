@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -106,8 +107,9 @@ const DemoPiProfilePage = () => {
     return [...tipOptions, ...digitalProducts, ...freeContent];
   };
 
-  const canUsePiDomain = selectedPlan !== 'free';
-  const canReceiveTips = selectedPlan !== 'free';
+  // Fix the type comparison issue by being more explicit about plan checks
+  const canUsePiDomain = selectedPlan === 'starter' || selectedPlan === 'pro' || selectedPlan === 'premium';
+  const canReceiveTips = selectedPlan === 'starter' || selectedPlan === 'pro' || selectedPlan === 'premium';
   const canSellProducts = selectedPlan === 'pro' || selectedPlan === 'premium';
   const showDroplinkBadge = selectedPlan === 'free';
 
