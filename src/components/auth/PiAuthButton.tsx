@@ -25,12 +25,12 @@ export function PiAuthButton() {
   }, []);
 
   const handlePiAuth = async () => {
-    // If not in Pi Browser, show a toast and open the dialog
+    // STRICT Pi Browser requirement - block if not in Pi Browser
     if (!isPiBrowser) {
-      console.log("Not in Pi Browser, showing toast and opening dialog");
+      console.log("Not in Pi Browser, blocking authentication");
       toast({
         title: "Pi Browser Required",
-        description: "Please open this page in the Pi Browser to authenticate with Pi Network",
+        description: "You must use Pi Browser to authenticate with Pi Network. Please open this app in Pi Browser.",
         variant: "destructive",
       });
       
@@ -142,12 +142,17 @@ export function PiAuthButton() {
       <Button 
         onClick={handlePiAuth}
         className="w-full bg-gradient-hero hover:bg-secondary flex items-center justify-center gap-2 mb-3"
-        disabled={isAuthenticating}
+        disabled={isAuthenticating || !isPiBrowser}
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8z"/>
         </svg>
-        {isAuthenticating ? "Authenticating..." : "Sign in with Pi Network"}
+        {!isPiBrowser 
+          ? "Pi Browser Required" 
+          : isAuthenticating 
+            ? "Authenticating..." 
+            : "Sign in with Pi Network"
+        }
       </Button>
       
       {piAuthResult && (

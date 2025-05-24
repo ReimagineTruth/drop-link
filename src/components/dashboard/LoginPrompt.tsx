@@ -1,8 +1,9 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Lock } from "lucide-react";
+import { Lock, AlertTriangle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { isRunningInPiBrowser } from "@/utils/pi-sdk";
 
 interface LoginPromptProps {
   handlePiLogin: () => Promise<void>;
@@ -10,8 +11,22 @@ interface LoginPromptProps {
 
 const LoginPrompt = ({ handlePiLogin }: LoginPromptProps) => {
   const [isPiAuthenticating, setIsPiAuthenticating] = useState(false);
+  const isPiBrowser = isRunningInPiBrowser();
   
   const handlePiAuthClick = async () => {
+    // Check Pi Browser requirement
+    if (!isPiBrowser) {
+      toast({
+        title: "Pi Browser Required",
+        description: "You must use Pi Browser to access the dashboard. Please open this app in Pi Browser.",
+        variant: "destructive",
+      });
+      
+      // Dispatch event to show Pi Browser dialog
+      window.dispatchEvent(new CustomEvent('open-pi-browser-dialog'));
+      return;
+    }
+    
     try {
       setIsPiAuthenticating(true);
       await handlePiLogin();
@@ -40,13 +55,30 @@ const LoginPrompt = ({ handlePiLogin }: LoginPromptProps) => {
           Sign in with your Pi Network account to access your personalized dashboard
         </p>
         
+        {!isPiBrowser && (
+          <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+            <div className="flex items-center justify-center mb-2">
+              <AlertTriangle className="h-5 w-5 text-orange-600 mr-2" />
+              <span className="font-medium text-orange-800">Pi Browser Required</span>
+            </div>
+            <p className="text-sm text-orange-700">
+              You must use Pi Browser to access the dashboard and authenticate with Pi Network.
+            </p>
+          </div>
+        )}
+        
         <div className="space-y-4">
           <Button 
             onClick={handlePiAuthClick} 
             className="w-full bg-gradient-hero hover:bg-secondary"
-            disabled={isPiAuthenticating}
+            disabled={isPiAuthenticating || !isPiBrowser}
           >
-            {isPiAuthenticating ? "Authenticating..." : "Sign in with Pi Network"}
+            {!isPiBrowser 
+              ? "Pi Browser Required" 
+              : isPiAuthenticating 
+                ? "Authenticating..." 
+                : "Sign in with Pi Network"
+            }
           </Button>
         </div>
       </div>

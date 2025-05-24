@@ -18,12 +18,12 @@ export interface PiPaymentData {
   metadata?: Record<string, any>;
 }
 
-// Check if running in Pi Browser
+// Check if running in Pi Browser with enhanced detection
 export const isRunningInPiBrowser = (): boolean => {
   try {
     // Enhanced detection for Pi Browser environment
     if (typeof window !== 'undefined') {
-      // Check for Pi SDK availability
+      // Check for Pi SDK availability (primary indicator)
       if (window.Pi) {
         console.log("Pi SDK detected - running in Pi Browser");
         return true;
@@ -31,18 +31,29 @@ export const isRunningInPiBrowser = (): boolean => {
       
       // Check for Pi Browser specific user agent strings
       const userAgent = navigator.userAgent.toLowerCase();
-      if (userAgent.includes('pibrowser') || userAgent.includes('pi network') || userAgent.includes('pi-browser')) {
+      if (userAgent.includes('pibrowser') || 
+          userAgent.includes('pi network') || 
+          userAgent.includes('pi-browser') ||
+          userAgent.includes('pi browser')) {
         console.log("Pi Browser detected via user agent");
         return true;
       }
       
       // Check for Pi-specific objects or properties
-      if (typeof window['PiNetwork'] !== 'undefined' || typeof window['piNetwork'] !== 'undefined') {
+      if (typeof window['PiNetwork'] !== 'undefined' || 
+          typeof window['piNetwork'] !== 'undefined') {
         console.log("Pi-specific objects detected");
         return true;
       }
+      
+      // Check for Pi Browser specific window properties
+      if (window.location.hostname.includes('minepi.com') ||
+          window.location.hostname.includes('pi.app')) {
+        console.log("Pi Browser detected via hostname");
+        return true;
+      }
     }
-    console.log("Not running in Pi Browser - SDK and user agent checks failed");
+    console.log("Not running in Pi Browser - all detection checks failed");
     return false;
   } catch (error) {
     console.error("Error checking Pi Browser environment:", error);
@@ -54,7 +65,7 @@ export const isRunningInPiBrowser = (): boolean => {
 export const initPiNetwork = (): boolean => {
   try {
     if (typeof window === 'undefined' || !window.Pi) {
-      console.warn("Pi SDK not available. This app works best in Pi Browser.");
+      console.warn("Pi SDK not available. This app requires Pi Browser for full functionality.");
       return false;
     }
     
@@ -72,11 +83,17 @@ export const initPiNetwork = (): boolean => {
   }
 };
 
-// Authenticate user with Pi Network
+// Authenticate user with Pi Network (requires Pi Browser)
 export const authenticateWithPi = async (
   scopes: string[] = ["username", "payments", "wallet_address"]
 ): Promise<PiAuthResult | null> => {
   try {
+    // Strict Pi Browser requirement
+    if (!isRunningInPiBrowser()) {
+      console.error("Pi authentication requires Pi Browser");
+      throw new Error("Pi Browser is required for authentication");
+    }
+    
     if (typeof window === 'undefined' || !window.Pi) {
       console.error("Pi SDK not initialized or not available");
       return null;
@@ -101,7 +118,7 @@ export const authenticateWithPi = async (
     return authResult as PiAuthResult;
   } catch (error) {
     console.error("Authentication failed:", error);
-    return null;
+    throw error;
   }
 };
 
