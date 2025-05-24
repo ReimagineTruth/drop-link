@@ -12,8 +12,8 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react({
-      // Ensure proper JSX handling
-      jsxImportSource: "react",
+      // Use automatic JSX runtime
+      jsxImportSource: "@swc/helpers",
     }),
     mode === 'development' &&
     componentTagger(),
@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     rollupOptions: {
+      external: [],
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
@@ -33,9 +34,14 @@ export default defineConfig(({ mode }) => ({
     },
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react/jsx-runtime'],
+    include: ['react', 'react-dom'],
+    exclude: ['react/jsx-runtime'],
   },
   define: {
     global: 'globalThis',
+  },
+  esbuild: {
+    jsx: 'automatic',
+    jsxImportSource: 'react',
   },
 }));
