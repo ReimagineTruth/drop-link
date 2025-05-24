@@ -4,20 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ExternalLink, Users, Star, Crown, Zap, Lock, CheckCircle } from "lucide-react";
+import { ExternalLink, Heart, Lock, CheckCircle, ShoppingCart, BookOpen, Download } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useUserPermissions } from "@/hooks/useUserPermissions";
 
 const DemoPiProfilePage = () => {
   const [selectedPlan, setSelectedPlan] = useState<'free' | 'starter' | 'pro' | 'premium'>('pro');
-  const { permissions } = useUserPermissions();
+  const [tipAmount, setTipAmount] = useState(0);
 
   const planFeatures = {
     free: ['1 Link Only', 'Basic Profile', 'Pi AdNetwork', 'No .pi Domain'],
-    starter: ['.pi Domain Connection', 'Unlimited Links', 'All Social Profiles', 'Basic Analytics'],
-    pro: ['.pi Domain Connection', 'QR Codes', 'Link Scheduling', 'Performance Analytics', 'Custom Themes'],
-    premium: ['.pi Domain Connection', 'Pi Payments', 'Priority Support', 'Data Export', 'Whitelabel']
+    starter: ['.pi Domain Connection', 'Unlimited Links', 'Pi Tips', 'Basic Analytics'],
+    pro: ['.pi Domain Connection', 'Pi Tips & Products', 'Digital Sales', 'Performance Analytics', 'Custom Themes'],
+    premium: ['.pi Domain Connection', 'Pi Payments Pro', 'Priority Support', 'Data Export', 'Whitelabel']
   };
 
   const planColors = {
@@ -28,52 +27,93 @@ const DemoPiProfilePage = () => {
   };
 
   const planIcons = {
-    free: <Zap className="w-4 h-4" />,
-    starter: <Users className="w-4 h-4" />,
-    pro: <Star className="w-4 h-4" />,
-    premium: <Crown className="w-4 h-4" />
+    free: <Lock className="w-4 h-4" />,
+    starter: <Heart className="w-4 h-4" />,
+    pro: <ShoppingCart className="w-4 h-4" />,
+    premium: <BookOpen className="w-4 h-4" />
   };
 
-  // Demo profile data
+  // Demo profile data focused on Pi creator
   const demoProfile = {
     username: "alexcrypto",
     displayName: "Alex Chen",
-    title: "Digital Creator & Pi Pioneer",
-    bio: "Building the future with Pi Network 🚀 | Crypto educator | NFT artist | DeFi enthusiast",
-    piEarnings: "2,847.5",
-    followers: "12.3K",
-    profileViews: "45.2K"
+    title: "Pi Network Educator & Course Creator",
+    bio: "Teaching Pi Network fundamentals through courses and tutorials 🚀 Support my work with Pi tips!",
+    piEarnings: "1,247.8",
+    supporters: "89",
+    courseSales: "156"
   };
 
-  // Demo links based on plan
-  const getDemoLinks = () => {
-    const baseLinks = [
-      { title: "My Latest NFT Collection", url: "https://opensea.io/collection/pi-art", icon: "🎨", earnings: "156.7 π", type: "featured" },
-      { title: "Pi Network Course", url: "https://udemy.com/pi-course", icon: "📚", earnings: "892.3 π", type: "featured" },
-    ];
-
+  // Products and content focused on Pi ecosystem
+  const getDemoContent = () => {
     if (selectedPlan === 'free') {
-      return [{ title: "My Website", url: "https://example.com", icon: "🌐", earnings: "0 π", type: "basic" }];
+      return [
+        { 
+          title: "My Website", 
+          url: "https://example.com", 
+          icon: "🌐", 
+          type: "link"
+        }
+      ];
     }
 
-    const socialLinks = [
-      { title: "YouTube Channel", url: "https://youtube.com/@alexcrypto", icon: "🎥", earnings: "234.1 π", type: "social" },
-      { title: "Twitter/X", url: "https://x.com/alexcrypto", icon: "🐦", earnings: "67.8 π", type: "social" },
-      { title: "Instagram", url: "https://instagram.com/alexcrypto", icon: "📸", earnings: "189.2 π", type: "social" },
-      { title: "Discord Community", url: "https://discord.gg/alexcrypto", icon: "💬", earnings: "445.6 π", type: "social" },
+    const tipOptions = [
+      { title: "☕ Buy me coffee", amount: "1π", description: "Support my daily content creation", type: "tip" },
+      { title: "🍕 Buy me lunch", amount: "5π", description: "Fuel my research and tutorials", type: "tip" },
+      { title: "💝 Big support", amount: "25π", description: "Help me create premium content", type: "tip" }
     ];
 
-    const regularLinks = [
-      { title: "Free Pi Mining Guide", url: "https://guide.alexcrypto.pi", icon: "⛏️", earnings: "678.4 π", type: "regular" },
-      { title: "Crypto Newsletter", url: "https://newsletter.alexcrypto.pi", icon: "📧", earnings: "234.5 π", type: "regular" },
-      { title: "1-on-1 Consulting", url: "https://cal.com/alexcrypto", icon: "💼", earnings: "1,203.1 π", type: "premium" },
+    const digitalProducts = selectedPlan === 'pro' || selectedPlan === 'premium' ? [
+      { 
+        title: "🎓 Complete Pi Network Course", 
+        price: "15π", 
+        description: "Master Pi Network from basics to advanced strategies",
+        sales: "89 sales",
+        type: "course"
+      },
+      { 
+        title: "📖 Pi Mining Guide eBook", 
+        price: "8π", 
+        description: "Comprehensive guide to maximizing your Pi earnings",
+        sales: "67 sales", 
+        type: "ebook"
+      },
+      { 
+        title: "🔮 1-on-1 Pi Consultation", 
+        price: "50π", 
+        description: "Personal consultation on Pi Network strategies",
+        sales: "23 bookings",
+        type: "service"
+      }
+    ] : [];
+
+    const freeContent = [
+      { 
+        title: "📺 Free Pi Tutorial Series", 
+        url: "https://youtube.com/@alexcrypto", 
+        icon: "🎥", 
+        description: "Weekly Pi Network tutorials",
+        type: "free"
+      },
+      { 
+        title: "💬 Join My Discord", 
+        url: "https://discord.gg/alexcrypto", 
+        icon: "💬", 
+        description: "Connect with other Pi pioneers",
+        type: "free"
+      }
     ];
 
-    return [...baseLinks, ...socialLinks, ...regularLinks];
+    return [...tipOptions, ...digitalProducts, ...freeContent];
   };
 
   const canUsePiDomain = selectedPlan !== 'free';
-  const canUseAdvancedFeatures = selectedPlan === 'pro' || selectedPlan === 'premium';
+  const canSellProducts = selectedPlan === 'pro' || selectedPlan === 'premium';
+
+  const handleTip = (amount: string) => {
+    const piAmount = parseFloat(amount.replace('π', ''));
+    setTipAmount(prev => prev + piAmount);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -81,13 +121,13 @@ const DemoPiProfilePage = () => {
       <main className="flex-grow py-12 px-4 bg-gradient-to-br from-blue-50 to-purple-50">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-4">Live Pi Domain Demo</h1>
+            <h1 className="text-4xl font-bold mb-4">Live Pi Creator Demo</h1>
             <p className="text-xl text-gray-600 mb-2">
-              See how <span className="font-bold text-blue-600">alexcrypto.pi</span> connects to a real Droplink profile
+              See how <span className="font-bold text-blue-600">alexcrypto.pi</span> monetizes with Pi tips & digital products
             </p>
             <p className="text-lg text-gray-500 mb-6">
               <span className="bg-yellow-100 px-3 py-1 rounded-full text-yellow-800 font-medium">
-                ⚠️ .pi domain connection requires any paid plan (Starter, Pro, or Premium)
+                ⚠️ .pi domain + Pi products require paid plans
               </span>
             </p>
             
@@ -101,11 +141,9 @@ const DemoPiProfilePage = () => {
                   className={`flex items-center gap-2 ${
                     selectedPlan === plan ? planColors[plan] + ' text-white' : ''
                   }`}
-                  disabled={plan === 'free' && canUsePiDomain}
                 >
                   {planIcons[plan]}
                   {plan.charAt(0).toUpperCase() + plan.slice(1)}
-                  {plan === 'free' && <Lock className="w-3 h-3 ml-1" />}
                 </Button>
               ))}
             </div>
@@ -159,15 +197,15 @@ const DemoPiProfilePage = () => {
                   <div className="flex justify-around mt-4 text-center">
                     <div>
                       <p className="font-bold text-lg text-blue-600">{demoProfile.piEarnings}π</p>
-                      <p className="text-xs text-gray-500">Earned</p>
+                      <p className="text-xs text-gray-500">Total Earned</p>
                     </div>
                     <div>
-                      <p className="font-bold text-lg text-green-600">{demoProfile.followers}</p>
-                      <p className="text-xs text-gray-500">Followers</p>
+                      <p className="font-bold text-lg text-green-600">{demoProfile.supporters}</p>
+                      <p className="text-xs text-gray-500">Supporters</p>
                     </div>
                     <div>
-                      <p className="font-bold text-lg text-purple-600">{demoProfile.profileViews}</p>
-                      <p className="text-xs text-gray-500">Views</p>
+                      <p className="font-bold text-lg text-purple-600">{demoProfile.courseSales}</p>
+                      <p className="text-xs text-gray-500">Sales</p>
                     </div>
                   </div>
                   
@@ -175,60 +213,71 @@ const DemoPiProfilePage = () => {
                     {planIcons[selectedPlan]}
                     {selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1)} Plan
                   </Badge>
+
+                  {tipAmount > 0 && (
+                    <div className="mt-3 p-2 bg-green-100 rounded-lg">
+                      <p className="text-sm text-green-800 font-semibold">
+                        🎉 +{tipAmount}π received in tips!
+                      </p>
+                    </div>
+                  )}
                 </div>
 
-                {/* Links */}
+                {/* Content & Products */}
                 <div className="space-y-3">
-                  {getDemoLinks().map((link, index) => (
+                  {getDemoContent().map((item, index) => (
                     <div 
                       key={index}
-                      className={`w-full p-3 rounded-lg border-2 transition-all ${
-                        link.type === 'featured'
-                          ? 'bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 hover:shadow-md' 
-                          : link.type === 'premium'
+                      className={`w-full p-3 rounded-lg border-2 transition-all cursor-pointer ${
+                        item.type === 'tip'
+                          ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200 hover:shadow-md' 
+                          : item.type === 'course' || item.type === 'ebook' || item.type === 'service'
                           ? 'bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200 hover:shadow-md'
-                          : link.type === 'social'
+                          : item.type === 'free'
                           ? 'bg-gradient-to-r from-green-50 to-blue-50 border-green-200 hover:shadow-md'
                           : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
                       }`}
+                      onClick={() => {
+                        if (item.type === 'tip' && 'amount' in item) {
+                          handleTip(item.amount);
+                        }
+                      }}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <span className="text-lg">{link.icon}</span>
+                          <span className="text-lg">{item.icon || '💎'}</span>
                           <div className="text-left">
-                            <span className="font-medium text-sm block">{link.title}</span>
-                            {link.earnings && link.earnings !== "0 π" && (
-                              <span className="text-xs text-green-600 font-semibold">+{link.earnings}</span>
+                            <span className="font-medium text-sm block">{item.title}</span>
+                            {'description' in item && (
+                              <span className="text-xs text-gray-600">{item.description}</span>
+                            )}
+                            {'sales' in item && (
+                              <span className="text-xs text-green-600 font-semibold">{item.sales}</span>
                             )}
                           </div>
                         </div>
-                        <ExternalLink className="w-4 h-4 text-gray-400" />
+                        <div className="text-right">
+                          {'price' in item && (
+                            <span className="font-bold text-purple-600">{item.price}</span>
+                          )}
+                          {'amount' in item && (
+                            <span className="font-bold text-yellow-600">{item.amount}</span>
+                          )}
+                          {item.type === 'free' && (
+                            <ExternalLink className="w-4 h-4 text-gray-400" />
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}
 
-                  {/* Plan-specific features showcase */}
-                  {canUseAdvancedFeatures && (
-                    <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                      <p className="text-sm text-blue-800 font-medium text-center">
-                        ⭐ {selectedPlan === 'premium' ? 'Premium' : 'Pro'} Features Active
-                      </p>
-                      <div className="text-xs text-blue-600 mt-2 grid grid-cols-2 gap-1">
-                        <span>• QR Codes</span>
-                        <span>• Analytics</span>
-                        <span>• Scheduling</span>
-                        <span>• Custom Themes</span>
-                      </div>
-                    </div>
-                  )}
-
                   {selectedPlan === 'free' && (
                     <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
                       <p className="text-sm text-yellow-800 font-medium text-center mb-2">
-                        🔒 Upgrade to connect your .pi domain
+                        🔒 Upgrade to monetize with Pi
                       </p>
                       <p className="text-xs text-yellow-600 text-center">
-                        Free plan limited to 1 link • No .pi domain support
+                        Free plan limited to 1 link • No Pi tips or product sales
                       </p>
                     </div>
                   )}
@@ -259,7 +308,7 @@ const DemoPiProfilePage = () => {
                         className={`flex items-center gap-2 p-2 rounded ${
                           feature.includes('No .pi Domain') 
                             ? 'bg-red-50 text-red-700' 
-                            : feature.includes('.pi Domain') 
+                            : feature.includes('.pi Domain') || feature.includes('Pi Tips') || feature.includes('Pi Payments')
                             ? 'bg-green-50 text-green-700' 
                             : 'bg-blue-50 text-blue-700'
                         }`}
@@ -267,7 +316,7 @@ const DemoPiProfilePage = () => {
                         <div className={`w-2 h-2 rounded-full ${
                           feature.includes('No .pi Domain') 
                             ? 'bg-red-500' 
-                            : feature.includes('.pi Domain') 
+                            : feature.includes('.pi Domain') || feature.includes('Pi Tips') || feature.includes('Pi Payments')
                             ? 'bg-green-500' 
                             : 'bg-blue-500'
                         }`}></div>
@@ -278,61 +327,62 @@ const DemoPiProfilePage = () => {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="border-green-200 bg-green-50">
                 <CardHeader>
-                  <CardTitle>Pi Domain Connection Guide</CardTitle>
+                  <CardTitle className="text-green-800">Real Pi Earnings Example</CardTitle>
+                  <CardDescription className="text-green-600">Based on actual creator performance</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <div className="bg-primary rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm mt-1">1</div>
-                      <div>
-                        <h4 className="font-semibold">Upgrade to any paid plan</h4>
-                        <p className="text-sm text-gray-600">Starter ($8π/month), Pro ($12π/month), or Premium ($18π/month)</p>
-                      </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-sm">Tips received (this month)</span>
+                      <span className="font-semibold text-green-600">+347.2π</span>
                     </div>
-                    
-                    <div className="flex items-start gap-3">
-                      <div className="bg-primary rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm mt-1">2</div>
-                      <div>
-                        <h4 className="font-semibold">Enter your .pi domain</h4>
-                        <p className="text-sm text-gray-600">Go to Settings → Domains and connect your existing .pi domain</p>
-                      </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">Course sales</span>
+                      <span className="font-semibold text-green-600">+675.5π</span>
                     </div>
-                    
-                    <div className="flex items-start gap-3">
-                      <div className="bg-primary rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm mt-1">3</div>
-                      <div>
-                        <h4 className="font-semibold">Start earning Pi</h4>
-                        <p className="text-sm text-gray-600">Share your .pi domain and earn Pi from link clicks and tips</p>
+                    <div className="flex justify-between">
+                      <span className="text-sm">eBook sales</span>
+                      <span className="font-semibold text-green-600">+225.1π</span>
+                    </div>
+                    <div className="border-t pt-2">
+                      <div className="flex justify-between">
+                        <span className="font-semibold">Total This Month</span>
+                        <span className="font-bold text-lg text-green-600">1,247.8π</span>
                       </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-green-200 bg-green-50">
+              <Card>
                 <CardHeader>
-                  <CardTitle className="text-green-800">Real Earnings Example</CardTitle>
+                  <CardTitle>Pi Creator Monetization</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-sm">Link clicks (this month)</span>
-                      <span className="font-semibold text-green-600">+1,247.3 π</span>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-yellow-500 rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm mt-1">💰</div>
+                      <div>
+                        <h4 className="font-semibold">Pi Tips</h4>
+                        <p className="text-sm text-gray-600">Supporters can tip you Pi for your content and tutorials</p>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Tips received</span>
-                      <span className="font-semibold text-green-600">+892.5 π</span>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="bg-purple-500 rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm mt-1">🎓</div>
+                      <div>
+                        <h4 className="font-semibold">Digital Products</h4>
+                        <p className="text-sm text-gray-600">Sell courses, eBooks, and services directly for Pi</p>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Premium content sales</span>
-                      <span className="font-semibold text-green-600">+707.7 π</span>
-                    </div>
-                    <div className="border-t pt-2">
-                      <div className="flex justify-between">
-                        <span className="font-semibold">Total Earned</span>
-                        <span className="font-bold text-lg text-green-600">2,847.5 π</span>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="bg-blue-500 rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm mt-1">📊</div>
+                      <div>
+                        <h4 className="font-semibold">Track Performance</h4>
+                        <p className="text-sm text-gray-600">See your earnings, supporters, and sales analytics</p>
                       </div>
                     </div>
                   </div>
