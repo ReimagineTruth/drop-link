@@ -84,11 +84,12 @@ const Hero = () => {
               <Button 
                 asChild 
                 size="lg" 
-                variant="outline" 
-                className="bg-white/10 text-white border-white hover:bg-white hover:text-primary dark:bg-gray-800/50 dark:text-gray-100 dark:border-gray-300 dark:hover:bg-gray-100 dark:hover:text-primary shadow-lg hover:shadow-xl transition-all backdrop-blur-sm"
+                className="bg-white text-primary hover:bg-gray-100 dark:bg-gray-100 dark:text-primary dark:hover:bg-gray-200 shadow-lg hover:shadow-xl transition-all"
                 onClick={handleButtonClick}
               >
-                <Link to="/demo">See It in Action</Link>
+                <Link to="/demo" className="flex items-center gap-2">
+                  See It in Action <ArrowRight size={16} />
+                </Link>
               </Button>
               <Button 
                 asChild 
