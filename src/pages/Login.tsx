@@ -9,12 +9,10 @@ import { initPiNetwork } from "@/services/piPaymentService";
 import PiBrowserPrompt from "@/components/PiBrowserPrompt";
 import PiBrowserDialog from "@/components/PiBrowserDialog";
 import { isRunningInPiBrowser } from "@/utils/pi-sdk";
-import TestLogin from "@/components/auth/TestLogin";
 
 const Login = () => {
   const navigate = useNavigate();
   const { isLoggedIn } = useUser();
-  // Perform check directly for debugging
   const isPiBrowser = isRunningInPiBrowser();
   
   console.log("Login page - isPiBrowser:", isPiBrowser, "isLoggedIn:", isLoggedIn);
@@ -55,14 +53,10 @@ const Login = () => {
               </p>
             </div>
           </div>
-          
-          {/* Test Login Component */}
-          <TestLogin />
         </div>
       </main>
       <Footer />
       
-      {/* Always render the dialog, it will only show if not in Pi Browser */}
       <PiBrowserDialog 
         redirectUrl="https://pinet.com/@droplink"
         showOnMount={true}

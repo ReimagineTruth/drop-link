@@ -11,7 +11,6 @@ import PiBrowserPrompt from "@/components/PiBrowserPrompt";
 import PiBrowserDialog from "@/components/PiBrowserDialog";
 import { isRunningInPiBrowser } from "@/utils/pi-sdk";
 import ConsentPrompt from "@/components/auth/ConsentPrompt";
-import TestLogin from "@/components/auth/TestLogin";
 
 const Signup = () => {
   const [piAuthenticating, setPiAuthenticating] = useState(false);
@@ -36,19 +35,12 @@ const Signup = () => {
   }, [navigate]);
 
   const handlePiSignup = async () => {
-    // Show test mode notice for easier bypass
-    toast({
-      title: "Pi Signup",
-      description: "Use the Test Signup below for easier testing without Pi Browser",
-      variant: "default",
-    });
-    
     // If not in Pi Browser, show a toast and open the dialog
     if (!isPiBrowser) {
       console.log("Not in Pi Browser, showing toast and opening dialog");
       toast({
         title: "Pi Browser Required",
-        description: "Please use Test Signup below for testing, or open in Pi Browser for real signup",
+        description: "Please open this page in the Pi Browser to sign up with Pi Network",
         variant: "destructive",
       });
       
@@ -70,7 +62,7 @@ const Signup = () => {
       } else {
         toast({
           title: "Authentication Failed",
-          description: "Could not authenticate with Pi Network. Try Test Signup below.",
+          description: "Could not authenticate with Pi Network. Please try again.",
           variant: "destructive",
         });
       }
@@ -78,7 +70,7 @@ const Signup = () => {
       console.error("Pi signup error:", error);
       toast({
         title: "Authentication Error",
-        description: "An error occurred during Pi authentication. Use Test Signup for testing.",
+        description: "An error occurred during Pi authentication.",
         variant: "destructive",
       });
     } finally {
@@ -112,7 +104,7 @@ const Signup = () => {
       
       // Use Supabase Auth to create a new user
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: `pi_${piAuthResult.user.uid}@pinetwork.user`, // Create a placeholder email
+        email: `pi_${piAuthResult.user.uid}@pinetwork.user`,
         password: randomPassword,
         options: {
           data: {
@@ -158,7 +150,6 @@ const Signup = () => {
   };
 
   const handleConsentDeclined = async () => {
-    // If user declines during signup, just return to home
     toast({
       title: "Consent Declined",
       description: "You need to accept the data sharing terms to use Droplink with Pi Network.",
@@ -191,10 +182,6 @@ const Signup = () => {
               {piAuthenticating ? "Authenticating..." : "Sign up with Pi Network"}
             </Button>
             
-            <div className="text-center text-sm text-gray-500 mb-4">
-              or use Test Signup below for development testing
-            </div>
-            
             {!isPiBrowser && <PiBrowserPrompt />}
             
             <div className="mt-6 text-center">
@@ -206,19 +193,14 @@ const Signup = () => {
               </p>
             </div>
           </div>
-          
-          {/* Test Login Component with signup context */}
-          <TestLogin />
         </div>
       </main>
       <Footer />
       
-      {/* Pi Browser Dialog - will only show if not in Pi Browser */}
       <PiBrowserDialog 
         redirectUrl="https://pinet.com/@droplink"
       />
       
-      {/* Consent prompt */}
       {piAuthResult && (
         <ConsentPrompt
           isOpen={showConsentPrompt}

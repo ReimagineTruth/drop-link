@@ -12,74 +12,16 @@ export const useAuth = () => {
   // Admin emails - add your email here
   const ADMIN_EMAILS = ["admin@pidrop.dev"];
   
-  // Enhanced test session handling with bypass mode
-  const getTestUserSession = () => {
-    try {
-      const testSession = localStorage.getItem('test_user_session');
-      if (testSession) {
-        const parsedSession = JSON.parse(testSession);
-        if (parsedSession.session.expires_at > Date.now()) {
-          console.log("🧪 Using test session (Pi auth bypassed):", parsedSession.testPlan);
-          return parsedSession;
-        } else {
-          localStorage.removeItem('test_user_session');
-        }
-      }
-    } catch (error) {
-      console.error('Error parsing test session:', error);
-      localStorage.removeItem('test_user_session');
-    }
-    return null;
-  };
-  
   useEffect(() => {
-    // Enhanced security with test mode bypass
-    const checkAuthHeaders = async () => {
-      // Check for test session first (bypass mode)
-      const testSession = getTestUserSession();
-      if (testSession) {
-        console.log("🚀 Test mode active - Pi authentication bypassed");
-        return true;
-      }
-      
-      // Check if auth state includes valid tokens
-      const { data } = await supabase.auth.getSession();
-      
-      if (data.session?.access_token) {
-        // Validate token expiry
-        if (new Date(data.session.expires_at * 1000) < new Date()) {
-          console.warn("Access token has expired");
-          await signOut(); // Force sign out if token expired
-          return false;
-        }
-        console.log("Valid access token present");
-        return true;
-      }
-      return false;
-    };
-    
-    // Set up auth state change listener with enhanced test bypass
+    // Set up auth state change listener
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth state change:", event, session?.user?.id);
         
-        // Check for test session first with enhanced bypass detection
-        const testSession = getTestUserSession();
-        if (testSession) {
-          setUser(testSession.user);
-          const isTestAdmin = testSession.testPlan === 'admin' || 
-                             testSession.user.username === 'admin' || 
-                             ADMIN_EMAILS.includes(testSession.user.email);
-          setIsAdmin(isTestAdmin);
-          setIsLoading(false);
-          console.log("🧪 Test bypass active - Plan:", testSession.testPlan, "Admin:", isTestAdmin);
-          return;
-        }
-        
         const currentUser = session?.user ?? null;
         setUser(currentUser);
         
-        // Enhanced admin validation with email verification
+        // Admin validation with email verification
         if (currentUser && currentUser.email && currentUser.email_confirmed_at) {
           const userIsAdmin = ADMIN_EMAILS.includes(currentUser.email);
           setIsAdmin(userIsAdmin);
@@ -95,29 +37,15 @@ export const useAuth = () => {
       }
     );
 
-    // Enhanced initialization with test bypass mode
+    // Initialize auth
     const initAuth = async () => {
       try {
-        // Check for test session first with bypass priority
-        const testSession = getTestUserSession();
-        if (testSession) {
-          console.log("🚀 Found test session with plan:", testSession.testPlan);
-          setUser(testSession.user);
-          const isTestAdmin = testSession.testPlan === 'admin' || 
-                             testSession.user.username === 'admin' || 
-                             ADMIN_EMAILS.includes(testSession.user.email);
-          setIsAdmin(isTestAdmin);
-          setIsLoading(false);
-          console.log("🧪 Test bypass mode - All features unlocked");
-          return;
-        }
-        
         const { data: { session } } = await supabase.auth.getSession();
         console.log("Current session:", session?.user?.id);
         const currentUser = session?.user ?? null;
         setUser(currentUser);
         
-        // Enhanced admin validation with email verification
+        // Admin validation with email verification
         if (currentUser && currentUser.email && currentUser.email_confirmed_at) {
           const userIsAdmin = ADMIN_EMAILS.includes(currentUser.email);
           setIsAdmin(userIsAdmin);
@@ -127,8 +55,6 @@ export const useAuth = () => {
           }
         }
         
-        // Run security check
-        await checkAuthHeaders();
         setIsLoading(false);
       } catch (error) {
         console.error("Error initializing auth:", error);
@@ -147,13 +73,9 @@ export const useAuth = () => {
 
   const signOut = async () => {
     try {
-      // Enhanced cleanup including test bypass sessions
-      localStorage.removeItem('test_user_session');
-      console.log("🧪 Test session cleared");
-      
       await supabase.auth.signOut();
       
-      // Comprehensive cleanup of all auth-related storage
+      // Cleanup of auth-related storage
       localStorage.removeItem('userToken');
       localStorage.removeItem('username');
       localStorage.removeItem('userEmail');
@@ -171,11 +93,11 @@ export const useAuth = () => {
         document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
       });
       
-      console.log("User signed out successfully (including test bypass mode)");
+      console.log("User signed out successfully");
       
       toast({
         title: "Signed Out",
-        description: "You have been successfully signed out (test session cleared)",
+        description: "You have been successfully signed out",
       });
       
       // Force page reload to clear any in-memory state
