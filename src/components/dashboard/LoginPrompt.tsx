@@ -28,25 +28,27 @@ const LoginPrompt = ({ handlePiLogin }: LoginPromptProps) => {
   };
 
   return (
-    <div className="text-center py-12 bg-white rounded-lg shadow-sm p-8">
-      <div className="flex justify-center mb-4">
-        <div className="p-3 bg-primary/10 rounded-full">
-          <Lock className="h-8 w-8 text-primary" />
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="text-center py-12 bg-white rounded-lg shadow-sm p-8 max-w-md w-full">
+        <div className="flex justify-center mb-4">
+          <div className="p-3 bg-primary/10 rounded-full">
+            <Lock className="h-8 w-8 text-primary" />
+          </div>
         </div>
-      </div>
-      <h2 className="text-2xl font-bold mb-4">Please Log In to Access Your Dashboard</h2>
-      <p className="text-gray-600 mb-6">
-        Sign in with your Pi Network account to access your personalized dashboard
-      </p>
-      
-      <div className="space-y-4">
-        <Button 
-          onClick={handlePiAuthClick} 
-          className="w-full bg-gradient-hero hover:bg-secondary"
-          disabled={isPiAuthenticating}
-        >
-          {isPiAuthenticating ? "Authenticating..." : "Sign in with Pi Network"}
-        </Button>
+        <h2 className="text-2xl font-bold mb-4">Please Log In to Access Your Dashboard</h2>
+        <p className="text-gray-600 mb-6">
+          Sign in with your Pi Network account to access your personalized dashboard
+        </p>
+        
+        <div className="space-y-4">
+          <Button 
+            onClick={handlePiAuthClick} 
+            className="w-full bg-gradient-hero hover:bg-secondary"
+            disabled={isPiAuthenticating}
+          >
+            {isPiAuthenticating ? "Authenticating..." : "Sign in with Pi Network"}
+          </Button>
+        </div>
       </div>
     </div>
   );

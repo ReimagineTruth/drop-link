@@ -9,11 +9,13 @@ import EnhancedDashboardTabs from "@/components/dashboard/EnhancedDashboardTabs"
 import DashboardLoading from "@/components/dashboard/DashboardLoading";
 import LoginPrompt from "@/components/dashboard/LoginPrompt";
 import { Helmet } from "react-helmet-async";
+import { usePiAuth } from "@/hooks/usePiAuth";
 
 const Dashboard = () => {
-  const { user, isLoading, isLoggedIn } = useUser();
+  const { user, profile, subscription, isLoading, isLoggedIn } = useUser();
   const navigate = useNavigate();
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const { handlePiLogin } = usePiAuth();
 
   useEffect(() => {
     if (!isLoading && !isLoggedIn) {
@@ -30,7 +32,7 @@ const Dashboard = () => {
   }
 
   if (!isLoggedIn) {
-    return <LoginPrompt visible={showLoginPrompt} />;
+    return <LoginPrompt handlePiLogin={handlePiLogin} />;
   }
 
   return (
@@ -44,7 +46,10 @@ const Dashboard = () => {
       
       <main className="py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <DashboardHeader />
+          <DashboardHeader 
+            username={profile?.username || user?.user_metadata?.username || null}
+            subscription={subscription}
+          />
           <EnhancedDashboardTabs />
         </div>
       </main>
