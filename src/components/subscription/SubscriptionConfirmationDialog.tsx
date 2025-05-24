@@ -20,9 +20,17 @@ const SubscriptionConfirmationDialog = ({
   billingCycle
 }: SubscriptionConfirmationDialogProps) => {
   const planKey = plan.toLowerCase() as keyof typeof planPricing;
+  
+  // Add safety check and fallback values
+  const planData = planPricing[planKey];
+  if (!planData) {
+    console.error(`Invalid plan: ${plan}`);
+    return null; // Don't render if plan is invalid
+  }
+  
   const amount = billingCycle === 'annual' 
-    ? planPricing[planKey].annual 
-    : planPricing[planKey].monthly;
+    ? planData.annual 
+    : planData.monthly;
 
   // Calculate next renewal date (mock)
   const nextRenewal = new Date();
@@ -69,7 +77,7 @@ const SubscriptionConfirmationDialog = ({
           "Whitelabel Option"
         ];
       default:
-        return [];
+        return ["Basic Features"];
     }
   };
 
