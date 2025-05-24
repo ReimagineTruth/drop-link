@@ -11,7 +11,10 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   plugins: [
-    react(),
+    react({
+      // Ensure proper JSX handling
+      jsxImportSource: "react",
+    }),
     mode === 'development' &&
     componentTagger(),
   ].filter(Boolean),
@@ -30,7 +33,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   optimizeDeps: {
-    include: ['react', 'react-dom'],
+    include: ['react', 'react-dom', 'react/jsx-runtime'],
   },
   define: {
     global: 'globalThis',
