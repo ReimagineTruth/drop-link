@@ -10,19 +10,11 @@ import { createPiPayment } from "@/services/piPaymentService";
 import { Helmet } from "react-helmet-async";
 
 // Import refactored components
-import ProfileHeader from "@/components/profile/ProfileHeader";
-import ProfileQrCode from "@/components/profile/ProfileQrCode";
-import LinksList from "@/components/profile/LinksList";
+import ThemeVariants from "@/components/profile/ThemeVariants";
 import LoadingState from "@/components/profile/LoadingState";
 import ErrorState from "@/components/profile/ErrorState";
 import TipModal from "@/components/profile/TipModal";
 import RecentTips from "@/components/profile/RecentTips";
-
-// New imports
-import MobileProfileHeader from "@/components/mobile/MobileProfileHeader";
-import OptimizedLinkCard from "@/components/mobile/OptimizedLinkCard";
-import CollapsibleSection from "@/components/ui/collapsible-section";
-import SmoothFAB from "@/components/ui/smooth-fab";
 
 interface Link {
   id: string;
@@ -39,6 +31,7 @@ interface ProfileData {
   display_name: string | null;
   bio: string | null;
   avatar_url: string | null;
+  theme?: string;
   links: Link[];
 }
 
@@ -48,7 +41,6 @@ const ProfilePage = () => {
   const [error, setError] = useState<string | null>(null);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [processingTip, setProcessingTip] = useState(false);
-  const [showQRCode, setShowQRCode] = useState(false);
   const [showTipModal, setShowTipModal] = useState(false);
   
   const { user, showAds } = useUser();
@@ -142,6 +134,7 @@ const ProfilePage = () => {
         
         setProfileData({
           ...profileData,
+          theme: 'linktree', // Default theme
           links: processedLinks && processedLinks.length > 0 ? processedLinks : defaultLinks,
         });
         
@@ -202,7 +195,6 @@ const ProfilePage = () => {
     setProcessingTip(true);
     
     try {
-      // Create a tip payment
       const paymentData = {
         amount: amount,
         memo: message || `Tip to @${profileData?.username}`,
@@ -247,22 +239,6 @@ const ProfilePage = () => {
     setShowTipModal(true);
   };
 
-  const handleShareProfile = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: `${profileData?.display_name || profileData?.username}'s Profile`,
-        url: window.location.href,
-      }).catch(err => console.error('Error sharing:', err));
-    } else {
-      // Fallback for browsers that don't support the Web Share API
-      navigator.clipboard.writeText(window.location.href);
-      toast({
-        title: "Link Copied",
-        description: "Profile URL copied to clipboard",
-      });
-    }
-  };
-
   if (loading) {
     return <LoadingState />;
   }
@@ -274,7 +250,7 @@ const ProfilePage = () => {
   const profileUrl = `https://droplink.space/@${profileData.username}`;
   
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col">
       <Helmet>
         <title>{profileData.display_name || `@${profileData.username}`} | Droplink</title>
         <meta name="description" content={profileData.bio || `Check out ${profileData.username}'s profile on Droplink`} />
@@ -285,63 +261,21 @@ const ProfilePage = () => {
         <meta property="og:type" content="profile" />
       </Helmet>
       
-      <Navbar />
-      <main className="flex-grow py-6 px-0 max-w-screen-sm mx-auto w-full">
-        <div className="space-y-4">
-          <MobileProfileHeader 
-            username={profileData.username}
-            displayName={profileData.display_name}
-            bio={profileData.bio}
-            avatarUrl={profileData.avatar_url}
-            onShareClick={handleShareProfile}
-            onQrCodeClick={() => setShowQRCode(!showQRCode)}
-          />
-          
-          <ProfileQrCode 
-            url={profileUrl}
-            visible={showQRCode}
-          />
-          
-          {/* Only show ads for starter plan users if they're logged in */}
-          {showAds && (
-            <div className="mx-4 mb-4">
-              <PiAdsNetwork placementId="profile-page" />
-            </div>
-          )}
-          
-          {/* Links Section */}
-          <CollapsibleSection 
-            title="Links" 
-            showCount={profileData.links.length}
-            defaultExpanded={true}
-          >
-            <div className="space-y-2">
-              {profileData.links.map((link, index) => (
-                <OptimizedLinkCard
-                  key={link.id}
-                  link={link}
-                  delay={index * 0.1}
-                />
-              ))}
-            </div>
-          </CollapsibleSection>
-          
-          {/* Display recent tips if available */}
-          {profileData.id && (
-            <div className="mx-4">
-              <RecentTips userId={profileData.id} />
-            </div>
-          )}
+      {/* Only show ads for starter plan users if they're logged in */}
+      {showAds && (
+        <div className="mx-4 mb-4">
+          <PiAdsNetwork placementId="profile-page" />
         </div>
-      </main>
-      <Footer />
+      )}
       
-      {/* Floating Action Button for tip */}
-      <SmoothFAB
-        icon="plus"
-        label="Send Tip"
-        onClick={handleTipClick}
-        variant="primary"
+      <ThemeVariants
+        theme={profileData.theme || 'linktree'}
+        links={profileData.links}
+        onLinkClick={handleLinkClick}
+        username={profileData.username}
+        displayName={profileData.display_name}
+        bio={profileData.bio}
+        avatarUrl={profileData.avatar_url}
       />
       
       <TipModal

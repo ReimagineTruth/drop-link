@@ -12,6 +12,7 @@ interface LinkFormProps {
   userId: string;
   onCancel: () => void;
   onSuccess: () => void;
+  linkType?: string;
   initialData?: {
     title: string;
     url: string;
@@ -19,13 +20,65 @@ interface LinkFormProps {
   };
 }
 
-const LinkForm = ({ linkId, userId, onCancel, onSuccess, initialData }: LinkFormProps) => {
+const LinkForm = ({ linkId, userId, onCancel, onSuccess, linkType = 'url', initialData }: LinkFormProps) => {
   const [title, setTitle] = useState(initialData?.title || "");
   const [url, setUrl] = useState(initialData?.url || "");
   const [icon, setIcon] = useState(initialData?.icon || "🔗");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const isEditing = !!linkId;
+
+  const getDefaultIcon = (type: string) => {
+    switch (type) {
+      case 'music': return '🎵';
+      case 'video': return '🎬';
+      case 'document': return '📄';
+      case 'shop': return '🛒';
+      case 'event': return '📅';
+      default: return '🔗';
+    }
+  };
+
+  const getPlaceholders = (type: string) => {
+    switch (type) {
+      case 'music':
+        return {
+          title: 'My Latest Album',
+          url: 'https://open.spotify.com/album/...'
+        };
+      case 'video':
+        return {
+          title: 'Watch My Video',
+          url: 'https://youtube.com/watch?v=...'
+        };
+      case 'document':
+        return {
+          title: 'My Resume',
+          url: 'https://drive.google.com/file/d/...'
+        };
+      case 'shop':
+        return {
+          title: 'Shop My Store',
+          url: 'https://mystore.com'
+        };
+      case 'event':
+        return {
+          title: 'Join My Event',
+          url: 'https://eventbrite.com/e/...'
+        };
+      default:
+        return {
+          title: 'My Website',
+          url: 'https://example.com'
+        };
+    }
+  };
+
+  useEffect(() => {
+    if (!isEditing && !initialData) {
+      setIcon(getDefaultIcon(linkType));
+    }
+  }, [linkType, isEditing, initialData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,12 +166,15 @@ const LinkForm = ({ linkId, userId, onCancel, onSuccess, initialData }: LinkForm
     }
   };
 
-  const emojiOptions = ["🔗", "💼", "📱", "💬", "📷", "🎮", "💰", "📝", "🎵", "📚", "🎬", "🏆"];
+  const emojiOptions = ["🔗", "💼", "📱", "💬", "📷", "🎮", "💰", "📝", "🎵", "📚", "🎬", "🏆", "🛒", "📅", "🎪", "⚡"];
+  const placeholders = getPlaceholders(linkType);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 p-4 rounded-lg">
       <div className="flex justify-between items-center mb-2">
-        <h3 className="text-lg font-medium">{isEditing ? "Edit Link" : "Add New Link"}</h3>
+        <h3 className="text-lg font-medium">
+          {isEditing ? "Edit Link" : `Add ${linkType.charAt(0).toUpperCase() + linkType.slice(1)} Link`}
+        </h3>
         <Button variant="ghost" size="icon" onClick={onCancel} type="button">
           <X className="h-4 w-4" />
         </Button>
@@ -148,7 +204,7 @@ const LinkForm = ({ linkId, userId, onCancel, onSuccess, initialData }: LinkForm
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter link title"
+            placeholder={placeholders.title}
             required
           />
         </div>
@@ -159,7 +215,7 @@ const LinkForm = ({ linkId, userId, onCancel, onSuccess, initialData }: LinkForm
             id="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="Enter URL (e.g., example.com)"
+            placeholder={placeholders.url}
             required
           />
         </div>
