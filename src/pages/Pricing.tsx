@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { CheckIcon, ShieldCheck, BadgeDollarSign } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -98,7 +99,7 @@ const PricingCard = ({
 };
 
 const Pricing = () => {
-  const [billingCycle, setBillingCycle] = useState('annual'); // 'annual' or 'monthly'
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
   
   const { isLoggedIn, user, subscription, showAds, isAdmin } = useUser();
   const navigate = useNavigate();
@@ -158,7 +159,7 @@ const Pricing = () => {
     return subscription.plan.toLowerCase() === plan.toLowerCase();
   };
   
-  const getCurrentBillingCycle = (): string => {
+  const getCurrentBillingCycle = (): 'monthly' | 'annual' => {
     if (!subscription) return 'monthly';
     
     // Determine billing cycle by checking if expires_at is more than 6 months away
