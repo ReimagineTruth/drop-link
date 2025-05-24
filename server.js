@@ -8,16 +8,6 @@ const PI_API = "https://api.minepi.com/v2";
 
 app.use(express.json());
 
-const fs = require('fs');
-const path = require('path');
-
-// Load validation key from file
-const validationKeyPath = path.join(__dirname, 'validation-key.txt');
-const validationKey = fs.readFileSync(validationKeyPath, 'utf-8').trim();
-
-console.log("Loaded Validation Key:", validationKey);
-
-
 // Verify Pioneer using accessToken
 app.post('/pi/verify', async (req, res) => {
   const { accessToken } = req.body;
