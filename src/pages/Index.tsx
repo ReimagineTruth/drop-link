@@ -12,6 +12,7 @@ import PiDomainSection from "@/components/PiDomainSection";
 import DemoPiProfile from "@/components/DemoPiProfile";
 import PiNetworkEcosystem from "@/components/PiNetworkEcosystem";
 import PiDomainFeatures from "@/components/PiDomainFeatures";
+import FloatingGoToTop from "@/components/ui/floating-go-to-top";
 
 const Index = () => {
   return (
@@ -33,6 +34,7 @@ const Index = () => {
         <CTA />
       </main>
       <Footer />
+      <FloatingGoToTop />
     </div>
   );
 };
