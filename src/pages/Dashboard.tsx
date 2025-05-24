@@ -10,6 +10,7 @@ import LinksSection from "@/components/dashboard/LinksSection";
 import AnalyticsSection from "@/components/dashboard/AnalyticsSection";
 import MetadataSettings from "@/components/dashboard/MetadataSettings";
 import LoginPrompt from "@/components/dashboard/LoginPrompt";
+import LockedFeaturesSection from "@/components/dashboard/LockedFeaturesSection";
 import { authenticateWithPi } from "@/services/piPaymentService";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -205,6 +206,7 @@ const Dashboard = () => {
           
           <LinksSection />
           <AnalyticsSection subscription={subscription || null} />
+          <LockedFeaturesSection />
           <MetadataSettings />
         </div>
       </main>

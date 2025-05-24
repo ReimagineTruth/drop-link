@@ -1,359 +1,198 @@
 
-import { useState, useEffect } from "react";
-import { CheckIcon, XIcon } from "lucide-react";
+import { useState } from "react";
+import { CheckIcon, Lock, Star, Crown, Zap, ArrowRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import CTA from "@/components/CTA";
-import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { authenticateWithPi } from "@/services/piNetwork";
-
-interface FeatureItem {
-  name: string;
-  starter: boolean;
-  pro: boolean;
-  premium: boolean;
-  description: string;
-}
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "@/context/UserContext";
+import { useUserPermissions } from "@/hooks/useUserPermissions";
+import { toast } from "@/hooks/use-toast";
 
 const Features = () => {
-  const { toast } = useToast();
-  const [userPlan, setUserPlan] = useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState<string | null>(null);
-  const [subscriptionEnd, setSubscriptionEnd] = useState<Date | null>(null);
-  
-  useEffect(() => {
-    // Simulate checking subscription from storage
-    const storedPlan = localStorage.getItem("userPlan");
-    const storedUsername = localStorage.getItem("username");
-    const storedExpiration = localStorage.getItem("subscriptionEnd");
-    
-    if (storedPlan) {
-      setUserPlan(storedPlan);
-      setIsLoggedIn(true);
-    }
-    
-    if (storedUsername) {
-      setUsername(storedUsername);
-    }
-    
-    if (storedExpiration) {
-      setSubscriptionEnd(new Date(storedExpiration));
-    }
-  }, []);
-  
-  const handlePiLogin = async () => {
-    try {
-      const auth = await authenticateWithPi(["username"]);
-      if (auth && auth.user.username) {
-        setIsLoggedIn(true);
-        setUsername(auth.user.username);
-        
-        // Store in localStorage
-        localStorage.setItem("username", auth.user.username);
-        
-        toast({
-          title: "Logged in successfully",
-          description: `Welcome, ${auth.user.username}!`,
-        });
-      }
-    } catch (error) {
-      console.error("Pi authentication failed:", error);
-      toast({
-        title: "Authentication failed",
-        description: "Could not log in with Pi Network",
-        variant: "destructive",
-      });
-    }
+  const [selectedPlan, setSelectedPlan] = useState<'free' | 'starter' | 'pro' | 'premium'>('starter');
+  const navigate = useNavigate();
+  const { isLoggedIn, isAdmin } = useUser();
+  const { plan: userPlan, permissions } = useUserPermissions();
+
+  const featuresByPlan = {
+    free: [
+      { name: "1 Link", description: "Add one custom link to your profile", available: true },
+      { name: "1 Social Profile", description: "Connect one social media account", available: true },
+      { name: "Basic Profile", description: "Simple profile customization", available: true },
+      { name: "Pi AdNetwork", description: "Monetize with Pi advertisements", available: true }
+    ],
+    starter: [
+      { name: "Unlimited Links", description: "Add as many links as you want", available: permissions.unlimitedLinks },
+      { name: "All Social Profiles", description: "Connect all your social accounts", available: permissions.connectAllSocialProfiles },
+      { name: "Basic Analytics", description: "Track clicks and visitor stats", available: permissions.basicAnalytics },
+      { name: "Email Support", description: "Get help when you need it", available: permissions.emailSupport },
+      { name: "Community Forums", description: "Access to community discussions", available: permissions.communityForumsAccess },
+      { name: "Custom Themes", description: "Choose from premium themes", available: permissions.hasAdvancedThemes }
+    ],
+    pro: [
+      { name: "Multi-Factor Authentication", description: "Enhanced security for your account", available: permissions.multiFactorAuth },
+      { name: "QR Codes", description: "Generate QR codes for offline sharing", available: permissions.hasQRCode },
+      { name: "Link Scheduling", description: "Schedule when links appear", available: permissions.hasScheduling },
+      { name: "Link Animations", description: "Animated link transitions", available: permissions.hasLinkAnimations },
+      { name: "Custom Button Styles", description: "Personalize your button designs", available: permissions.customButtonStyles },
+      { name: "Spotlight Links", description: "Highlight important links", available: permissions.spotlightLinks },
+      { name: "Performance Analytics", description: "Advanced visitor insights", available: permissions.performanceAnalytics },
+      { name: "Location Analytics", description: "See where visitors come from", available: permissions.locationAnalytics },
+      { name: "Email/Phone Collection", description: "Capture visitor contact info", available: permissions.emailPhoneCollection },
+      { name: "SEO Tools", description: "Optimize for search engines", available: permissions.hasSEOTools },
+      { name: "Community Rewards", description: "Earn rewards for engagement", available: permissions.communityRewards }
+    ],
+    premium: [
+      { name: "Pi Payments Integration", description: "Sell products with Pi cryptocurrency", available: permissions.canSellWithPiPayments },
+      { name: "Tailored Onboarding", description: "Personalized setup experience", available: permissions.tailoredOnboarding },
+      { name: "Priority Support", description: "4-hour response time guarantee", available: permissions.hasPrioritySupport },
+      { name: "Historical Insights", description: "Long-term performance data", available: permissions.historicalInsights },
+      { name: "Data Export", description: "Export your analytics data", available: permissions.hasDataExport },
+      { name: "Whitelabel Option", description: "Remove Droplink branding", available: permissions.hasWhitelabel },
+      { name: "Advanced Pi Payments", description: "Enhanced payment features", available: permissions.advancedPiPayments },
+      { name: "Contributor Status", description: "Special community recognition", available: permissions.communityContributorStatus },
+      { name: "File Uploads", description: "Upload documents and media", available: permissions.hasFileUploads }
+    ]
   };
 
-  const featuresList: FeatureItem[] = [
-    {
-      name: "Unlimited Links",
-      starter: true,
-      pro: true,
-      premium: true,
-      description: "Add as many links as you need to your profile"
-    },
-    {
-      name: "Connect All Social Profiles",
-      starter: true,
-      pro: true,
-      premium: true,
-      description: "Link to all your social media accounts"
-    },
-    {
-      name: "Sell Products with Pi Payments",
-      starter: true,
-      pro: true,
-      premium: true,
-      description: "Accept Pi payments for your products"
-    },
-    {
-      name: "Basic Analytics",
-      starter: true,
-      pro: true,
-      premium: true,
-      description: "See how many people visit your profile"
-    },
-    {
-      name: "Email Support",
-      starter: true,
-      pro: true,
-      premium: true,
-      description: "Get help via email"
-    },
-    {
-      name: "Community Forums Access",
-      starter: true,
-      pro: true,
-      premium: true,
-      description: "Join our community discussion forums"
-    },
-    {
-      name: "Multi-Factor Authentication",
-      starter: false,
-      pro: true,
-      premium: true,
-      description: "Enhanced security for your account"
-    },
-    {
-      name: "QR Codes for Offline Traffic",
-      starter: false,
-      pro: true,
-      premium: true,
-      description: "Generate QR codes for your profile"
-    },
-    {
-      name: "Schedule Links",
-      starter: false,
-      pro: true,
-      premium: true,
-      description: "Schedule when links appear or disappear"
-    },
-    {
-      name: "Link Animations",
-      starter: false,
-      pro: true,
-      premium: true,
-      description: "Add animations to your links"
-    },
-    {
-      name: "Custom Button Styles",
-      starter: false,
-      pro: true,
-      premium: true,
-      description: "Customize the look of your buttons"
-    },
-    {
-      name: "Spotlight Links",
-      starter: false,
-      pro: true,
-      premium: true,
-      description: "Highlight important links"
-    },
-    {
-      name: "Performance Analytics",
-      starter: false,
-      pro: true,
-      premium: true,
-      description: "Track clicks and conversions"
-    },
-    {
-      name: "Custom Themes",
-      starter: false,
-      pro: true,
-      premium: true,
-      description: "Access premium themes"
-    },
-    {
-      name: "Location Analytics",
-      starter: false,
-      pro: true,
-      premium: true,
-      description: "See where your visitors are from"
-    },
-    {
-      name: "Email/Phone Collection",
-      starter: false,
-      pro: true,
-      premium: true,
-      description: "Collect contact information from visitors"
-    },
-    {
-      name: "SEO & Pi Integrations",
-      starter: false,
-      pro: true,
-      premium: true,
-      description: "Optimize for search engines"
-    },
-    {
-      name: "Community Rewards",
-      starter: false,
-      pro: true,
-      premium: true,
-      description: "Earn rewards for contributing to the community"
-    },
-    {
-      name: "Tailored Onboarding",
-      starter: false,
-      pro: false,
-      premium: true,
-      description: "Get personalized setup assistance"
-    },
-    {
-      name: "Priority Support (4-Hour)",
-      starter: false,
-      pro: false,
-      premium: true,
-      description: "Get faster support response"
-    },
-    {
-      name: "Historical Insights",
-      starter: false,
-      pro: false,
-      premium: true,
-      description: "Access long-term analytics data"
-    },
-    {
-      name: "Data Export",
-      starter: false,
-      pro: false,
-      premium: true,
-      description: "Export your analytics data"
-    },
-    {
-      name: "Whitelabel Option",
-      starter: false,
-      pro: false,
-      premium: true,
-      description: "Remove Droplink branding"
-    },
-    {
-      name: "Advanced Pi Payments",
-      starter: false,
-      pro: false,
-      premium: true,
-      description: "Advanced payment features and analytics"
-    },
-    {
-      name: "Community Contributor Status",
-      starter: false,
-      pro: false,
-      premium: true,
-      description: "Get recognized in the community"
-    }
-  ];
+  const planIcons = {
+    free: <Zap className="w-5 h-5" />,
+    starter: <CheckIcon className="w-5 h-5" />,
+    pro: <Star className="w-5 h-5" />,
+    premium: <Crown className="w-5 h-5" />
+  };
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
+  const planColors = {
+    free: "bg-gray-500",
+    starter: "bg-green-500", 
+    pro: "bg-blue-500",
+    premium: "bg-purple-500"
+  };
+
+  const handleUpgrade = (targetPlan: string) => {
+    if (!isLoggedIn) {
+      navigate('/login');
+      return;
+    }
+    navigate('/pricing');
+  };
+
+  const canAccessPlan = (planLevel: 'free' | 'starter' | 'pro' | 'premium') => {
+    if (isAdmin) return true;
+    const planHierarchy = { free: 0, starter: 1, pro: 2, premium: 3 };
+    const userPlanLevel = planHierarchy[userPlan] || 0;
+    const targetPlanLevel = planHierarchy[planLevel] || 0;
+    return userPlanLevel >= targetPlanLevel;
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-grow py-12 px-6">
-        <div className="container mx-auto">
+      <main className="flex-grow py-20 px-6">
+        <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-6 text-primary">Features & Capabilities</h1>
-            <p className="text-xl max-w-3xl mx-auto text-gray-600">
-              Discover all the powerful features available with Droplink and choose the plan that's right for you
+            <h1 className="text-4xl font-bold mb-4 text-primary">All Features</h1>
+            <p className="text-xl max-w-2xl mx-auto text-gray-600">
+              Discover everything you can do with Droplink. Choose your plan to unlock powerful features.
             </p>
-            
-            {isLoggedIn && username && (
-              <div className="mt-8 p-4 bg-gradient-hero text-white rounded-lg shadow-lg max-w-md mx-auto">
-                <h2 className="text-xl font-semibold">Welcome, @{username}!</h2>
-                {userPlan && (
-                  <>
-                    <p className="mt-2">Your current plan: <span className="font-bold">{userPlan}</span></p>
-                    {subscriptionEnd && (
-                      <p className="text-sm mt-1">Renews on: {formatDate(subscriptionEnd)}</p>
-                    )}
-                  </>
-                )}
-                {!userPlan && (
-                  <div className="mt-3">
-                    <p className="mb-2">You're currently on the Free plan</p>
-                    <Link to="/pricing">
-                      <Button className="bg-white text-primary hover:bg-opacity-90">
-                        Upgrade Now
-                      </Button>
-                    </Link>
+          </div>
+
+          <Tabs value={selectedPlan} onValueChange={(value) => setSelectedPlan(value as any)} className="w-full">
+            <TabsList className="grid w-full grid-cols-4 mb-8">
+              <TabsTrigger value="free" className="flex items-center gap-2">
+                {planIcons.free}
+                Free
+              </TabsTrigger>
+              <TabsTrigger value="starter" className="flex items-center gap-2">
+                {planIcons.starter}
+                Starter
+              </TabsTrigger>
+              <TabsTrigger value="pro" className="flex items-center gap-2">
+                {planIcons.pro}
+                Pro
+              </TabsTrigger>
+              <TabsTrigger value="premium" className="flex items-center gap-2">
+                {planIcons.premium}
+                Premium
+              </TabsTrigger>
+            </TabsList>
+
+            {Object.entries(featuresByPlan).map(([plan, features]) => (
+              <TabsContent key={plan} value={plan} className="space-y-6">
+                <div className="text-center mb-8">
+                  <Badge className={`${planColors[plan as keyof typeof planColors]} text-white text-lg px-4 py-2 mb-4`}>
+                    {plan.charAt(0).toUpperCase() + plan.slice(1)} Plan
+                  </Badge>
+                  <p className="text-gray-600">
+                    {plan === 'free' && "Get started with basic features"}
+                    {plan === 'starter' && "Perfect for individuals and creators"}
+                    {plan === 'pro' && "Advanced features for power users"}
+                    {plan === 'premium' && "Everything you need for business"}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {features.map((feature, index) => (
+                    <Card key={index} className={`${feature.available ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-gray-50'}`}>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          {feature.available ? (
+                            <CheckIcon className="w-5 h-5 text-green-500" />
+                          ) : (
+                            <Lock className="w-5 h-5 text-gray-400" />
+                          )}
+                          {feature.name}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-gray-600 mb-4">{feature.description}</p>
+                        {!feature.available && !canAccessPlan(plan as any) && (
+                          <Button 
+                            size="sm" 
+                            className="w-full"
+                            onClick={() => handleUpgrade(plan)}
+                          >
+                            Upgrade to Unlock
+                            <ArrowRight className="w-4 h-4 ml-2" />
+                          </Button>
+                        )}
+                        {feature.available && (
+                          <div className="text-sm text-green-600 font-medium">
+                            ✓ Available in your plan
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {!canAccessPlan(plan as any) && (
+                  <div className="text-center mt-8">
+                    <Card className="bg-blue-50 border-blue-200 max-w-md mx-auto">
+                      <CardContent className="p-6">
+                        <h3 className="font-bold text-lg mb-2">Want {plan} features?</h3>
+                        <p className="text-gray-600 mb-4">
+                          Upgrade your plan to unlock all these powerful features
+                        </p>
+                        <Button 
+                          className="w-full bg-gradient-hero hover:bg-secondary"
+                          onClick={() => handleUpgrade(plan)}
+                        >
+                          Upgrade to {plan.charAt(0).toUpperCase() + plan.slice(1)}
+                        </Button>
+                      </CardContent>
+                    </Card>
                   </div>
                 )}
-              </div>
-            )}
-            
-            {!isLoggedIn && (
-              <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg max-w-md mx-auto">
-                <h2 className="text-xl font-semibold text-primary mb-3">Sign in to access features</h2>
-                <Button 
-                  onClick={handlePiLogin}
-                  className="bg-gradient-hero hover:bg-secondary"
-                >
-                  Sign in with Pi Network
-                </Button>
-                <p className="text-sm text-gray-500 mt-3">
-                  New to Droplink? <Link to="/signup" className="text-primary underline">Create an account</Link>
-                </p>
-              </div>
-            )}
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse mt-12">
-              <thead>
-                <tr className="bg-blue-50">
-                  <th className="p-4 text-left border-b-2 border-blue-200 w-1/4">Feature</th>
-                  <th className="p-4 text-center border-b-2 border-blue-200">Starter<br/><span className="text-sm font-normal">10π/month</span></th>
-                  <th className="p-4 text-center border-b-2 border-blue-200 bg-blue-100">Pro<br/><span className="text-sm font-normal">15π/month</span></th>
-                  <th className="p-4 text-center border-b-2 border-blue-200">Premium<br/><span className="text-sm font-normal">22π/month</span></th>
-                </tr>
-              </thead>
-              <tbody>
-                {featuresList.map((feature, index) => (
-                  <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                    <td className="p-4 border-b border-gray-200">
-                      <div className="font-medium">{feature.name}</div>
-                      <div className="text-sm text-gray-500">{feature.description}</div>
-                    </td>
-                    <td className="p-4 text-center border-b border-gray-200">
-                      {feature.starter ? 
-                        <CheckIcon className="h-5 w-5 text-green-500 mx-auto" /> : 
-                        <XIcon className="h-5 w-5 text-gray-300 mx-auto" />}
-                    </td>
-                    <td className="p-4 text-center border-b border-gray-200 bg-blue-50">
-                      {feature.pro ? 
-                        <CheckIcon className="h-5 w-5 text-green-500 mx-auto" /> : 
-                        <XIcon className="h-5 w-5 text-gray-300 mx-auto" />}
-                    </td>
-                    <td className="p-4 text-center border-b border-gray-200">
-                      {feature.premium ? 
-                        <CheckIcon className="h-5 w-5 text-green-500 mx-auto" /> : 
-                        <XIcon className="h-5 w-5 text-gray-300 mx-auto" />}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          
-          <div className="mt-16 text-center">
-            <Link to="/pricing">
-              <Button size="lg" className="bg-gradient-hero hover:bg-secondary">
-                View Pricing Plans
-              </Button>
-            </Link>
-          </div>
+              </TabsContent>
+            ))}
+          </Tabs>
         </div>
       </main>
-      <CTA />
       <Footer />
     </div>
   );

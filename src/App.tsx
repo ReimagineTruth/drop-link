@@ -11,6 +11,7 @@ import ProfilePage from './pages/ProfilePage';
 import Settings from './pages/Settings';
 import DomainsSettings from './pages/DomainsSettings';
 import Pricing from './pages/Pricing';
+import Features from './pages/Features';
 import DemoPiPage from './pages/DemoPiPage';
 import NotFound from './pages/NotFound';
 import { UserProvider } from './context/UserContext';
@@ -47,6 +48,7 @@ function App() {
               <Route path="/settings" element={<Settings />} />
               <Route path="/settings/domains" element={<DomainsSettings />} />
               <Route path="/pricing" element={<Pricing />} />
+              <Route path="/features" element={<Features />} />
               <Route path="/demo.pi" element={<DemoPiProfilePage />} />
               <Route path="/admin" element={<Admin />} />
               
