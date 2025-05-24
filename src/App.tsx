@@ -21,7 +21,7 @@ function App() {
     <UserProvider>
       <BrowserRouter>
         <HelmetProvider>
-          <div className="App">
+          <div className="w-screen h-screen overflow-auto hide-scrollbar smooth-scroll bg-background text-foreground">
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/signup" element={<Signup />} />
@@ -41,3 +41,4 @@ function App() {
 }
 
 export default App;
+
