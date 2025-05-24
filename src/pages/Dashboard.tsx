@@ -1,234 +1,212 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUser } from "@/context/UserContext";
-import { supabase } from "@/integrations/supabase/client";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
-
-// Import dashboard components
+import DashboardLoading from "@/components/dashboard/DashboardLoading";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import OverviewStats from "@/components/dashboard/OverviewStats";
-import QuickActions from "@/components/dashboard/QuickActions";
 import LinksSection from "@/components/dashboard/LinksSection";
 import AnalyticsSection from "@/components/dashboard/AnalyticsSection";
-import SubscriptionManagement from "@/components/dashboard/SubscriptionManagement";
-import LoginPrompt from "@/components/dashboard/LoginPrompt";
-import DashboardLoading from "@/components/dashboard/DashboardLoading";
-import SubscriptionDialog from "@/components/dashboard/SubscriptionDialog";
-import UpgradeModal from "@/components/UpgradeModal";
-import { UpgradeModalProvider } from "@/hooks/useUpgradeModal";
-import ConsentPrompt from "@/components/auth/ConsentPrompt";
-import { useConsentStatus } from "@/hooks/useConsentStatus";
 import MetadataSettings from "@/components/dashboard/MetadataSettings";
-
-// Import custom hooks
-import { usePiPayment } from "@/hooks/usePiPayment";
-import { useAnalyticsData } from "@/hooks/useAnalyticsData";
+import LoginPrompt from "@/components/dashboard/LoginPrompt";
+import { authenticateWithPi } from "@/services/piPaymentService";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
+import ConsentPrompt from "@/components/auth/ConsentPrompt";
 
 const Dashboard = () => {
+  const { profile, isLoading: userLoading, refreshUserData } = useUser();
+  const [isLoading, setIsLoading] = useState(true);
+  const [showConsentPrompt, setShowConsentPrompt] = useState(false);
+  const [piAuthResult, setPiAuthResult] = useState<any>(null);
   const navigate = useNavigate();
-  const { 
-    user, 
-    profile, 
-    subscription, 
-    isLoading, 
-    isLoggedIn,
-    isAdmin,
-    refreshUserData,
-    cancelSubscription
-  } = useUser();
-  
-  const [billingCycle, setBillingCycle] = useState('annual');
-  const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
-  const [showConsentCheck, setShowConsentCheck] = useState(false);
-  
-  const { pageViews, linkClicks, conversionRate } = useAnalyticsData();
-  const { processingPayment, handlePiLogin, handleSubscribe } = usePiPayment();
-  const { hasConsented, isLoading: consentLoading, setConsent } = useConsentStatus();
-  const isMobile = useIsMobile();
-  
-  useEffect(() => {
-    // Check if user is logged in
-    if (!isLoading && !isLoggedIn) {
-      // Redirect to login if not logged in
-      navigate("/login");
-      return;
+
+  // Check for test session to bypass Pi authentication
+  const getTestUserSession = () => {
+    try {
+      const testSession = localStorage.getItem('test_user_session');
+      if (testSession) {
+        const parsedSession = JSON.parse(testSession);
+        if (parsedSession.session.expires_at > Date.now()) {
+          console.log("🧪 Test session found - bypassing Pi auth");
+          return parsedSession;
+        } else {
+          localStorage.removeItem('test_user_session');
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing test session:', error);
+      localStorage.removeItem('test_user_session');
     }
-    
-    // Check consent status after login is confirmed
-    if (isLoggedIn && !consentLoading && hasConsented === false) {
-      setShowConsentCheck(true);
-    }
-  }, [isLoading, isLoggedIn, navigate, consentLoading, hasConsented]);
-  
-  const handleConsentAccepted = () => {
-    setConsent(true);
-    setShowConsentCheck(false);
+    return null;
   };
 
-  const handleConsentDeclined = async () => {
-    // If user declines consent from dashboard, log them out
+  useEffect(() => {
+    const checkAuthAndLoadDashboard = async () => {
+      // Check for test session first
+      const testSession = getTestUserSession();
+      if (testSession) {
+        console.log("🚀 Test mode active - dashboard access granted");
+        setIsLoading(false);
+        return;
+      }
+
+      // Check Supabase session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        console.log("User authenticated via Supabase");
+        setIsLoading(false);
+        return;
+      }
+
+      // If no valid session found, show loading state but allow test login
+      console.log("No authentication found, showing login prompt");
+      setIsLoading(false);
+    };
+
+    checkAuthAndLoadDashboard();
+  }, []);
+
+  const handlePiLogin = async () => {
     try {
-      await supabase.auth.signOut();
-      navigate('/');
+      const authResult = await authenticateWithPi(["username", "payments", "wallet_address"]);
+      
+      if (authResult?.user) {
+        console.log("Pi authentication successful:", authResult);
+        setPiAuthResult(authResult);
+        setShowConsentPrompt(true);
+      } else {
+        toast({
+          title: "Authentication Failed",
+          description: "Could not authenticate with Pi Network",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
-      console.error("Error signing out after consent declined:", error);
+      console.error("Pi authentication error:", error);
+      toast({
+        title: "Authentication Error",
+        description: "An error occurred during Pi authentication",
+        variant: "destructive",
+      });
     }
   };
-  
-  const handleCancelSubscriptionConfirm = async () => {
-    const success = await cancelSubscription();
-    if (success) {
-      setConfirmCancelOpen(false);
+
+  const handleConsentAccepted = async () => {
+    try {
+      if (!piAuthResult?.user) return;
+      
+      // Check if user exists
+      const { data: existingUser } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', piAuthResult.user.uid)
+        .maybeSingle();
+        
+      if (existingUser) {
+        // User exists, sign them in
+        const { error } = await supabase.auth.signInWithPassword({
+          email: `pi_${piAuthResult.user.uid}@pinetwork.user`,
+          password: piAuthResult.user.uid
+        });
+        
+        if (error) throw error;
+        
+        await refreshUserData();
+        toast({
+          title: "Authentication Successful",
+          description: `Welcome back, @${piAuthResult.user.username}!`,
+        });
+      } else {
+        // Redirect to signup if user doesn't exist
+        navigate('/signup');
+        return;
+      }
+      
+      setShowConsentPrompt(false);
+    } catch (error) {
+      console.error("Error after consent:", error);
+      toast({
+        title: "Error",
+        description: "An error occurred while processing your information",
+        variant: "destructive",
+      });
     }
   };
-  
-  // Create a wrapper function that returns Promise<void> for LoginPrompt
-  const handlePiLoginWrapper = async (): Promise<void> => {
-    await handlePiLogin();
-    // No return value, so TypeScript infers Promise<void>
+
+  const handleConsentDeclined = () => {
+    setShowConsentPrompt(false);
+    toast({
+      title: "Consent Declined",
+      description: "You need to accept the terms to continue",
+      variant: "destructive",
+    });
   };
-  
-  if (isLoading || consentLoading) {
+
+  // Check if user is authenticated (either via Supabase or test session)
+  const isAuthenticated = () => {
+    const testSession = getTestUserSession();
+    return testSession || profile;
+  };
+
+  if (userLoading || isLoading) {
     return <DashboardLoading />;
   }
-  
-  return (
-    <UpgradeModalProvider>
-      <div className="min-h-screen flex flex-col bg-gray-50/50">
+
+  // Show login prompt only if not authenticated and no test session
+  if (!isAuthenticated()) {
+    return (
+      <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className={cn(
-          "flex-grow",
-          isMobile ? "pb-20" : "py-12 px-6"
-        )}>
-          <div className={cn(
-            "container mx-auto",
-            isMobile ? "px-0" : "max-w-6xl"
-          )}>
-            {/* Promotion banner for free users */}
-            {isLoggedIn && profile && !subscription && !isAdmin && (
-              <div className={cn(
-                "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md mb-6",
-                isMobile ? "mx-4 p-3 rounded-xl text-sm" : "p-4 rounded-lg"
-              )}>
-                <p className={cn(
-                  "text-center font-medium",
-                  isMobile ? "text-sm" : ""
-                )}>
-                  🔥 Unlock 10+ tools and remove ads. Start with Starter for just 8π/month!
-                  <button 
-                    className={cn(
-                      "bg-white text-blue-600 px-4 py-1 rounded-full font-bold hover:bg-blue-50 transition-colors",
-                      isMobile ? "ml-2 text-xs" : "ml-4 text-sm"
-                    )}
-                    onClick={() => navigate('/pricing')}
-                  >
-                    Upgrade Now
-                  </button>
-                </p>
-              </div>
-            )}
-            
-            {isLoggedIn && profile ? (
-              <>
-                {!isMobile && (
-                  <DashboardHeader 
-                    username={profile.username} 
-                    subscription={subscription} 
-                  />
-                )}
-                
-                <Tabs defaultValue="overview" className={isMobile ? "w-full" : ""}>
-                  <TabsList className={cn(
-                    "mb-8",
-                    isMobile 
-                      ? "grid w-full grid-cols-3 mx-4 h-12 rounded-xl bg-white shadow-sm" 
-                      : "grid w-full grid-cols-5"
-                  )}>
-                    <TabsTrigger value="overview" className={isMobile ? "text-xs" : ""}>
-                      {isMobile ? "Overview" : "Overview"}
-                    </TabsTrigger>
-                    <TabsTrigger value="links" className={isMobile ? "text-xs" : ""}>
-                      {isMobile ? "Links" : "My Links"}
-                    </TabsTrigger>
-                    {!isMobile && <TabsTrigger value="metadata">Metadata</TabsTrigger>}
-                    {!isMobile && <TabsTrigger value="analytics">Analytics</TabsTrigger>}
-                    <TabsTrigger value="subscription" className={isMobile ? "text-xs" : ""}>
-                      {isMobile ? "Plan" : "Subscription"}
-                    </TabsTrigger>
-                  </TabsList>
-                  
-                  <TabsContent value="overview" className={isMobile ? "mt-4" : ""}>
-                    {!isMobile && (
-                      <OverviewStats 
-                        pageViews={pageViews} 
-                        linkClicks={linkClicks} 
-                        conversionRate={conversionRate} 
-                      />
-                    )}
-                    
-                    <QuickActions 
-                      subscription={subscription}
-                      profile={profile}
-                      navigate={navigate}
-                      setConfirmCancelOpen={setConfirmCancelOpen}
-                    />
-                  </TabsContent>
-                  
-                  <TabsContent value="links" className={isMobile ? "mt-4" : ""}>
-                    <LinksSection />
-                  </TabsContent>
-                  
-                  {!isMobile && (
-                    <>
-                      <TabsContent value="metadata">
-                        <MetadataSettings />
-                      </TabsContent>
-                      
-                      <TabsContent value="analytics">
-                        <AnalyticsSection subscription={subscription} />
-                      </TabsContent>
-                    </>
-                  )}
-                  
-                  <TabsContent value="subscription" className={isMobile ? "mt-4" : ""}>
-                    <SubscriptionManagement 
-                      subscription={subscription}
-                      handleSubscribe={(plan: string) => handleSubscribe(plan, billingCycle)}
-                      processingPayment={processingPayment}
-                      setConfirmCancelOpen={setConfirmCancelOpen}
-                    />
-                  </TabsContent>
-                </Tabs>
-              </>
-            ) : (
-              <LoginPrompt handlePiLogin={handlePiLoginWrapper} />
-            )}
+        <main className="flex-grow py-12 px-4">
+          <div className="container mx-auto max-w-4xl">
+            <LoginPrompt handlePiLogin={handlePiLogin} />
           </div>
         </main>
-        {!isMobile && <Footer />}
+        <Footer />
         
-        {/* Subscription Cancellation Dialog */}
-        <SubscriptionDialog 
-          confirmCancelOpen={confirmCancelOpen}
-          setConfirmCancelOpen={setConfirmCancelOpen}
-          handleCancelSubscriptionConfirm={handleCancelSubscriptionConfirm}
-        />
-        
-        {/* Consent Check Dialog */}
-        {profile && showConsentCheck && (
+        {piAuthResult && (
           <ConsentPrompt
-            isOpen={showConsentCheck}
-            username={profile.username || "User"}
+            isOpen={showConsentPrompt}
+            username={piAuthResult.user.username || "Pioneer"}
             onAccept={handleConsentAccepted}
             onDecline={handleConsentDeclined}
           />
         )}
       </div>
-    </UpgradeModalProvider>
+    );
+  }
+
+  // If authenticated (either via profile or test session), show dashboard
+  const testSession = getTestUserSession();
+  const displayName = testSession ? testSession.user.username : profile?.username;
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-grow py-12 px-4">
+        <div className="container mx-auto max-w-4xl space-y-8">
+          <DashboardHeader />
+          
+          {testSession && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+              <div className="flex items-center gap-2">
+                <span className="text-green-800 font-medium">🧪 Test Mode Active</span>
+                <span className="text-green-700">
+                  Logged in as {displayName} with {testSession.testPlan} access
+                </span>
+              </div>
+            </div>
+          )}
+          
+          <LinksSection />
+          <AnalyticsSection />
+          <MetadataSettings />
+        </div>
+      </main>
+      <Footer />
+    </div>
   );
 };
 
