@@ -16,7 +16,7 @@ import { toast } from "@/hooks/use-toast";
 import ConsentPrompt from "@/components/auth/ConsentPrompt";
 
 const Dashboard = () => {
-  const { profile, isLoading: userLoading, refreshUserData } = useUser();
+  const { profile, subscription, isLoading: userLoading, refreshUserData } = useUser();
   const [isLoading, setIsLoading] = useState(true);
   const [showConsentPrompt, setShowConsentPrompt] = useState(false);
   const [piAuthResult, setPiAuthResult] = useState<any>(null);
@@ -187,7 +187,10 @@ const Dashboard = () => {
       <Navbar />
       <main className="flex-grow py-12 px-4">
         <div className="container mx-auto max-w-4xl space-y-8">
-          <DashboardHeader />
+          <DashboardHeader 
+            username={displayName || null} 
+            subscription={subscription || null} 
+          />
           
           {testSession && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
@@ -201,7 +204,7 @@ const Dashboard = () => {
           )}
           
           <LinksSection />
-          <AnalyticsSection />
+          <AnalyticsSection subscription={subscription || null} />
           <MetadataSettings />
         </div>
       </main>
