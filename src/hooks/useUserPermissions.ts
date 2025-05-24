@@ -81,6 +81,10 @@ export const useUserPermissions = () => {
     communityContributorStatus: isDeveloperMode || plan === 'premium',
     hasFileUploads: isDeveloperMode || plan === 'premium',
     
+    // Pi monetization features - FREE PLAN CANNOT USE THESE
+    canReceivePiTips: isDeveloperMode || plan !== 'free', // Only paid plans can receive tips
+    canSellDigitalProducts: isDeveloperMode || plan !== 'free', // Only paid plans can sell products
+    
     // Badge control - FREE shows badge, ANY PAID PLAN can remove it
     showDroplinkBadge: isDeveloperMode ? false : plan === 'free', // Show badge only on free plan
     canHideDroplinkBadge: isDeveloperMode || plan !== 'free', // Can hide on any paid plan

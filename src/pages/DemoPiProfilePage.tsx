@@ -12,7 +12,7 @@ const DemoPiProfilePage = () => {
   const [tipAmount, setTipAmount] = useState(0);
 
   const planFeatures = {
-    free: ['1 Link Only', 'Basic Profile', 'Pi AdNetwork', 'No .pi Domain', 'Shows Droplink Badge'],
+    free: ['1 Link Only', 'Basic Profile', 'Pi AdNetwork', 'No .pi Domain', 'Shows Droplink Badge', 'No Pi Tips', 'No Product Sales'],
     starter: ['.pi Domain Connection', 'Unlimited Links', 'Pi Tips', 'Basic Analytics', 'Hide Droplink Badge'],
     pro: ['.pi Domain Connection', 'Pi Tips & Products', 'Digital Sales', 'Performance Analytics', 'Custom Themes', 'Hide Droplink Badge'],
     premium: ['.pi Domain Connection', 'Pi Payments Pro', 'Priority Support', 'Data Export', 'Whitelabel', 'Hide Droplink Badge']
@@ -56,13 +56,13 @@ const DemoPiProfilePage = () => {
       ];
     }
 
-    const tipOptions = [
+    const tipOptions = selectedPlan !== 'free' ? [
       { title: "☕ Buy me coffee", amount: "1π", description: "Support my daily content creation", type: "tip" },
       { title: "🍕 Buy me lunch", amount: "5π", description: "Fuel my research and tutorials", type: "tip" },
       { title: "💝 Big support", amount: "25π", description: "Help me create premium content", type: "tip" }
-    ];
+    ] : [];
 
-    const digitalProducts = selectedPlan === 'pro' || selectedPlan === 'premium' ? [
+    const digitalProducts = (selectedPlan === 'pro' || selectedPlan === 'premium') ? [
       { 
         title: "🎓 Complete Pi Network Course", 
         price: "15π", 
@@ -107,6 +107,7 @@ const DemoPiProfilePage = () => {
   };
 
   const canUsePiDomain = selectedPlan !== 'free';
+  const canReceiveTips = selectedPlan !== 'free';
   const canSellProducts = selectedPlan === 'pro' || selectedPlan === 'premium';
   const showDroplinkBadge = selectedPlan === 'free';
 
@@ -289,7 +290,7 @@ const DemoPiProfilePage = () => {
                         🔒 Upgrade to monetize with Pi
                       </p>
                       <p className="text-xs text-yellow-600 text-center">
-                        Free plan limited to 1 link • No Pi tips or product sales
+                        Free plan: 1 link only • No Pi tips • No product sales
                       </p>
                     </div>
                   )}
@@ -318,17 +319,17 @@ const DemoPiProfilePage = () => {
                       <div 
                         key={index} 
                         className={`flex items-center gap-2 p-2 rounded ${
-                          feature.includes('No .pi Domain') || feature.includes('Shows Droplink Badge')
+                          feature.includes('No .pi Domain') || feature.includes('Shows Droplink Badge') || feature.includes('No Pi Tips') || feature.includes('No Product Sales')
                             ? 'bg-red-50 text-red-700' 
-                            : feature.includes('.pi Domain') || feature.includes('Pi Tips') || feature.includes('Pi Payments') || feature.includes('Hide Droplink Badge')
+                            : feature.includes('.pi Domain') || feature.includes('Pi Tips') || feature.includes('Pi Payments') || feature.includes('Hide Droplink Badge') || feature.includes('Digital Sales')
                             ? 'bg-green-50 text-green-700' 
                             : 'bg-blue-50 text-blue-700'
                         }`}
                       >
                         <div className={`w-2 h-2 rounded-full ${
-                          feature.includes('No .pi Domain') || feature.includes('Shows Droplink Badge')
+                          feature.includes('No .pi Domain') || feature.includes('Shows Droplink Badge') || feature.includes('No Pi Tips') || feature.includes('No Product Sales')
                             ? 'bg-red-500' 
-                            : feature.includes('.pi Domain') || feature.includes('Pi Tips') || feature.includes('Pi Payments') || feature.includes('Hide Droplink Badge')
+                            : feature.includes('.pi Domain') || feature.includes('Pi Tips') || feature.includes('Pi Payments') || feature.includes('Hide Droplink Badge') || feature.includes('Digital Sales')
                             ? 'bg-green-500' 
                             : 'bg-blue-500'
                         }`}></div>
@@ -339,34 +340,42 @@ const DemoPiProfilePage = () => {
                 </CardContent>
               </Card>
 
-              <Card className="border-green-200 bg-green-50">
-                <CardHeader>
-                  <CardTitle className="text-green-800">Real Pi Earnings Example</CardTitle>
-                  <CardDescription className="text-green-600">Based on actual creator performance</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-sm">Tips received (this month)</span>
-                      <span className="font-semibold text-green-600">+347.2π</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Course sales</span>
-                      <span className="font-semibold text-green-600">+675.5π</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">eBook sales</span>
-                      <span className="font-semibold text-green-600">+225.1π</span>
-                    </div>
-                    <div className="border-t pt-2">
+              {selectedPlan !== 'free' && (
+                <Card className="border-green-200 bg-green-50">
+                  <CardHeader>
+                    <CardTitle className="text-green-800">Real Pi Earnings Example</CardTitle>
+                    <CardDescription className="text-green-600">Based on actual creator performance</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
                       <div className="flex justify-between">
-                        <span className="font-semibold">Total This Month</span>
-                        <span className="font-bold text-lg text-green-600">1,247.8π</span>
+                        <span className="text-sm">Tips received (this month)</span>
+                        <span className="font-semibold text-green-600">+347.2π</span>
+                      </div>
+                      {canSellProducts && (
+                        <>
+                          <div className="flex justify-between">
+                            <span className="text-sm">Course sales</span>
+                            <span className="font-semibold text-green-600">+675.5π</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm">eBook sales</span>
+                            <span className="font-semibold text-green-600">+225.1π</span>
+                          </div>
+                        </>
+                      )}
+                      <div className="border-t pt-2">
+                        <div className="flex justify-between">
+                          <span className="font-semibold">Total This Month</span>
+                          <span className="font-bold text-lg text-green-600">
+                            {canSellProducts ? '1,247.8π' : '347.2π'}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              )}
 
               <Card>
                 <CardHeader>
@@ -374,18 +383,24 @@ const DemoPiProfilePage = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex items-start gap-3">
+                    <div className={`flex items-start gap-3 ${!canReceiveTips ? 'opacity-50' : ''}`}>
                       <div className="bg-yellow-500 rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm mt-1">💰</div>
                       <div>
-                        <h4 className="font-semibold">Pi Tips</h4>
+                        <h4 className="font-semibold flex items-center gap-2">
+                          Pi Tips
+                          {!canReceiveTips && <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">Paid Plans Only</span>}
+                        </h4>
                         <p className="text-sm text-gray-600">Supporters can tip you Pi for your content and tutorials</p>
                       </div>
                     </div>
                     
-                    <div className="flex items-start gap-3">
+                    <div className={`flex items-start gap-3 ${!canSellProducts ? 'opacity-50' : ''}`}>
                       <div className="bg-purple-500 rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm mt-1">🎓</div>
                       <div>
-                        <h4 className="font-semibold">Digital Products</h4>
+                        <h4 className="font-semibold flex items-center gap-2">
+                          Digital Products
+                          {!canSellProducts && <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">Pro+ Plans Only</span>}
+                        </h4>
                         <p className="text-sm text-gray-600">Sell courses, eBooks, and services directly for Pi</p>
                       </div>
                     </div>
