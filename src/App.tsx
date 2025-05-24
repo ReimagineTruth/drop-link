@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
@@ -7,6 +6,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SplashScreen from '@/components/SplashScreen';
 import { UserProvider } from '@/context/UserContext';
 import { AdminStatusProvider } from '@/components/admin/AdminStatusProvider';
+
+// Import i18n configuration
+import './i18n';
 
 // Pages
 import Home from '@/pages/Home';

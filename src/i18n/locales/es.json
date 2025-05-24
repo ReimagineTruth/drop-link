@@ -1,0 +1,69 @@
+
+{
+  "nav": {
+    "home": "Inicio",
+    "features": "Características",
+    "pricing": "Precios",
+    "about": "Acerca de",
+    "contact": "Contacto",
+    "login": "Iniciar Sesión",
+    "signup": "Registrarse",
+    "dashboard": "Panel",
+    "settings": "Configuración",
+    "help": "Ayuda",
+    "logout": "Cerrar Sesión"
+  },
+  "hero": {
+    "title": "Deja Caer Todos Tus Enlaces",
+    "subtitle": "Crea tu perfil profesional de creador de Pi Network en segundos",
+    "description": "Unifica tus enlaces, vende productos y gana Pi en Pi Network con una página elegante.",
+    "getStarted": "Comenzar Gratis",
+    "learnMore": "Saber Más"
+  },
+  "dashboard": {
+    "welcome": "Bienvenido a Droplink",
+    "myLinks": "Mis Enlaces",
+    "addLink": "Añadir Enlace",
+    "analytics": "Analíticas",
+    "subscription": "Suscripción",
+    "profileUrl": "Tu URL de perfil público"
+  },
+  "profile": {
+    "editProfile": "Editar Perfil",
+    "displayName": "Nombre a Mostrar",
+    "bio": "Biografía",
+    "avatar": "Avatar",
+    "theme": "Tema",
+    "colors": "Colores",
+    "customization": "Personalización"
+  },
+  "links": {
+    "addNew": "Añadir Nuevo Enlace",
+    "title": "Título",
+    "url": "URL",
+    "icon": "Icono",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar"
+  },
+  "settings": {
+    "profile": "Perfil",
+    "domains": "Dominios",
+    "account": "Cuenta",
+    "language": "Idioma",
+    "notifications": "Notificaciones"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "share": "Compartir",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "error": "Error",
+    "success": "Éxito"
+  }
+}

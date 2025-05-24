@@ -1,0 +1,69 @@
+
+{
+  "nav": {
+    "home": "Tahanan",
+    "features": "Mga Feature",
+    "pricing": "Presyo",
+    "about": "Tungkol",
+    "contact": "Makipag-ugnayan",
+    "login": "Mag-login",
+    "signup": "Mag-sign Up",
+    "dashboard": "Dashboard",
+    "settings": "Mga Setting",
+    "help": "Tulong",
+    "logout": "Mag-logout"
+  },
+  "hero": {
+    "title": "I-drop Lahat ng Inyong Links",
+    "subtitle": "Gumawa ng inyong propesyonal na Pi Network creator profile sa loob ng ilang segundo",
+    "description": "Pagsama-samahin ang inyong mga link, magbenta ng mga produkto, at kumita ng Pi sa Pi Network gamit ang isang eleganteng pahina.",
+    "getStarted": "Magsimula nang Libre",
+    "learnMore": "Matuto Pa"
+  },
+  "dashboard": {
+    "welcome": "Maligayang pagdating sa Droplink",
+    "myLinks": "Aking mga Link",
+    "addLink": "Magdagdag ng Link",
+    "analytics": "Analytics",
+    "subscription": "Subscription",
+    "profileUrl": "Inyong pampublikong profile URL"
+  },
+  "profile": {
+    "editProfile": "I-edit ang Profile",
+    "displayName": "Pangalan na Ipapakita",
+    "bio": "Bio",
+    "avatar": "Avatar",
+    "theme": "Theme",
+    "colors": "Mga Kulay",
+    "customization": "Customization"
+  },
+  "links": {
+    "addNew": "Magdagdag ng Bagong Link",
+    "title": "Pamagat",
+    "url": "URL",
+    "icon": "Icon",
+    "save": "I-save",
+    "cancel": "Kanselahin",
+    "delete": "Tanggalin",
+    "edit": "I-edit"
+  },
+  "settings": {
+    "profile": "Profile",
+    "domains": "Mga Domain",
+    "account": "Account",
+    "language": "Wika",
+    "notifications": "Mga Notification"
+  },
+  "common": {
+    "loading": "Naglo-load...",
+    "save": "I-save",
+    "cancel": "Kanselahin",
+    "delete": "Tanggalin",
+    "edit": "I-edit",
+    "share": "I-share",
+    "copy": "Kopyahin",
+    "copied": "Nakopya na!",
+    "error": "May Error",
+    "success": "Matagumpay"
+  }
+}
