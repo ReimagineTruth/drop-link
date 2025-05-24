@@ -25,13 +25,13 @@ export const applyTemplateToProfile = async (userId: string, templateId: number)
     const { data, error } = await supabase
       .from('user_profiles')
       .update({
-        theme: JSON.stringify({
+        theme: {
           templateId: template.id,
           name: template.name,
           colors: template.colors,
           category: template.category,
           plan: template.plan
-        })
+        }
       })
       .eq('id', userId)
       .select()

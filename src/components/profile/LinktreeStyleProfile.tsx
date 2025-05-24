@@ -9,6 +9,11 @@ interface LinktreeStyleProfileProps {
   displayName: string | null;
   bio: string | null;
   avatarUrl: string | null;
+  theme?: {
+    colors: string[];
+    name: string;
+    category: string;
+  };
 }
 
 const LinktreeStyleProfile = ({ 
@@ -17,7 +22,8 @@ const LinktreeStyleProfile = ({
   username, 
   displayName, 
   bio, 
-  avatarUrl 
+  avatarUrl,
+  theme 
 }: LinktreeStyleProfileProps) => {
   
   const getSocialIcon = (url: string) => {
@@ -29,8 +35,18 @@ const LinktreeStyleProfile = ({
     return <LinkIcon className="h-5 w-5" />;
   };
 
+  const gradientBg = theme?.colors && theme.colors.length >= 2 
+    ? `linear-gradient(135deg, ${theme.colors.join(', ')})`
+    : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 py-8">
+    <div 
+      className="min-h-screen py-8"
+      style={{ 
+        background: theme?.colors ? gradientBg : undefined,
+        backgroundColor: !theme?.colors ? '#f8fafc' : undefined
+      }}
+    >
       <div className="max-w-md mx-auto px-4">
         {/* Profile Header */}
         <div className="text-center mb-8">

@@ -9,6 +9,11 @@ interface MinimalProfileProps {
   displayName: string | null;
   bio: string | null;
   avatarUrl: string | null;
+  theme?: {
+    colors: string[];
+    name: string;
+    category: string;
+  };
 }
 
 const MinimalProfile = ({ 
@@ -17,7 +22,8 @@ const MinimalProfile = ({
   username, 
   displayName, 
   bio, 
-  avatarUrl 
+  avatarUrl,
+  theme 
 }: MinimalProfileProps) => {
   
   const getSocialIcon = (url: string) => {
@@ -28,6 +34,8 @@ const MinimalProfile = ({
     if (url.includes('youtube.com')) return <Youtube className="h-4 w-4" />;
     return <LinkIcon className="h-4 w-4" />;
   };
+
+  const primaryColor = theme?.colors?.[0] || '#6366f1';
 
   return (
     <div className="min-h-screen bg-white">
@@ -58,10 +66,13 @@ const MinimalProfile = ({
               key={link.id || index}
               onClick={() => onLinkClick(link)}
               className="w-full bg-white rounded-lg p-4 border border-gray-200 hover:border-gray-300 transition-all duration-200 hover:shadow-sm"
+              style={{
+                borderColor: theme?.colors?.[0] ? `${primaryColor}20` : undefined
+              }}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="text-base">
+                  <div className="text-base" style={{ color: primaryColor }}>
                     {link.url.startsWith('http') ? getSocialIcon(link.url) : (
                       <span>{link.icon}</span>
                     )}

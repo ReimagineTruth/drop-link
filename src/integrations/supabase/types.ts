@@ -303,6 +303,7 @@ export type Database = {
           display_name: string | null
           id: string
           pi_domain: string | null
+          theme: Json | null
           updated_at: string | null
           username: string
         }
@@ -314,6 +315,7 @@ export type Database = {
           display_name?: string | null
           id: string
           pi_domain?: string | null
+          theme?: Json | null
           updated_at?: string | null
           username: string
         }
@@ -325,6 +327,7 @@ export type Database = {
           display_name?: string | null
           id?: string
           pi_domain?: string | null
+          theme?: Json | null
           updated_at?: string | null
           username?: string
         }
