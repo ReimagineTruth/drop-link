@@ -11,13 +11,17 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   plugins: [
-    react(),
+    react({
+      jsxImportSource: 'react',
+      plugins: [['@swc/plugin-emotion', {}]],
+    }),
     mode === 'development' &&
     componentTagger(),
   ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "react/jsx-runtime": "react/jsx-runtime.js",
     },
   },
   build: {
