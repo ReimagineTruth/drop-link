@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/context/UserContext";
 import { isRunningInPiBrowser } from "@/utils/pi-sdk";
 import ConsentPrompt from "@/components/auth/ConsentPrompt";
+import { Shield, Lock } from "lucide-react";
 
 export function PiAuthButton() {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -21,17 +22,19 @@ export function PiAuthButton() {
 
   // Initialize Pi SDK when component mounts
   useEffect(() => {
-    const initialized = initPiNetwork();
-    console.log("Pi SDK initialization in PiAuthButton:", initialized);
-  }, []);
+    if (isPiBrowser) {
+      const initialized = initPiNetwork();
+      console.log("Pi SDK initialization in PiAuthButton:", initialized);
+    }
+  }, [isPiBrowser]);
 
   const handlePiAuth = async () => {
-    // STRICT Pi Browser requirement - block if not in Pi Browser
+    // STRICT Pi Browser requirement - absolutely block if not in Pi Browser
     if (!isPiBrowser) {
-      console.log("Not in Pi Browser, blocking authentication");
+      console.log("🚫 BLOCKED: Authentication attempt from external browser");
       toast({
-        title: "Pi Browser Required",
-        description: "You must use Pi Browser to authenticate with Pi Network. Please open this app in Pi Browser.",
+        title: "Authentication Blocked",
+        description: "For security reasons, Pi Network authentication is only allowed in Pi Browser.",
         variant: "destructive",
       });
       
@@ -42,12 +45,12 @@ export function PiAuthButton() {
     
     try {
       setIsAuthenticating(true);
-      console.log("Starting Pi authentication...");
+      console.log("🔐 Starting Pi authentication in Pi Browser...");
       
       const authResult = await authenticateWithPi(["username", "payments", "wallet_address"]);
       
       if (authResult?.user) {
-        console.log("Pi authentication successful:", authResult);
+        console.log("✅ Pi authentication successful:", authResult);
         
         // Store Pi auth data
         localStorage.setItem('pi_access_token', authResult.accessToken);
@@ -58,7 +61,7 @@ export function PiAuthButton() {
         setPiAuthResult(authResult);
         setShowConsentPrompt(true);
       } else {
-        console.error("Pi authentication failed - no user data returned");
+        console.error("❌ Pi authentication failed - no user data returned");
         toast({
           title: "Authentication Failed",
           description: "Could not authenticate with Pi Network. Please try again.",
@@ -66,7 +69,7 @@ export function PiAuthButton() {
         });
       }
     } catch (error) {
-      console.error("Pi authentication error:", error);
+      console.error("❌ Pi authentication error:", error);
       toast({
         title: "Authentication Error",
         description: error instanceof Error ? error.message : "An error occurred during Pi authentication.",
@@ -75,6 +78,16 @@ export function PiAuthButton() {
     } finally {
       setIsAuthenticating(false);
     }
+  };
+
+  // Block external authentication completely
+  const blockExternalAuth = () => {
+    console.log("🚫 External authentication attempt blocked");
+    toast({
+      title: "Access Denied",
+      description: "Authentication is restricted to Pi Browser only for security reasons.",
+      variant: "destructive",
+    });
   };
 
   const handleConsentAccepted = async () => {
@@ -167,21 +180,28 @@ export function PiAuthButton() {
 
   return (
     <>
-      <Button 
-        onClick={handlePiAuth}
-        className="w-full bg-gradient-hero hover:bg-secondary flex items-center justify-center gap-2 mb-3"
-        disabled={isAuthenticating || !isPiBrowser}
-      >
-        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8z"/>
-        </svg>
-        {!isPiBrowser 
-          ? "Pi Browser Required" 
-          : isAuthenticating 
-            ? "Authenticating..." 
-            : "Sign in with Pi Network"
-        }
-      </Button>
+      {isPiBrowser ? (
+        <Button 
+          onClick={handlePiAuth}
+          className="w-full bg-gradient-hero hover:bg-secondary flex items-center justify-center gap-2 mb-3"
+          disabled={isAuthenticating}
+        >
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8z"/>
+          </svg>
+          <Shield className="w-4 h-4" />
+          {isAuthenticating ? "Authenticating..." : "Sign in with Pi Network"}
+        </Button>
+      ) : (
+        <Button 
+          onClick={blockExternalAuth}
+          className="w-full bg-red-500 hover:bg-red-600 flex items-center justify-center gap-2 mb-3 cursor-not-allowed"
+          disabled
+        >
+          <Lock className="w-5 h-5" />
+          External Login Blocked
+        </Button>
+      )}
       
       {piAuthResult && (
         <ConsentPrompt

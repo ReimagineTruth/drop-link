@@ -10,7 +10,8 @@ import PiBrowserPrompt from "@/components/PiBrowserPrompt";
 import PiBrowserDialog from "@/components/PiBrowserDialog";
 import { isRunningInPiBrowser } from "@/utils/pi-sdk";
 import { Button } from "@/components/ui/button";
-import { Download, ExternalLink, AlertTriangle, CheckCircle } from "lucide-react";
+import { Download, ExternalLink, AlertTriangle, CheckCircle, Shield, Lock } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -31,22 +32,53 @@ const Login = () => {
       console.log("User is already logged in, redirecting to dashboard");
       navigate('/dashboard');
     }
-  }, [isLoggedIn, navigate]);
+
+    // Block external login attempts
+    if (!isPiBrowser) {
+      console.log("⚠️ External login attempt blocked - Pi Browser required");
+      toast({
+        title: "Access Restricted",
+        description: "Login is only allowed through Pi Browser for security reasons.",
+        variant: "destructive",
+      });
+    }
+  }, [isLoggedIn, navigate, isPiBrowser]);
 
   const handleDownloadPiBrowser = () => {
+    console.log("Redirecting to Pi Browser download");
     window.open('https://minepi.com/download', '_blank');
   };
 
   const handleOpenInPiBrowser = () => {
     const currentUrl = window.location.href;
-    // Try to open in Pi Browser with custom protocol
-    const piBrowserUrl = `pi://browser?url=${encodeURIComponent(currentUrl)}`;
-    window.location.href = piBrowserUrl;
+    console.log("Attempting to open in Pi Browser:", currentUrl);
     
-    // Fallback: redirect to Pi Network domain
-    setTimeout(() => {
-      window.open('https://pinet.com/@droplink', '_blank');
-    }, 1000);
+    // Try multiple Pi Browser protocols
+    const protocols = [
+      `pi://browser?url=${encodeURIComponent(currentUrl)}`,
+      `pibrowser://open?url=${encodeURIComponent(currentUrl)}`,
+      `https://pinet.com/@droplink`
+    ];
+    
+    protocols.forEach((protocol, index) => {
+      setTimeout(() => {
+        if (index === protocols.length - 1) {
+          window.open(protocol, '_blank');
+        } else {
+          window.location.href = protocol;
+        }
+      }, index * 500);
+    });
+  };
+
+  // Block any external authentication attempts
+  const blockExternalAuth = () => {
+    console.log("🚫 External authentication attempt blocked");
+    toast({
+      title: "Authentication Blocked",
+      description: "For security reasons, authentication is only allowed through Pi Browser.",
+      variant: "destructive",
+    });
   };
 
   return (
@@ -78,11 +110,11 @@ const Login = () => {
               ) : (
                 <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                   <div className="flex items-center justify-center mb-3">
-                    <AlertTriangle className="h-6 w-6 text-red-600 mr-2" />
-                    <span className="font-semibold text-red-800">Pi Browser Required</span>
+                    <Shield className="h-6 w-6 text-red-600 mr-2" />
+                    <span className="font-semibold text-red-800">External Browser Detected</span>
                   </div>
                   <p className="text-sm text-red-700 mb-4">
-                    You're currently using a standard browser. To sign in with Pi Network and access all features, you need to use Pi Browser.
+                    For security reasons, authentication is restricted to Pi Browser only. Please use Pi Browser to sign in.
                   </p>
                   
                   <div className="space-y-3">
@@ -105,11 +137,11 @@ const Login = () => {
                   </div>
                   
                   <div className="mt-4 text-xs text-red-600 bg-red-100 rounded p-2">
-                    <strong>Why Pi Browser?</strong><br/>
-                    • Secure Pi Network authentication<br/>
-                    • Native Pi payment integration<br/>
-                    • Enhanced security features<br/>
-                    • Full access to all app features
+                    <strong>Security Notice:</strong><br/>
+                    • Authentication blocked on external browsers<br/>
+                    • Pi Browser required for secure login<br/>
+                    • Protection against unauthorized access<br/>
+                    • Enhanced security protocols active
                   </div>
                 </div>
               )}
@@ -131,10 +163,13 @@ const Login = () => {
               </>
             ) : (
               <div className="text-center">
-                <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <p className="text-sm text-yellow-800">
-                    <strong>Limited Access Mode</strong><br/>
-                    Authentication with Pi Network requires Pi Browser. Please switch to Pi Browser to continue.
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-center justify-center mb-2">
+                    <Lock className="h-5 w-5 text-red-600 mr-2" />
+                    <span className="font-semibold text-red-800">Access Restricted</span>
+                  </div>
+                  <p className="text-sm text-red-700">
+                    Authentication is disabled on external browsers for security. Please use Pi Browser to continue.
                   </p>
                 </div>
                 
@@ -155,14 +190,25 @@ const Login = () => {
                     <Download className="mr-2 h-4 w-4" />
                     Get Pi Browser
                   </Button>
+                  
+                  {/* Block any external authentication attempts */}
+                  <Button 
+                    variant="ghost"
+                    onClick={blockExternalAuth}
+                    className="w-full text-gray-400 cursor-not-allowed"
+                    disabled
+                  >
+                    <Lock className="mr-2 h-4 w-4" />
+                    External Login Blocked
+                  </Button>
                 </div>
                 
                 <div className="mt-6 text-center">
                   <p className="text-sm text-gray-600">
                     New to Droplink?{" "}
-                    <Link to="/signup" className="text-primary hover:underline font-medium">
-                      Learn more
-                    </Link>
+                    <span className="text-gray-400">
+                      Sign up requires Pi Browser
+                    </span>
                   </p>
                 </div>
               </div>
@@ -174,7 +220,7 @@ const Login = () => {
       
       <PiBrowserDialog 
         redirectUrl="https://pinet.com/@droplink"
-        showOnMount={false}
+        showOnMount={!isPiBrowser}
       />
     </div>
   );
