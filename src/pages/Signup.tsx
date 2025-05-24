@@ -36,6 +36,27 @@ const Signup = () => {
   }, [navigate]);
 
   const handlePiSignup = async () => {
+    // Show test mode notice for easier bypass
+    toast({
+      title: "Pi Signup",
+      description: "Use the Test Signup below for easier testing without Pi Browser",
+      variant: "default",
+    });
+    
+    // If not in Pi Browser, show a toast and open the dialog
+    if (!isPiBrowser) {
+      console.log("Not in Pi Browser, showing toast and opening dialog");
+      toast({
+        title: "Pi Browser Required",
+        description: "Please use Test Signup below for testing, or open in Pi Browser for real signup",
+        variant: "destructive",
+      });
+      
+      // Dispatch custom event to open the dialog
+      window.dispatchEvent(new CustomEvent('open-pi-browser-dialog'));
+      return;
+    }
+    
     try {
       setPiAuthenticating(true);
       const authResult = await authenticateWithPi(["username"]);
@@ -49,7 +70,7 @@ const Signup = () => {
       } else {
         toast({
           title: "Authentication Failed",
-          description: "Could not authenticate with Pi Network",
+          description: "Could not authenticate with Pi Network. Try Test Signup below.",
           variant: "destructive",
         });
       }
@@ -57,7 +78,7 @@ const Signup = () => {
       console.error("Pi signup error:", error);
       toast({
         title: "Authentication Error",
-        description: "An error occurred during Pi authentication",
+        description: "An error occurred during Pi authentication. Use Test Signup for testing.",
         variant: "destructive",
       });
     } finally {
@@ -161,7 +182,7 @@ const Signup = () => {
             <Button 
               type="button" 
               onClick={handlePiSignup}
-              className="w-full bg-gradient-hero hover:bg-secondary flex items-center justify-center gap-2 mb-6"
+              className="w-full bg-gradient-hero hover:bg-secondary flex items-center justify-center gap-2 mb-3"
               disabled={piAuthenticating}
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -169,6 +190,10 @@ const Signup = () => {
               </svg>
               {piAuthenticating ? "Authenticating..." : "Sign up with Pi Network"}
             </Button>
+            
+            <div className="text-center text-sm text-gray-500 mb-4">
+              or use Test Signup below for development testing
+            </div>
             
             {!isPiBrowser && <PiBrowserPrompt />}
             
@@ -182,7 +207,7 @@ const Signup = () => {
             </div>
           </div>
           
-          {/* Test Login Component */}
+          {/* Test Login Component with signup context */}
           <TestLogin />
         </div>
       </main>
