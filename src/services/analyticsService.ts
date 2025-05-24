@@ -27,18 +27,26 @@ export interface UserAnalytics {
 }
 
 class AnalyticsService {
-  // Track general events
+  // Track general events - simplified to work with actual schema
   async trackEvent(event: AnalyticsEvent): Promise<boolean> {
     try {
+      // For now, we'll use the existing analytics table structure
+      // and store event data in user_agent field as a workaround
+      const eventData = JSON.stringify({
+        type: event.event_type,
+        ...event.custom_data,
+        timestamp: event.timestamp || new Date().toISOString()
+      });
+
       const { error } = await supabase
         .from('analytics')
         .insert({
           user_id: event.user_id,
-          custom_data: {
-            type: event.event_type,
-            ...event.custom_data,
-            timestamp: event.timestamp || new Date().toISOString()
-          }
+          user_agent: eventData, // Store event data here temporarily
+          page_view: event.event_type === 'page_view',
+          link_click: event.event_type === 'link_click',
+          referrer: event.custom_data?.referrer || null,
+          ip_address: event.custom_data?.ip_address || null
         });
 
       if (error) {
@@ -140,13 +148,35 @@ class AnalyticsService {
         return null;
       }
 
-      // Process and categorize the data
+      // Process and categorize the data using the actual schema
       const summary = {
         total_events: data.length,
-        payment_events: data.filter(d => d.custom_data?.type?.includes('payment')).length,
-        user_events: data.filter(d => d.custom_data?.type?.includes('user')).length,
-        page_views: data.filter(d => d.custom_data?.type === 'page_view').length,
-        errors: data.filter(d => d.custom_data?.type === 'error').length,
+        payment_events: data.filter(d => {
+          try {
+            const parsed = JSON.parse(d.user_agent || '{}');
+            return parsed.type?.includes('payment');
+          } catch {
+            return false;
+          }
+        }).length,
+        user_events: data.filter(d => {
+          try {
+            const parsed = JSON.parse(d.user_agent || '{}');
+            return parsed.type?.includes('user');
+          } catch {
+            return false;
+          }
+        }).length,
+        page_views: data.filter(d => d.page_view).length,
+        link_clicks: data.filter(d => d.link_click).length,
+        errors: data.filter(d => {
+          try {
+            const parsed = JSON.parse(d.user_agent || '{}');
+            return parsed.type === 'error';
+          } catch {
+            return false;
+          }
+        }).length,
         by_day: this.groupByDay(data),
         top_pages: this.getTopPages(data),
         error_summary: this.getErrorSummary(data)
@@ -169,10 +199,15 @@ class AnalyticsService {
 
   private getTopPages(data: any[]): Array<{ page: string; views: number }> {
     const pageViews = data
-      .filter(d => d.custom_data?.type === 'page_view')
+      .filter(d => d.page_view)
       .reduce((acc, item) => {
-        const page = item.custom_data?.page || 'unknown';
-        acc[page] = (acc[page] || 0) + 1;
+        try {
+          const parsed = JSON.parse(item.user_agent || '{}');
+          const page = parsed.page || 'unknown';
+          acc[page] = (acc[page] || 0) + 1;
+        } catch {
+          acc['unknown'] = (acc['unknown'] || 0) + 1;
+        }
         return acc;
       }, {});
 
@@ -184,10 +219,22 @@ class AnalyticsService {
 
   private getErrorSummary(data: any[]): Array<{ error: string; count: number }> {
     const errors = data
-      .filter(d => d.custom_data?.type === 'error')
+      .filter(d => {
+        try {
+          const parsed = JSON.parse(d.user_agent || '{}');
+          return parsed.type === 'error';
+        } catch {
+          return false;
+        }
+      })
       .reduce((acc, item) => {
-        const error = item.custom_data?.error_message || 'unknown';
-        acc[error] = (acc[error] || 0) + 1;
+        try {
+          const parsed = JSON.parse(item.user_agent || '{}');
+          const error = parsed.error_message || 'unknown';
+          acc[error] = (acc[error] || 0) + 1;
+        } catch {
+          acc['unknown'] = (acc['unknown'] || 0) + 1;
+        }
         return acc;
       }, {});
 
