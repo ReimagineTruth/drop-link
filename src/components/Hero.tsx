@@ -15,20 +15,20 @@ const Hero = () => {
     let charIndex = 0;
     let isDeleting = false;
     let typingSpeed = 100;
-    let timeoutId: NodeJS.Timeout;
     
     const type = () => {
       const currentWord = words[wordIndex];
       
-      // Add safety check for the ref
-      if (!typedTextRef.current) return;
-      
       if (isDeleting) {
-        typedTextRef.current.textContent = currentWord.substring(0, charIndex - 1);
+        if (typedTextRef.current) {
+          typedTextRef.current.textContent = currentWord.substring(0, charIndex - 1);
+        }
         charIndex--;
         typingSpeed = 50;
       } else {
-        typedTextRef.current.textContent = currentWord.substring(0, charIndex + 1);
+        if (typedTextRef.current) {
+          typedTextRef.current.textContent = currentWord.substring(0, charIndex + 1);
+        }
         charIndex++;
         typingSpeed = 150;
       }
@@ -42,24 +42,21 @@ const Hero = () => {
         typingSpeed = 500;
       }
       
-      timeoutId = setTimeout(type, typingSpeed);
+      setTimeout(type, typingSpeed);
     };
     
-    timeoutId = setTimeout(type, 500);
+    setTimeout(type, 500);
     
     return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
+      const highestId = window.setTimeout(() => {}, 0);
+      for (let i = 0; i < highestId; i++) {
+        clearTimeout(i);
       }
     };
   }, []);
   
   const handleButtonClick = () => {
-    try {
-      playSound(sounds.uiTap, 0.3);
-    } catch (error) {
-      console.log('Sound playback failed:', error);
-    }
+    playSound(sounds.uiTap, 0.3);
   };
   
   return (
@@ -137,7 +134,7 @@ const Hero = () => {
             animate: { y: [0, -20, 0], transition: { duration: 5, repeat: Infinity, ease: "easeInOut" } }
           }}
         >
-          <span className="text-white/90 dark:text-white/90">📺</span>
+          <i className="fab fa-youtube">📺</i>
         </AnimatedContainer>
         <AnimatedContainer 
           animation="scale" 
@@ -147,7 +144,7 @@ const Hero = () => {
             animate: { y: [0, -15, 0], transition: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 } }
           }}
         >
-          <span className="text-white/90 dark:text-white/90">✉️</span>
+          <i className="fab fa-telegram">✉️</i>
         </AnimatedContainer>
         <AnimatedContainer 
           animation="scale" 
@@ -157,7 +154,7 @@ const Hero = () => {
             animate: { y: [0, -10, 0], transition: { duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1 } }
           }}
         >
-          <span className="text-white/90 dark:text-white/90">💰</span>
+          <i className="fab fa-coins">💰</i>
         </AnimatedContainer>
         <AnimatedContainer 
           animation="scale" 
@@ -167,7 +164,7 @@ const Hero = () => {
             animate: { y: [0, -12, 0], transition: { duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.8 } }
           }}
         >
-          <Globe size={28} className="text-white/90 dark:text-white/90" />
+          <i className="fab fa-globe"><Globe size={28} className="text-white/90 dark:text-white/90" /></i>
         </AnimatedContainer>
       </div>
     </section>

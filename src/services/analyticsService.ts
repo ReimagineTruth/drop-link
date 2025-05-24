@@ -1,249 +1,68 @@
 
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from "@/integrations/supabase/client";
 
-export interface AnalyticsEvent {
-  event_type: string;
-  user_id?: string;
-  custom_data?: Record<string, any>;
-  timestamp?: string;
-}
+type AnalyticsEvent = {
+  page_view?: boolean;
+  link_click?: boolean;
+  link_id?: string;
+  referrer?: string;
+  user_agent?: string;
+  custom_data?: any;
+};
 
-export interface PaymentAnalytics {
-  payment_id: string;
-  user_id: string;
-  amount: number;
-  status: 'initiated' | 'completed' | 'failed' | 'cancelled';
-  attempt_number?: number;
-  error_code?: string;
-  duration_ms?: number;
-  metadata?: Record<string, any>;
-}
-
-export interface UserAnalytics {
-  user_id: string;
-  action: 'login' | 'signup' | 'logout' | 'profile_update';
-  auth_method?: 'email' | 'pi_network';
-  metadata?: Record<string, any>;
-}
-
-class AnalyticsService {
-  // Track general events - simplified to work with actual schema
-  async trackEvent(event: AnalyticsEvent): Promise<boolean> {
-    try {
-      // For now, we'll use the existing analytics table structure
-      // and store event data in user_agent field as a workaround
-      const eventData = JSON.stringify({
-        type: event.event_type,
-        ...event.custom_data,
-        timestamp: event.timestamp || new Date().toISOString()
+/**
+ * Track an analytics event
+ * @param userId - The user ID
+ * @param event - The event data
+ * @returns True if successful, false if failed
+ */
+export async function trackEvent(
+  userId: string,
+  event: AnalyticsEvent
+): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('analytics')
+      .insert({
+        user_id: userId,
+        ...event,
+        user_agent: event.user_agent || navigator.userAgent,
+        referrer: event.referrer || document.referrer
       });
-
-      const { error } = await supabase
-        .from('analytics')
-        .insert({
-          user_id: event.user_id,
-          user_agent: eventData, // Store event data here temporarily
-          page_view: event.event_type === 'page_view',
-          link_click: event.event_type === 'link_click',
-          referrer: event.custom_data?.referrer || null,
-          ip_address: event.custom_data?.ip_address || null
-        });
-
-      if (error) {
-        console.error('Error tracking analytics event:', error);
-        return false;
-      }
-
-      return true;
-    } catch (error) {
-      console.error('Error tracking analytics event:', error);
-      return false;
+    
+    if (error) {
+      throw error;
     }
-  }
-
-  // Track payment-specific analytics
-  async trackPaymentEvent(analytics: PaymentAnalytics): Promise<boolean> {
-    return this.trackEvent({
-      event_type: 'payment_analytics',
-      user_id: analytics.user_id,
-      custom_data: {
-        payment_id: analytics.payment_id,
-        amount: analytics.amount,
-        status: analytics.status,
-        attempt_number: analytics.attempt_number,
-        error_code: analytics.error_code,
-        duration_ms: analytics.duration_ms,
-        metadata: analytics.metadata
-      }
-    });
-  }
-
-  // Track user-specific analytics
-  async trackUserEvent(analytics: UserAnalytics): Promise<boolean> {
-    return this.trackEvent({
-      event_type: 'user_analytics',
-      user_id: analytics.user_id,
-      custom_data: {
-        action: analytics.action,
-        auth_method: analytics.auth_method,
-        metadata: analytics.metadata
-      }
-    });
-  }
-
-  // Track page views
-  async trackPageView(page: string, user_id?: string): Promise<boolean> {
-    return this.trackEvent({
-      event_type: 'page_view',
-      user_id,
-      custom_data: {
-        page,
-        url: window.location.href,
-        referrer: document.referrer,
-        user_agent: navigator.userAgent
-      }
-    });
-  }
-
-  // Track errors
-  async trackError(error: Error, context?: string, user_id?: string): Promise<boolean> {
-    return this.trackEvent({
-      event_type: 'error',
-      user_id,
-      custom_data: {
-        error_message: error.message,
-        error_stack: error.stack,
-        context,
-        url: window.location.href
-      }
-    });
-  }
-
-  // Get analytics summary for admin dashboard
-  async getAnalyticsSummary(timeframe: 'day' | 'week' | 'month' = 'week'): Promise<any> {
-    try {
-      const now = new Date();
-      const startDate = new Date();
-      
-      switch (timeframe) {
-        case 'day':
-          startDate.setDate(now.getDate() - 1);
-          break;
-        case 'week':
-          startDate.setDate(now.getDate() - 7);
-          break;
-        case 'month':
-          startDate.setMonth(now.getMonth() - 1);
-          break;
-      }
-
-      const { data, error } = await supabase
-        .from('analytics')
-        .select('*')
-        .gte('created_at', startDate.toISOString())
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching analytics summary:', error);
-        return null;
-      }
-
-      // Process and categorize the data using the actual schema
-      const summary = {
-        total_events: data.length,
-        payment_events: data.filter(d => {
-          try {
-            const parsed = JSON.parse(d.user_agent || '{}');
-            return parsed.type?.includes('payment');
-          } catch {
-            return false;
-          }
-        }).length,
-        user_events: data.filter(d => {
-          try {
-            const parsed = JSON.parse(d.user_agent || '{}');
-            return parsed.type?.includes('user');
-          } catch {
-            return false;
-          }
-        }).length,
-        page_views: data.filter(d => d.page_view).length,
-        link_clicks: data.filter(d => d.link_click).length,
-        errors: data.filter(d => {
-          try {
-            const parsed = JSON.parse(d.user_agent || '{}');
-            return parsed.type === 'error';
-          } catch {
-            return false;
-          }
-        }).length,
-        by_day: this.groupByDay(data),
-        top_pages: this.getTopPages(data),
-        error_summary: this.getErrorSummary(data)
-      };
-
-      return summary;
-    } catch (error) {
-      console.error('Error fetching analytics summary:', error);
-      return null;
-    }
-  }
-
-  private groupByDay(data: any[]): Record<string, number> {
-    return data.reduce((acc, item) => {
-      const date = new Date(item.created_at).toISOString().split('T')[0];
-      acc[date] = (acc[date] || 0) + 1;
-      return acc;
-    }, {});
-  }
-
-  private getTopPages(data: any[]): Array<{ page: string; views: number }> {
-    const pageViews = data
-      .filter(d => d.page_view)
-      .reduce((acc, item) => {
-        try {
-          const parsed = JSON.parse(item.user_agent || '{}');
-          const page = parsed.page || 'unknown';
-          acc[page] = (acc[page] || 0) + 1;
-        } catch {
-          acc['unknown'] = (acc['unknown'] || 0) + 1;
-        }
-        return acc;
-      }, {});
-
-    return Object.entries(pageViews)
-      .map(([page, views]) => ({ page, views: views as number }))
-      .sort((a, b) => b.views - a.views)
-      .slice(0, 10);
-  }
-
-  private getErrorSummary(data: any[]): Array<{ error: string; count: number }> {
-    const errors = data
-      .filter(d => {
-        try {
-          const parsed = JSON.parse(d.user_agent || '{}');
-          return parsed.type === 'error';
-        } catch {
-          return false;
-        }
-      })
-      .reduce((acc, item) => {
-        try {
-          const parsed = JSON.parse(item.user_agent || '{}');
-          const error = parsed.error_message || 'unknown';
-          acc[error] = (acc[error] || 0) + 1;
-        } catch {
-          acc['unknown'] = (acc['unknown'] || 0) + 1;
-        }
-        return acc;
-      }, {});
-
-    return Object.entries(errors)
-      .map(([error, count]) => ({ error, count: count as number }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 10);
+    
+    return true;
+  } catch (error) {
+    console.error("Error tracking event:", error);
+    return false;
   }
 }
 
-export const analyticsService = new AnalyticsService();
-export default analyticsService;
+/**
+ * Track a page view
+ * @param userId - The user ID
+ * @param path - The page path
+ * @returns True if successful, false if failed
+ */
+export async function trackPageView(userId: string, path: string): Promise<boolean> {
+  return trackEvent(userId, {
+    page_view: true,
+    custom_data: { path }
+  });
+}
+
+/**
+ * Track a link click
+ * @param userId - The user ID
+ * @param linkId - The link ID
+ * @returns True if successful, false if failed
+ */
+export async function trackLinkClick(userId: string, linkId: string): Promise<boolean> {
+  return trackEvent(userId, {
+    link_click: true,
+    link_id: linkId
+  });
+}

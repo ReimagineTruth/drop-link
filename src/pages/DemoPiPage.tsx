@@ -3,12 +3,13 @@ import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ExternalLink, Copy, Share2, Heart, Users, BarChart3, Plus } from "lucide-react";
+import { ArrowLeft, ExternalLink, Copy, Share2, Heart, Users, BarChart3, Settings, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AnimatedContainer } from "@/components/ui/animated-container";
 import { playSound, sounds } from "@/utils/sounds";
 import { useToast } from "@/components/ui/use-toast";
-import DemoMobilePreview from "@/components/demo/DemoMobilePreview";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const DemoPiPage = () => {
   const { toast } = useToast();
@@ -93,13 +94,26 @@ const DemoPiPage = () => {
           <div className="container mx-auto max-w-6xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
               {/* Mobile Preview */}
-              <DemoMobilePreview
-                activeView={activeView}
-                setActiveView={setActiveView}
-                onTip={handleTip}
-                onLinkClick={handleLinkClick}
-                tipAmount={tipAmount}
-              />
+              <div className="flex justify-center">
+                <div className="relative">
+                  <div className="w-[380px] h-[760px] bg-black rounded-3xl p-2 shadow-2xl">
+                    <div className="w-full h-full bg-white rounded-2xl overflow-hidden relative">
+                      {/* Status Bar */}
+                      <div className="bg-black text-white text-xs py-2 px-4 flex justify-between items-center">
+                        <span>9:41</span>
+                        <span className="font-semibold">demo.pi</span>
+                        <span>100%</span>
+                      </div>
+                      
+                      {activeView === 'profile' ? (
+                        <ProfileView onTip={handleTip} onLinkClick={handleLinkClick} tipAmount={tipAmount} />
+                      ) : (
+                        <DashboardView />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
               
               {/* Features Description */}
               <div className="space-y-8">
@@ -154,7 +168,7 @@ const DemoPiPage = () => {
                       
                       <div className="flex gap-4">
                         <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                          <BarChart3 className="w-6 h-6 text-yellow-600" />
+                          <Settings className="w-6 h-6 text-yellow-600" />
                         </div>
                         <div>
                           <h3 className="font-semibold text-lg">Easy Management</h3>
@@ -199,6 +213,149 @@ const DemoPiPage = () => {
       </main>
       <Footer />
     </>
+  );
+};
+
+const ProfileView = ({ onTip, onLinkClick, tipAmount }: { onTip: (amount: number) => void, onLinkClick: (title: string) => void, tipAmount: number }) => {
+  return (
+    <div className="h-full overflow-y-auto">
+      {/* Cover Image */}
+      <div className="h-32 bg-gradient-to-r from-purple-500 to-indigo-600 relative"></div>
+      
+      {/* Profile Section */}
+      <div className="px-4 pb-6 -mt-12 relative z-10">
+        <Avatar className="w-24 h-24 border-4 border-white shadow-lg mx-auto">
+          <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face" />
+          <AvatarFallback>DP</AvatarFallback>
+        </Avatar>
+        
+        <div className="text-center mt-4">
+          <h1 className="text-xl font-bold">Demo Pioneer</h1>
+          <p className="text-gray-500 text-sm">@demo.pi</p>
+          <p className="text-gray-700 mt-2 text-sm">🚀 Pi Network enthusiast sharing the latest updates and tutorials</p>
+          
+          <div className="flex justify-center gap-2 mt-4">
+            <Button size="sm" variant="outline" onClick={() => onLinkClick('Follow')}>
+              <Users size={14} className="mr-1" />
+              Follow
+            </Button>
+            <Button size="sm" onClick={() => onTip(1)} className="bg-purple-600 hover:bg-purple-700">
+              <Heart size={14} className="mr-1" />
+              Tip 1π
+            </Button>
+          </div>
+          
+          {tipAmount > 0 && (
+            <p className="text-sm text-green-600 mt-2">💰 {tipAmount}π earned from tips!</p>
+          )}
+        </div>
+      </div>
+      
+      {/* Links Section */}
+      <div className="px-4 space-y-3 pb-6">
+        {[
+          { title: "📚 Pi Network Beginner Guide", subtitle: "Everything you need to know", clicks: 1247 },
+          { title: "🎥 Latest Pi Update Video", subtitle: "Breaking down the mainnet news", clicks: 856 },
+          { title: "💬 Join My Discord", subtitle: "Connect with other Pioneers", clicks: 634 },
+          { title: "🔒 Premium Content", subtitle: "Unlock exclusive Pi strategies • 2π", premium: true },
+          { title: "☕ Buy Me Coffee", subtitle: "Support my content creation", clicks: 423 }
+        ].map((link, index) => (
+          <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => onLinkClick(link.title)}>
+            <CardContent className="p-4 flex items-center justify-between">
+              <div className="flex-1">
+                <p className="font-medium text-sm">{link.title}</p>
+                <p className="text-xs text-gray-500">{link.subtitle}</p>
+              </div>
+              {link.premium ? (
+                <div className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Premium</div>
+              ) : (
+                <div className="text-xs text-gray-400">{link.clicks} clicks</div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const DashboardView = () => {
+  return (
+    <div className="h-full overflow-y-auto bg-gray-50">
+      {/* Header */}
+      <div className="bg-white p-4 shadow-sm">
+        <h1 className="text-lg font-bold">Dashboard</h1>
+        <p className="text-sm text-gray-500">Welcome back, Demo Pioneer!</p>
+      </div>
+      
+      {/* Stats Grid */}
+      <div className="p-4 grid grid-cols-2 gap-3">
+        <Card>
+          <CardContent className="p-4 text-center">
+            <p className="text-2xl font-bold text-blue-600">1,247</p>
+            <p className="text-xs text-gray-500">Total Visitors</p>
+            <p className="text-xs text-green-500">↑ 12% this week</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <p className="text-2xl font-bold text-purple-600">856</p>
+            <p className="text-xs text-gray-500">Link Clicks</p>
+            <p className="text-xs text-green-500">↑ 8% this week</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <p className="text-2xl font-bold text-yellow-600">42π</p>
+            <p className="text-xs text-gray-500">Pi Tips Earned</p>
+            <p className="text-xs text-green-500">↑ 15% this week</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <p className="text-2xl font-bold text-green-600">5</p>
+            <p className="text-xs text-gray-500">Active Links</p>
+            <p className="text-xs text-gray-400">Manage →</p>
+          </CardContent>
+        </Card>
+      </div>
+      
+      {/* Quick Actions */}
+      <div className="p-4">
+        <h2 className="font-semibold mb-3">Quick Actions</h2>
+        <div className="space-y-2">
+          <Button className="w-full justify-start" variant="outline">
+            <Plus size={16} className="mr-2" />
+            Add New Link
+          </Button>
+          <Button className="w-full justify-start" variant="outline">
+            <Settings size={16} className="mr-2" />
+            Customize Theme
+          </Button>
+          <Button className="w-full justify-start" variant="outline">
+            <BarChart3 size={16} className="mr-2" />
+            View Analytics
+          </Button>
+        </div>
+      </div>
+      
+      {/* Recent Activity */}
+      <div className="p-4">
+        <h2 className="font-semibold mb-3">Recent Activity</h2>
+        <div className="space-y-2">
+          {[
+            "New tip received: 1π from @pioneer123",
+            "Link clicked: Pi Network Guide",
+            "New follower: @crypto_enthusiast",
+            "Profile updated successfully"
+          ].map((activity, index) => (
+            <div key={index} className="text-sm p-2 bg-white rounded border-l-4 border-blue-500">
+              {activity}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
 
