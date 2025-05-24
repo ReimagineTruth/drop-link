@@ -6,15 +6,19 @@ import { toast } from "@/hooks/use-toast";
 import { playSound, sounds } from '@/utils/sounds';
 import { useUpgradeModal } from "@/hooks/useUpgradeModal";
 import { useUserPlan } from "@/hooks/use-user-plan";
+import { useIsMobile } from "@/hooks/use-mobile";
 import ProfileUrlDisplay from "@/components/profile/ProfileUrlDisplay";
 import EmptyLinksState from "./EmptyLinksState";
 import LinksLoadingState from "./LinksLoadingState";
 import LinkForm from "./LinkForm";
 import LinkItem from "./LinkItem";
 import AddLinkButton from "./AddLinkButton";
+import MobileLinkCard from "@/components/mobile/MobileLinkCard";
+import FloatingActionButton from "@/components/ui/floating-action-button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useLinks } from "@/hooks/useLinks";
 import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
+import { Settings, Grid, List } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const LinksSection = () => {
@@ -22,11 +26,14 @@ const LinksSection = () => {
   const [isEditingLink, setIsEditingLink] = useState<string | null>(null);
   const [profileUrl, setProfileUrl] = useState<string>("");
   const [previousLinkCount, setPreviousLinkCount] = useState(0);
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [showAllLinks, setShowAllLinks] = useState(false);
   const { user, profile } = useUser();
   const { links, isLoading, fetchLinks, handleReorderLink } = useLinks(user?.id);
   const { plan, limits } = useUserPlan();
   const { openUpgradeModal } = useUpgradeModal();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (profile?.username) {
@@ -66,6 +73,56 @@ const LinksSection = () => {
     navigate('/settings/domains');
   };
 
+  const displayedLinks = isMobile && !showAllLinks ? links.slice(0, 3) : links;
+  const hasMoreLinks = isMobile && links.length > 3;
+
+  const renderMobileLinks = () => {
+    return (
+      <div className="space-y-3">
+        {displayedLinks.map((link, index) => (
+          <MobileLinkCard
+            key={link.id}
+            link={link}
+            onEdit={(linkId) => setIsEditingLink(linkId)}
+            onDelete={fetchLinks}
+            onReorder={handleReorderLink}
+            isFirst={index === 0}
+            isLast={index === displayedLinks.length - 1}
+            compact={viewMode === 'grid'}
+          />
+        ))}
+        
+        {hasMoreLinks && !showAllLinks && (
+          <Button 
+            variant="outline" 
+            onClick={() => setShowAllLinks(true)}
+            className="w-full h-12 rounded-xl border-dashed"
+          >
+            Show {links.length - 3} more links
+          </Button>
+        )}
+      </div>
+    );
+  };
+
+  const renderDesktopLinks = () => {
+    return (
+      <div className="space-y-4">
+        {links.map((link, index) => (
+          <LinkItem
+            key={link.id}
+            link={link}
+            onEdit={(linkId) => setIsEditingLink(linkId)}
+            onDeleted={fetchLinks}
+            onReorder={handleReorderLink}
+            isFirst={index === 0}
+            isLast={index === links.length - 1}
+          />
+        ))}
+      </div>
+    );
+  };
+
   const renderContent = () => {
     if (isLoading) {
       return <LinksLoadingState />;
@@ -101,19 +158,34 @@ const LinksSection = () => {
           />
         )}
         
-        {links.map((link, index) => (
-          <LinkItem
-            key={link.id}
-            link={link}
-            onEdit={(linkId) => setIsEditingLink(linkId)}
-            onDeleted={fetchLinks}
-            onReorder={handleReorderLink}
-            isFirst={index === 0}
-            isLast={index === links.length - 1}
-          />
-        ))}
+        {/* Mobile view controls */}
+        {isMobile && links.length > 0 && (
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-medium text-gray-900">Your Links ({links.length})</h3>
+            <div className="flex gap-2">
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+                className="h-8 w-8 p-0"
+              >
+                <List className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+                className="h-8 w-8 p-0"
+              >
+                <Grid className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
         
-        {!isAddingLink && !isEditingLink && (
+        {isMobile ? renderMobileLinks() : renderDesktopLinks()}
+        
+        {!isMobile && !isAddingLink && !isEditingLink && (
           <AddLinkButton onClick={handleAddLinkClick} />
         )}
         
@@ -139,30 +211,43 @@ const LinksSection = () => {
   };
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>My Links</CardTitle>
-          <CardDescription>
-            Manage and organize all your links in one place
-          </CardDescription>
-        </div>
-        <Button variant="outline" size="sm" onClick={navigateToDomainSettings}>
-          <Settings className="h-4 w-4 mr-2" />
-          Domain Settings
-        </Button>
-      </CardHeader>
-      <CardContent>
-        <ProfileUrlDisplay 
-          profileUrl={profileUrl} 
-          username={profile?.username} 
-          piDomain={profile?.pi_domain}
-          customDomain={profile?.custom_domain}
+    <>
+      <Card className={isMobile ? "mx-4 rounded-2xl shadow-sm" : ""}>
+        <CardHeader className={isMobile ? "flex flex-row items-center justify-between p-4" : "flex flex-row items-center justify-between"}>
+          <div>
+            <CardTitle className={isMobile ? "text-lg" : ""}>My Links</CardTitle>
+            <CardDescription className={isMobile ? "text-sm" : ""}>
+              Manage and organize all your links in one place
+            </CardDescription>
+          </div>
+          {!isMobile && (
+            <Button variant="outline" size="sm" onClick={navigateToDomainSettings}>
+              <Settings className="h-4 w-4 mr-2" />
+              Domain Settings
+            </Button>
+          )}
+        </CardHeader>
+        <CardContent className={isMobile ? "p-4 pt-0" : ""}>
+          <ProfileUrlDisplay 
+            profileUrl={profileUrl} 
+            username={profile?.username} 
+            piDomain={profile?.pi_domain}
+            customDomain={profile?.custom_domain}
+          />
+          
+          {renderContent()}
+        </CardContent>
+      </Card>
+      
+      {/* Mobile floating action button */}
+      {isMobile && !isAddingLink && !isEditingLink && (
+        <FloatingActionButton
+          onClick={handleAddLinkClick}
+          icon="plus"
+          label="Add Link"
         />
-        
-        {renderContent()}
-      </CardContent>
-    </Card>
+      )}
+    </>
   );
 };
 
