@@ -25,12 +25,19 @@ export function PiAuthButton() {
   }, []);
 
   const handlePiAuth = async () => {
+    // Show test mode notice for easier bypass
+    toast({
+      title: "Pi Authentication",
+      description: "Use the Test Login below for easier testing without Pi Browser",
+      variant: "default",
+    });
+    
     // If not in Pi Browser, show a toast and open the dialog
     if (!isPiBrowser) {
       console.log("Not in Pi Browser, showing toast and opening dialog");
       toast({
         title: "Pi Browser Required",
-        description: "Please open this app in Pi Browser for the best experience",
+        description: "Please use Test Login below for testing, or open in Pi Browser for real authentication",
         variant: "destructive",
       });
       
@@ -52,7 +59,7 @@ export function PiAuthButton() {
       } else {
         toast({
           title: "Authentication Failed",
-          description: "Could not authenticate with Pi Network",
+          description: "Could not authenticate with Pi Network. Try Test Login below.",
           variant: "destructive",
         });
       }
@@ -60,7 +67,7 @@ export function PiAuthButton() {
       console.error("Pi authentication error:", error);
       toast({
         title: "Authentication Error",
-        description: "An error occurred during Pi authentication",
+        description: "An error occurred during Pi authentication. Use Test Login for testing.",
         variant: "destructive",
       });
     } finally {
@@ -141,7 +148,7 @@ export function PiAuthButton() {
     <>
       <Button 
         onClick={handlePiAuth}
-        className="w-full bg-gradient-hero hover:bg-secondary flex items-center justify-center gap-2"
+        className="w-full bg-gradient-hero hover:bg-secondary flex items-center justify-center gap-2 mb-3"
         disabled={isAuthenticating}
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -149,6 +156,10 @@ export function PiAuthButton() {
         </svg>
         {isAuthenticating ? "Authenticating..." : "Sign in with Pi Network"}
       </Button>
+      
+      <div className="text-center text-sm text-gray-500 mb-4">
+        or use Test Login below for development testing
+      </div>
       
       {piAuthResult && (
         <ConsentPrompt

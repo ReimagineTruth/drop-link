@@ -12,13 +12,14 @@ export const useAuth = () => {
   // Admin emails - add your email here
   const ADMIN_EMAILS = ["admin@pidrop.dev"];
   
-  // Enhanced test session handling with full feature access
+  // Enhanced test session handling with bypass mode
   const getTestUserSession = () => {
     try {
       const testSession = localStorage.getItem('test_user_session');
       if (testSession) {
         const parsedSession = JSON.parse(testSession);
         if (parsedSession.session.expires_at > Date.now()) {
+          console.log("🧪 Using test session (Pi auth bypassed):", parsedSession.testPlan);
           return parsedSession;
         } else {
           localStorage.removeItem('test_user_session');
@@ -32,12 +33,12 @@ export const useAuth = () => {
   };
   
   useEffect(() => {
-    // Enhanced security with test mode support
+    // Enhanced security with test mode bypass
     const checkAuthHeaders = async () => {
-      // Check for test session first
+      // Check for test session first (bypass mode)
       const testSession = getTestUserSession();
       if (testSession) {
-        console.log("Using test session with full access");
+        console.log("🚀 Test mode active - Pi authentication bypassed");
         return true;
       }
       
@@ -57,12 +58,12 @@ export const useAuth = () => {
       return false;
     };
     
-    // Set up auth state change listener with enhanced test mode support
+    // Set up auth state change listener with enhanced test bypass
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth state change:", event, session?.user?.id);
         
-        // Check for test session first with enhanced admin detection
+        // Check for test session first with enhanced bypass detection
         const testSession = getTestUserSession();
         if (testSession) {
           setUser(testSession.user);
@@ -71,7 +72,7 @@ export const useAuth = () => {
                              ADMIN_EMAILS.includes(testSession.user.email);
           setIsAdmin(isTestAdmin);
           setIsLoading(false);
-          console.log("Test session active with plan:", testSession.testPlan, "Admin:", isTestAdmin);
+          console.log("🧪 Test bypass active - Plan:", testSession.testPlan, "Admin:", isTestAdmin);
           return;
         }
         
@@ -94,20 +95,20 @@ export const useAuth = () => {
       }
     );
 
-    // Enhanced initialization with test mode support
+    // Enhanced initialization with test bypass mode
     const initAuth = async () => {
       try {
-        // Check for test session first with full feature access
+        // Check for test session first with bypass priority
         const testSession = getTestUserSession();
         if (testSession) {
-          console.log("Found test session with plan:", testSession.testPlan);
+          console.log("🚀 Found test session with plan:", testSession.testPlan);
           setUser(testSession.user);
           const isTestAdmin = testSession.testPlan === 'admin' || 
                              testSession.user.username === 'admin' || 
                              ADMIN_EMAILS.includes(testSession.user.email);
           setIsAdmin(isTestAdmin);
           setIsLoading(false);
-          console.log("Test mode active - Full access granted");
+          console.log("🧪 Test bypass mode - All features unlocked");
           return;
         }
         
@@ -146,8 +147,9 @@ export const useAuth = () => {
 
   const signOut = async () => {
     try {
-      // Enhanced cleanup including test sessions
+      // Enhanced cleanup including test bypass sessions
       localStorage.removeItem('test_user_session');
+      console.log("🧪 Test session cleared");
       
       await supabase.auth.signOut();
       
@@ -169,11 +171,11 @@ export const useAuth = () => {
         document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
       });
       
-      console.log("User signed out successfully (including test mode)");
+      console.log("User signed out successfully (including test bypass mode)");
       
       toast({
         title: "Signed Out",
-        description: "You have been successfully signed out",
+        description: "You have been successfully signed out (test session cleared)",
       });
       
       // Force page reload to clear any in-memory state

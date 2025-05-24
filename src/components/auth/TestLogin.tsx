@@ -116,8 +116,8 @@ const TestLogin = () => {
       }));
 
       toast({
-        title: "Test Login Successful",
-        description: `Logged in as ${testUsername} with ${testPlan} access`,
+        title: "🧪 Test Login Successful",
+        description: `Bypassed Pi auth - logged in as ${testUsername} with ${testPlan} access`,
       });
 
       // Force a page refresh to trigger auth state change
@@ -136,16 +136,16 @@ const TestLogin = () => {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto mt-6 border-yellow-200 bg-yellow-50">
+    <Card className="w-full max-w-md mx-auto mt-4 border-green-200 bg-green-50">
       <CardHeader>
-        <CardTitle className="text-yellow-800">🧪 Test Login (Full Access)</CardTitle>
-        <CardDescription className="text-yellow-700">
-          Test all features including payments, admin functions, and premium plans
+        <CardTitle className="text-green-800">🚀 Quick Test Login (Bypass Pi Auth)</CardTitle>
+        <CardDescription className="text-green-700">
+          Skip Pi authentication for development testing - Full access to all features
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <label htmlFor="testUsername" className="block text-sm font-medium text-yellow-800 mb-1">
+          <label htmlFor="testUsername" className="block text-sm font-medium text-green-800 mb-1">
             Test Username
           </label>
           <Input
@@ -154,16 +154,16 @@ const TestLogin = () => {
             value={testUsername}
             onChange={(e) => setTestUsername(e.target.value)}
             placeholder="Enter test username"
-            className="border-yellow-300 focus:border-yellow-500"
+            className="border-green-300 focus:border-green-500"
           />
         </div>
 
         <div>
-          <label htmlFor="testPlan" className="block text-sm font-medium text-yellow-800 mb-1">
+          <label htmlFor="testPlan" className="block text-sm font-medium text-green-800 mb-1">
             Test Plan/Access Level
           </label>
           <Select value={testPlan} onValueChange={setTestPlan}>
-            <SelectTrigger className="border-yellow-300 focus:border-yellow-500">
+            <SelectTrigger className="border-green-300 focus:border-green-500">
               <SelectValue placeholder="Select test plan" />
             </SelectTrigger>
             <SelectContent>
@@ -179,25 +179,26 @@ const TestLogin = () => {
         <Button 
           onClick={handleTestLogin}
           disabled={isLoading || !testUsername.trim()}
-          className="w-full bg-yellow-600 hover:bg-yellow-700 text-white"
+          className="w-full bg-green-600 hover:bg-green-700 text-white text-base py-3"
         >
-          {isLoading ? 'Creating Test Session...' : `Login with ${testPlan.toUpperCase()} Access`}
+          {isLoading ? 'Creating Test Session...' : `🧪 BYPASS & LOGIN (${testPlan.toUpperCase()})`}
         </Button>
 
-        <div className="text-xs text-yellow-600 space-y-1">
-          <p className="font-medium">Test Features Available:</p>
+        <div className="text-xs text-green-600 space-y-1">
+          <p className="font-medium">✅ Test Features Available:</p>
           <ul className="list-disc list-inside space-y-0.5">
-            <li>All dashboard features</li>
+            <li>Full dashboard access</li>
             <li>Payment system testing</li>
             <li>Subscription management</li>
             <li>Analytics and insights</li>
             <li>Admin portal (if admin selected)</li>
-            <li>Premium features access</li>
+            <li>All premium features</li>
+            <li>No Pi Browser required</li>
           </ul>
         </div>
         
-        <p className="text-xs text-red-600 text-center font-medium">
-          ⚠️ Remove this component before production deployment
+        <p className="text-xs text-orange-600 text-center font-medium">
+          ⚠️ Development only - Remove before production
         </p>
       </CardContent>
     </Card>
