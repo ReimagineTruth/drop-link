@@ -57,7 +57,7 @@ const Templates = () => {
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-6 text-primary">Templates Gallery</h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-4">
-              Choose from our collection of 50+ professionally designed templates to make your page stand out
+              Choose from our collection of 100+ professionally designed templates to make your page stand out
             </p>
             <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
               <span>Your current plan:</span>
@@ -135,7 +135,7 @@ const Templates = () => {
           {/* Results count */}
           <div className="mb-6">
             <p className="text-gray-600">
-              Showing {filteredTemplates.length} template{filteredTemplates.length !== 1 ? 's' : ''}
+              Showing {filteredTemplates.length} template{filteredTemplates.length !== 1 ? 's' : ''} of {templatesData.length} total
               {searchTerm && ` for "${searchTerm}"`}
               {selectedCategory !== "all" && ` in ${selectedCategory}`}
               {selectedPlan !== "all" && ` (${selectedPlan} plan)`}
