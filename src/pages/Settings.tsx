@@ -17,17 +17,13 @@ const Settings = () => {
   const { user, isLoading } = useUser();
   const [activeTab, setActiveTab] = useState(section || "profile");
   
-  // Redirect to login if not logged in
-  if (!isLoading && !user) {
-    navigate("/login");
-    return null;
-  }
-
+  // Redirect to login if not logged in - moved this logic after hooks
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     navigate(`/settings/${value}`);
   };
   
+  // Early return for loading state
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -41,6 +37,12 @@ const Settings = () => {
         <Footer />
       </div>
     );
+  }
+
+  // Redirect to login if not logged in - after hooks have been called
+  if (!user) {
+    navigate("/login");
+    return null;
   }
 
   return (

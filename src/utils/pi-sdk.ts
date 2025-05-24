@@ -8,7 +8,7 @@ export interface PiAuthResult {
   accessToken: string;
   user: {
     uid: string;
-    username: string; // Making username required to match the expected type
+    username: string;
   };
 }
 
@@ -53,18 +53,19 @@ export const isRunningInPiBrowser = (): boolean => {
 // Initialize Pi SDK with environment detection
 export const initPiNetwork = (): boolean => {
   try {
-    if (isRunningInPiBrowser()) {
-      // Check if we're in development or production
-      const isSandbox = import.meta.env.DEV || 
-                         window.location.hostname.includes('localhost') || 
-                         window.location.hostname.includes('lovableproject.com');
-      
-      window.Pi.init({ version: "2.0", sandbox: isSandbox });
-      console.log("Pi SDK initialized with sandbox mode:", isSandbox);
-      return true;
+    if (typeof window === 'undefined' || !window.Pi) {
+      console.warn("Pi SDK not available. This app works best in Pi Browser.");
+      return false;
     }
-    console.warn("Pi SDK not available. This app works best in Pi Browser.");
-    return false;
+    
+    // Check if we're in development or production
+    const isSandbox = import.meta.env.DEV || 
+                       window.location.hostname.includes('localhost') || 
+                       window.location.hostname.includes('lovableproject.com');
+    
+    window.Pi.init({ version: "2.0", sandbox: isSandbox });
+    console.log("Pi SDK initialized with sandbox mode:", isSandbox);
+    return true;
   } catch (error) {
     console.error("Failed to initialize Pi SDK:", error);
     return false;
@@ -76,7 +77,7 @@ export const authenticateWithPi = async (
   scopes: string[] = ["username", "payments", "wallet_address"]
 ): Promise<PiAuthResult | null> => {
   try {
-    if (!isRunningInPiBrowser()) {
+    if (typeof window === 'undefined' || !window.Pi) {
       console.error("Pi SDK not initialized or not available");
       return null;
     }
@@ -84,7 +85,6 @@ export const authenticateWithPi = async (
     // Handle any incomplete payments
     const onIncompletePaymentFound = (payment: any) => {
       console.log("Incomplete payment found:", payment);
-      // Handle incomplete payment
       return null;
     };
 
@@ -94,11 +94,11 @@ export const authenticateWithPi = async (
     // Ensure the username is always a string, never undefined
     if (!authResult.user.username) {
       console.warn("Pi auth returned undefined username, using empty string instead");
-      authResult.user.username = ""; // Provide a default empty string if no username
+      authResult.user.username = "";
     }
     
     console.log("Authentication successful:", authResult);
-    return authResult as PiAuthResult; // Explicitly cast to our interface
+    return authResult as PiAuthResult;
   } catch (error) {
     console.error("Authentication failed:", error);
     return null;
