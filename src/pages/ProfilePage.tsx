@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -18,6 +17,12 @@ import LoadingState from "@/components/profile/LoadingState";
 import ErrorState from "@/components/profile/ErrorState";
 import TipModal from "@/components/profile/TipModal";
 import RecentTips from "@/components/profile/RecentTips";
+
+// New imports
+import MobileProfileHeader from "@/components/mobile/MobileProfileHeader";
+import OptimizedLinkCard from "@/components/mobile/OptimizedLinkCard";
+import CollapsibleSection from "@/components/ui/collapsible-section";
+import SmoothFAB from "@/components/ui/smooth-fab";
 
 interface Link {
   id: string;
@@ -269,7 +274,7 @@ const ProfilePage = () => {
   const profileUrl = `https://droplink.space/@${profileData.username}`;
   
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       <Helmet>
         <title>{profileData.display_name || `@${profileData.username}`} | Droplink</title>
         <meta name="description" content={profileData.bio || `Check out ${profileData.username}'s profile on Droplink`} />
@@ -281,47 +286,63 @@ const ProfilePage = () => {
       </Helmet>
       
       <Navbar />
-      <main className="flex-grow py-12 px-4">
-        <div className="max-w-md mx-auto">
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <ProfileHeader 
-              username={profileData.username}
-              displayName={profileData.display_name}
-              bio={profileData.bio}
-              avatarUrl={profileData.avatar_url}
-              onShareClick={handleShareProfile}
-              onQrCodeClick={() => setShowQRCode(!showQRCode)}
-            />
-            
-            <ProfileQrCode 
-              url={profileUrl}
-              visible={showQRCode}
-            />
-            
-            {/* Only show ads for starter plan users if they're logged in */}
-            {showAds && (
-              <div className="w-full mb-6">
-                <PiAdsNetwork placementId="profile-page" />
-              </div>
-            )}
-            
-            <LinksList 
-              links={profileData.links}
-              onLinkClick={handleLinkClick}
-              processingTip={processingTip}
-              onTipClick={handleTipClick}
-            />
-            
-            {/* Display recent tips if available - fix the prop name to match the component */}
-            {profileData.id && (
-              <div className="mt-6">
-                <RecentTips userId={profileData.id} />
-              </div>
-            )}
-          </div>
+      <main className="flex-grow py-6 px-0 max-w-screen-sm mx-auto w-full">
+        <div className="space-y-4">
+          <MobileProfileHeader 
+            username={profileData.username}
+            displayName={profileData.display_name}
+            bio={profileData.bio}
+            avatarUrl={profileData.avatar_url}
+            onShareClick={handleShareProfile}
+            onQrCodeClick={() => setShowQRCode(!showQRCode)}
+          />
+          
+          <ProfileQrCode 
+            url={profileUrl}
+            visible={showQRCode}
+          />
+          
+          {/* Only show ads for starter plan users if they're logged in */}
+          {showAds && (
+            <div className="mx-4 mb-4">
+              <PiAdsNetwork placementId="profile-page" />
+            </div>
+          )}
+          
+          {/* Links Section */}
+          <CollapsibleSection 
+            title="Links" 
+            showCount={profileData.links.length}
+            defaultExpanded={true}
+          >
+            <div className="space-y-2">
+              {profileData.links.map((link, index) => (
+                <OptimizedLinkCard
+                  key={link.id}
+                  link={link}
+                  delay={index * 0.1}
+                />
+              ))}
+            </div>
+          </CollapsibleSection>
+          
+          {/* Display recent tips if available */}
+          {profileData.id && (
+            <div className="mx-4">
+              <RecentTips userId={profileData.id} />
+            </div>
+          )}
         </div>
       </main>
       <Footer />
+      
+      {/* Floating Action Button for tip */}
+      <SmoothFAB
+        icon="plus"
+        label="Send Tip"
+        onClick={handleTipClick}
+        variant="primary"
+      />
       
       <TipModal
         isOpen={showTipModal}
