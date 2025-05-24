@@ -9,6 +9,8 @@ import { initPiNetwork } from "@/services/piPaymentService";
 import PiBrowserPrompt from "@/components/PiBrowserPrompt";
 import PiBrowserDialog from "@/components/PiBrowserDialog";
 import { isRunningInPiBrowser } from "@/utils/pi-sdk";
+import { Button } from "@/components/ui/button";
+import { Download, ExternalLink, AlertTriangle, CheckCircle } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,6 +18,8 @@ const Login = () => {
   const isPiBrowser = isRunningInPiBrowser();
   
   console.log("Login page - isPiBrowser:", isPiBrowser, "isLoggedIn:", isLoggedIn);
+  console.log("User agent:", navigator.userAgent);
+  console.log("Pi SDK available:", !!window.Pi);
 
   useEffect(() => {
     // Initialize Pi Network SDK
@@ -29,6 +33,22 @@ const Login = () => {
     }
   }, [isLoggedIn, navigate]);
 
+  const handleDownloadPiBrowser = () => {
+    window.open('https://minepi.com/download', '_blank');
+  };
+
+  const handleOpenInPiBrowser = () => {
+    const currentUrl = window.location.href;
+    // Try to open in Pi Browser with custom protocol
+    const piBrowserUrl = `pi://browser?url=${encodeURIComponent(currentUrl)}`;
+    window.location.href = piBrowserUrl;
+    
+    // Fallback: redirect to Pi Network domain
+    setTimeout(() => {
+      window.open('https://pinet.com/@droplink', '_blank');
+    }, 1000);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -38,49 +58,115 @@ const Login = () => {
             <h1 className="text-3xl font-bold text-primary">Welcome Back</h1>
             <p className="text-gray-600 mt-2">Sign in to manage your Droplink</p>
             
-            {/* Enhanced Pi Browser requirement notice */}
-            {!isPiBrowser && (
-              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <div className="flex items-center justify-center mb-2">
-                  <svg className="w-5 h-5 text-red-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                  <span className="font-medium text-red-800">Pi Browser Required</span>
+            {/* Enhanced Pi Browser Status Display */}
+            <div className="mt-6">
+              {isPiBrowser ? (
+                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center justify-center mb-2">
+                    <CheckCircle className="h-6 w-6 text-green-600 mr-2" />
+                    <span className="font-semibold text-green-800">Pi Browser Detected</span>
+                  </div>
+                  <p className="text-sm text-green-700 mb-3">
+                    Perfect! You're using Pi Browser and can access all features including Pi Network authentication.
+                  </p>
+                  <div className="text-xs text-green-600 bg-green-100 rounded p-2">
+                    ✓ Pi SDK Available<br/>
+                    ✓ Secure Authentication<br/>
+                    ✓ Pi Payments Ready
+                  </div>
                 </div>
-                <p className="text-sm text-red-700">
-                  Authentication with Pi Network is only available in Pi Browser. Please open this app in Pi Browser to continue.
-                </p>
-              </div>
-            )}
-            
-            {isPiBrowser && (
-              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                <div className="flex items-center justify-center mb-1">
-                  <svg className="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="font-medium text-green-800">Pi Browser Detected</span>
+              ) : (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-center justify-center mb-3">
+                    <AlertTriangle className="h-6 w-6 text-red-600 mr-2" />
+                    <span className="font-semibold text-red-800">Pi Browser Required</span>
+                  </div>
+                  <p className="text-sm text-red-700 mb-4">
+                    You're currently using a standard browser. To sign in with Pi Network and access all features, you need to use Pi Browser.
+                  </p>
+                  
+                  <div className="space-y-3">
+                    <Button 
+                      onClick={handleOpenInPiBrowser}
+                      className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                    >
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Open in Pi Browser
+                    </Button>
+                    
+                    <Button 
+                      variant="outline"
+                      onClick={handleDownloadPiBrowser}
+                      className="w-full"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Download Pi Browser
+                    </Button>
+                  </div>
+                  
+                  <div className="mt-4 text-xs text-red-600 bg-red-100 rounded p-2">
+                    <strong>Why Pi Browser?</strong><br/>
+                    • Secure Pi Network authentication<br/>
+                    • Native Pi payment integration<br/>
+                    • Enhanced security features<br/>
+                    • Full access to all app features
+                  </div>
                 </div>
-                <p className="text-sm text-green-700">
-                  Great! You're using Pi Browser and can access all features.
-                </p>
-              </div>
-            )}
+              )}
+            </div>
           </div>
           
           <div className="bg-white rounded-xl shadow-lg p-8">
-            <PiAuthButton />
-            
-            {!isPiBrowser && <PiBrowserPrompt />}
-            
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                Don't have an account?{" "}
-                <Link to="/signup" className="text-primary hover:underline font-medium">
-                  Sign up
-                </Link>
-              </p>
-            </div>
+            {isPiBrowser ? (
+              <>
+                <PiAuthButton />
+                <div className="mt-6 text-center">
+                  <p className="text-sm text-gray-600">
+                    Don't have an account?{" "}
+                    <Link to="/signup" className="text-primary hover:underline font-medium">
+                      Sign up
+                    </Link>
+                  </p>
+                </div>
+              </>
+            ) : (
+              <div className="text-center">
+                <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-sm text-yellow-800">
+                    <strong>Limited Access Mode</strong><br/>
+                    Authentication with Pi Network requires Pi Browser. Please switch to Pi Browser to continue.
+                  </p>
+                </div>
+                
+                <div className="space-y-3">
+                  <Button 
+                    onClick={handleOpenInPiBrowser}
+                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Switch to Pi Browser
+                  </Button>
+                  
+                  <Button 
+                    variant="outline"
+                    onClick={handleDownloadPiBrowser}
+                    className="w-full"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Get Pi Browser
+                  </Button>
+                </div>
+                
+                <div className="mt-6 text-center">
+                  <p className="text-sm text-gray-600">
+                    New to Droplink?{" "}
+                    <Link to="/signup" className="text-primary hover:underline font-medium">
+                      Learn more
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>
@@ -88,7 +174,7 @@ const Login = () => {
       
       <PiBrowserDialog 
         redirectUrl="https://pinet.com/@droplink"
-        showOnMount={!isPiBrowser}
+        showOnMount={false}
       />
     </div>
   );

@@ -1,6 +1,6 @@
 
 /**
- * Pi Network SDK utility functions
+ * Pi Network SDK utility functions with enhanced detection
  */
 
 // Types
@@ -18,54 +18,74 @@ export interface PiPaymentData {
   metadata?: Record<string, any>;
 }
 
-// Check if running in Pi Browser with enhanced detection
+// Enhanced Pi Browser detection with multiple methods
 export const isRunningInPiBrowser = (): boolean => {
   try {
-    // Enhanced detection for Pi Browser environment
-    if (typeof window !== 'undefined') {
-      // Check for Pi SDK availability (primary indicator)
-      if (window.Pi) {
-        console.log("Pi SDK detected - running in Pi Browser");
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
+    // Method 1: Check for Pi SDK availability (most reliable)
+    if (window.Pi) {
+      console.log("✅ Pi Browser detected: Pi SDK available");
+      return true;
+    }
+    
+    // Method 2: Check user agent for Pi Browser specific strings
+    const userAgent = navigator.userAgent.toLowerCase();
+    const piBrowserKeywords = [
+      'pibrowser',
+      'pi network',
+      'pi-browser',
+      'pi browser',
+      'minepi'
+    ];
+    
+    for (const keyword of piBrowserKeywords) {
+      if (userAgent.includes(keyword)) {
+        console.log(`✅ Pi Browser detected: User agent contains "${keyword}"`);
         return true;
-      }
-      
-      // Check for Pi Browser specific user agent strings
-      const userAgent = navigator.userAgent.toLowerCase();
-      if (userAgent.includes('pibrowser') || 
-          userAgent.includes('pi network') || 
-          userAgent.includes('pi-browser') ||
-          userAgent.includes('pi browser')) {
-        console.log("Pi Browser detected via user agent");
-        return true;
-      }
-      
-      // Check for Pi-specific objects or properties
-      if (typeof window['PiNetwork'] !== 'undefined' || 
-          typeof window['piNetwork'] !== 'undefined') {
-        console.log("Pi-specific objects detected");
-        return true;
-      }
-      
-      // Check for Pi Browser specific window properties
-      if (window.location.hostname.includes('minepi.com') ||
-          window.location.hostname.includes('pi.app')) {
-        console.log("Pi Browser detected via hostname");
-        return true;
-      }
-      
-      // Additional Pi Browser detection methods
-      if (window.navigator && window.navigator.userAgent) {
-        const ua = window.navigator.userAgent;
-        if (ua.includes('PiBrowser') || ua.includes('Pi/')) {
-          console.log("Pi Browser detected via enhanced user agent check");
-          return true;
-        }
       }
     }
-    console.log("Not running in Pi Browser - all detection checks failed");
+    
+    // Method 3: Check for Pi-specific global objects
+    const piObjects = ['PiNetwork', 'piNetwork', 'PiBrowser'];
+    for (const obj of piObjects) {
+      if (typeof window[obj as keyof Window] !== 'undefined') {
+        console.log(`✅ Pi Browser detected: Global object "${obj}" found`);
+        return true;
+      }
+    }
+    
+    // Method 4: Check for Pi Browser specific URL patterns
+    const hostname = window.location.hostname;
+    const piDomains = ['minepi.com', 'pi.app', 'pinet.com'];
+    for (const domain of piDomains) {
+      if (hostname.includes(domain)) {
+        console.log(`✅ Pi Browser detected: Running on Pi domain "${domain}"`);
+        return true;
+      }
+    }
+    
+    // Method 5: Check for Pi Browser specific headers or properties
+    if (navigator.userAgent.includes('PiBrowser') || navigator.userAgent.includes('Pi/')) {
+      console.log("✅ Pi Browser detected: Enhanced user agent check");
+      return true;
+    }
+    
+    // Method 6: Check for custom Pi Browser properties
+    if ('piNetwork' in window || 'PiSDK' in window) {
+      console.log("✅ Pi Browser detected: Custom Pi properties found");
+      return true;
+    }
+    
+    console.log("❌ Pi Browser not detected: All detection methods failed");
+    console.log("Current user agent:", navigator.userAgent);
+    console.log("Available window objects:", Object.keys(window).filter(key => key.toLowerCase().includes('pi')));
+    
     return false;
   } catch (error) {
-    console.error("Error checking Pi Browser environment:", error);
+    console.error("Error during Pi Browser detection:", error);
     return false;
   }
 };
@@ -99,12 +119,12 @@ export const authenticateWithPi = async (
   try {
     // Strict Pi Browser requirement
     if (!isRunningInPiBrowser()) {
-      console.error("Pi authentication requires Pi Browser");
-      throw new Error("Pi Browser is required for authentication");
+      console.error("❌ Pi authentication blocked: Pi Browser required");
+      throw new Error("Pi Browser is required for authentication. Please open this app in Pi Browser.");
     }
     
     if (typeof window === 'undefined' || !window.Pi) {
-      console.error("Pi SDK not initialized or not available");
+      console.error("❌ Pi SDK not initialized or not available");
       return null;
     }
 
@@ -114,6 +134,8 @@ export const authenticateWithPi = async (
       return null;
     };
 
+    console.log("🔐 Starting Pi authentication with scopes:", scopes);
+    
     // Get authentication result and ensure username is never undefined
     const authResult = await window.Pi.authenticate(scopes, onIncompletePaymentFound);
     
@@ -123,10 +145,10 @@ export const authenticateWithPi = async (
       authResult.user.username = "";
     }
     
-    console.log("Authentication successful:", authResult);
+    console.log("✅ Pi authentication successful:", authResult.user.uid);
     return authResult as PiAuthResult;
   } catch (error) {
-    console.error("Authentication failed:", error);
+    console.error("❌ Pi authentication failed:", error);
     throw error;
   }
 };
