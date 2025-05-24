@@ -44,8 +44,8 @@ const FloatingGoToTop = () => {
           transition={{ duration: 0.3, ease: "easeInOut" }}
           onClick={scrollToTop}
           className={cn(
-            "fixed bottom-5 right-5 z-50",
-            "w-12 h-12 rounded-full shadow-lg",
+            "fixed bottom-6 right-6 z-50",
+            "w-12 h-12 md:w-14 md:h-14 rounded-full shadow-lg",
             "bg-white dark:bg-gray-800",
             "border border-gray-200 dark:border-gray-600",
             "text-gray-700 dark:text-gray-300",
@@ -55,14 +55,20 @@ const FloatingGoToTop = () => {
             "transform-gpu touch-manipulation",
             "flex items-center justify-center",
             "focus:outline-none focus:ring-2 focus:ring-primary/20",
-            "active:scale-95"
+            "active:scale-95",
+            "backdrop-blur-sm",
+            "safe-area-inset-bottom"
           )}
-          style={{ touchAction: 'manipulation' }}
+          style={{ 
+            touchAction: 'manipulation',
+            bottom: 'max(1.5rem, env(safe-area-inset-bottom, 1.5rem))',
+            right: 'max(1.5rem, env(safe-area-inset-right, 1.5rem))'
+          }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           aria-label="Go to top"
         >
-          <ArrowUp className="h-5 w-5" />
+          <ArrowUp className="h-5 w-5 md:h-6 md:w-6" />
         </motion.button>
       )}
     </AnimatePresence>
