@@ -1,91 +1,39 @@
-
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
-import './App.css';
-import Index from './pages/Index';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
+import Pricing from './pages/Pricing';
+import Contact from './pages/Contact';
+import Dashboard from './pages/Dashboard';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import ProfilePage from './pages/ProfilePage';
-import Settings from './pages/Settings';
-import DomainsSettings from './pages/DomainsSettings';
-import Pricing from './pages/Pricing';
-import Features from './pages/Features';
-import Demo from './pages/Demo';
-import DemoPiPage from './pages/DemoPiPage';
+import Profile from './pages/Profile';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import NotFound from './pages/NotFound';
 import { UserProvider } from './context/UserContext';
-import Admin from './pages/Admin';
-import AdminDashboard from './pages/AdminDashboard';
-import DemoPiProfilePage from "@/pages/DemoPiProfilePage";
-import SplashScreen from './components/SplashScreen';
-
-// Import existing pages that are referenced in footer
-import About from './pages/About';
-import Blog from './pages/Blog';
-import Careers from './pages/Careers';
-import Contact from './pages/Contact';
-import Help from './pages/Help';
-import Templates from './pages/Templates';
-import CreatorDirectory from './pages/CreatorDirectory';
-import Developers from './pages/Developers';
-import Terms from './pages/Terms';
-import Privacy from './pages/Privacy';
-import Cookies from './pages/Cookies';
-import GDPR from './pages/GDPR';
+import AdminDashboard from "@/pages/AdminDashboard";
 
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
-
-  const handleSplashComplete = () => {
-    setShowSplash(false);
-  };
-
-  if (showSplash) {
-    return <SplashScreen onComplete={handleSplashComplete} />;
-  }
-
   return (
-    <UserProvider>
-      <BrowserRouter>
-        <HelmetProvider>
-          <div className="w-screen h-screen overflow-auto hide-scrollbar smooth-scroll bg-background text-foreground">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/@:username" element={<ProfilePage />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/settings/domains" element={<DomainsSettings />} />
-              <Route path="/pricing" element={<Pricing />} />
-              <Route path="/features" element={<Features />} />
-              <Route path="/demo" element={<Demo />} />
-              <Route path="/demo.pi" element={<DemoPiProfilePage />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              
-              {/* Footer pages */}
-              <Route path="/about" element={<About />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/careers" element={<Careers />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/help" element={<Help />} />
-              <Route path="/templates" element={<Templates />} />
-              <Route path="/creators" element={<CreatorDirectory />} />
-              <Route path="/developers" element={<Developers />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/cookies" element={<Cookies />} />
-              <Route path="/gdpr" element={<GDPR />} />
-              
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-        </HelmetProvider>
-      </BrowserRouter>
-    </UserProvider>
+    <Router>
+      <UserProvider>
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="*" element={<NotFound />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+          </Routes>
+        </div>
+      </UserProvider>
+    </Router>
   );
 }
 

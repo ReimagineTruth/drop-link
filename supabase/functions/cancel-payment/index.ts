@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 const PI_API_URL = "https://api.minepi.com/v2";
-const PI_SANDBOX_URL = "https://api.sandbox.minepi.com/v2"; // For sandbox mode
+const PI_SANDBOX_URL = "https://api.sandbox.minepi.com/v2";
 
 serve(async (req) => {
   // Handle CORS preflight request
@@ -24,9 +24,8 @@ serve(async (req) => {
 
     const { paymentId, accessToken } = await req.json();
 
-    // Validate request data
     if (!paymentId) {
-      return new Response(JSON.stringify({ error: "Invalid request data: paymentId is required" }), {
+      return new Response(JSON.stringify({ error: "Payment ID is required" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
@@ -64,22 +63,13 @@ serve(async (req) => {
       "Content-Type": "application/json"
     };
     
-    try {
-      const cancelResponse = await fetch(cancelUrl, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({})
-      });
-      
-      if (!cancelResponse.ok) {
-        const errorData = await cancelResponse.json();
-        console.error("Pi API Error:", errorData);
-      }
-    } catch (apiError) {
-      console.error("Error calling Pi API:", apiError);
-    }
+    const cancelResponse = await fetch(cancelUrl, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({})
+    });
     
-    // Update payment status in database regardless of API response
+    // Update payment status in database regardless of Pi API response
     await supabaseClient
       .from('payments')
       .update({
@@ -87,6 +77,18 @@ serve(async (req) => {
         cancelled_at: new Date().toISOString()
       })
       .eq('id', payment.id);
+
+    // Log analytics event
+    await supabaseClient
+      .from('analytics')
+      .insert({
+        user_id: payment.user_id,
+        custom_data: {
+          type: 'payment_cancelled',
+          payment_id: paymentId,
+          timestamp: new Date().toISOString()
+        }
+      });
 
     return new Response(JSON.stringify({ 
       success: true, 
