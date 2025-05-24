@@ -1,4 +1,5 @@
 
+import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Toaster } from "@/components/ui/toaster";
@@ -41,6 +42,12 @@ import Careers from '@/pages/Careers';
 const queryClient = new QueryClient();
 
 function App() {
+  const [showSplashScreen, setShowSplashScreen] = useState(true);
+
+  const handleSplashComplete = () => {
+    setShowSplashScreen(false);
+  };
+
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
@@ -61,7 +68,7 @@ function App() {
                 <meta name="twitter:image" content="https://droplink.space/og-image.jpg" />
               </Helmet>
               
-              <SplashScreen />
+              {showSplashScreen && <SplashScreen onComplete={handleSplashComplete} />}
               <Toaster />
               
               <Routes>
