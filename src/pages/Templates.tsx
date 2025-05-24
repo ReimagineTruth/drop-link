@@ -1,128 +1,50 @@
 
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import TemplatesGrid from "@/components/templates/TemplatesGrid";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, Zap, Eye } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Search, Filter, Crown, Zap, Star } from "lucide-react";
 import { useUserPermissions } from "@/hooks/useUserPermissions";
-import { toast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { templatesData } from "@/data/templatesData";
+import { Link } from "react-router-dom";
 
 const Templates = () => {
   const { plan, permissions } = useUserPermissions();
-  const [applyingTemplate, setApplyingTemplate] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedPlan, setSelectedPlan] = useState("all");
 
-  const templates = [
-    {
-      id: 1,
-      name: "Minimalist",
-      category: "Business",
-      colors: ["#ffffff", "#000000"],
-      popular: false,
-      new: false,
-      plan: "starter",
-      preview: "Clean and simple design perfect for professionals"
-    },
-    {
-      id: 2,
-      name: "Gradient Sunset",
-      category: "Creative",
-      colors: ["#ff6b6b", "#feca57", "#48cae4"],
-      popular: true,
-      new: false,
-      plan: "pro",
-      preview: "Vibrant gradient design for creative professionals"
-    },
-    {
-      id: 3,
-      name: "Neon Cyber",
-      category: "Tech",
-      colors: ["#0f0f0f", "#00ff41", "#ff0080"],
-      popular: false,
-      new: true,
-      plan: "premium",
-      preview: "Futuristic neon design for tech enthusiasts"
-    },
-    {
-      id: 4,
-      name: "Nature Green",
-      category: "Lifestyle",
-      colors: ["#27ae60", "#2ecc71", "#f1f2f6"],
-      popular: false,
-      new: false,
-      plan: "starter",
-      preview: "Earthy green theme for lifestyle and wellness"
-    },
-    {
-      id: 5,
-      name: "Royal Purple",
-      category: "Luxury",
-      colors: ["#6c5ce7", "#a29bfe", "#fd79a8"],
-      popular: true,
-      new: false,
-      plan: "pro",
-      preview: "Elegant purple theme for luxury brands"
-    },
-    {
-      id: 6,
-      name: "Ocean Blue",
-      category: "Travel",
-      colors: ["#0984e3", "#74b9ff", "#00cec9"],
-      popular: false,
-      new: true,
-      plan: "premium",
-      preview: "Ocean-inspired design for travel content"
-    }
-  ];
+  // Get unique categories
+  const categories = ["all", ...Array.from(new Set(templatesData.map(t => t.category)))];
+  
+  // Filter templates
+  const filteredTemplates = templatesData.filter(template => {
+    const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         template.category.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "all" || template.category === selectedCategory;
+    const matchesPlan = selectedPlan === "all" || template.plan === selectedPlan;
+    
+    return matchesSearch && matchesCategory && matchesPlan;
+  });
 
-  const canUseTemplate = (templatePlan: string) => {
-    if (templatePlan === "starter") return true;
-    if (templatePlan === "pro" && (plan === "pro" || plan === "premium")) return true;
-    if (templatePlan === "premium" && plan === "premium") return true;
-    return false;
+  // Get template counts by plan
+  const templateCounts = {
+    free: templatesData.filter(t => t.plan === "free").length,
+    starter: templatesData.filter(t => t.plan === "starter").length,
+    pro: templatesData.filter(t => t.plan === "pro").length,
+    premium: templatesData.filter(t => t.plan === "premium").length,
   };
 
-  const getPlanBadge = (templatePlan: string) => {
-    switch(templatePlan) {
-      case "starter":
-        return <Badge variant="outline" className="text-xs">Starter</Badge>;
-      case "pro":
-        return <Badge variant="secondary" className="text-xs">Pro</Badge>;
-      case "premium":
-        return <Badge className="bg-gradient-hero text-white text-xs">Premium</Badge>;
-      default:
-        return null;
-    }
-  };
-
-  const handleUseTemplate = async (template: any) => {
-    if (!canUseTemplate(template.plan)) {
-      toast({
-        title: "Plan Upgrade Required",
-        description: `This template requires a ${template.plan} plan or higher`,
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setApplyingTemplate(template.id);
-    try {
-      // Simulate applying template
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      toast({
-        title: "Template Applied",
-        description: `The ${template.name} template has been applied to your profile`,
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to apply template. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setApplyingTemplate(null);
+  const getPlanIcon = (planType: string) => {
+    switch(planType) {
+      case "premium": return <Crown className="w-4 h-4" />;
+      case "pro": return <Zap className="w-4 h-4" />;
+      case "starter": return <Star className="w-4 h-4" />;
+      default: return null;
     }
   };
 
@@ -130,112 +52,119 @@ const Templates = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow py-12 px-4">
-        <div className="container mx-auto max-w-6xl">
+        <div className="container mx-auto max-w-7xl">
+          {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-6 text-primary">Templates</h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Choose from our collection of professionally designed templates to make your page stand out
+            <h1 className="text-4xl font-bold mb-6 text-primary">Templates Gallery</h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-4">
+              Choose from our collection of 50+ professionally designed templates to make your page stand out
             </p>
-            <div className="mt-4 text-sm text-gray-500">
-              Your current plan: <span className="font-semibold text-primary">{plan}</span>
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+              <span>Your current plan:</span>
+              <Badge variant="outline" className={`
+                ${plan === 'premium' ? 'bg-gradient-hero text-white' : ''}
+                ${plan === 'pro' ? 'bg-purple-50 text-purple-600' : ''}
+                ${plan === 'starter' ? 'bg-blue-50 text-blue-600' : ''}
+                ${plan === 'free' ? 'bg-gray-50 text-gray-600' : ''}
+              `}>
+                {getPlanIcon(plan)}
+                <span className="ml-1 capitalize font-semibold">{plan}</span>
+              </Badge>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {templates.map((template) => (
-              <Card key={template.id} className="group hover:shadow-lg transition-all overflow-hidden">
-                <div className="relative">
-                  {/* Template preview */}
-                  <div 
-                    className="w-full h-48 relative"
-                    style={{
-                      background: `linear-gradient(45deg, ${template.colors.join(', ')})`
-                    }}
-                  >
-                    {/* Mock profile preview */}
-                    <div className="flex flex-col items-center justify-center h-full px-4">
-                      <div className="w-12 h-12 bg-white/20 rounded-full mb-2"></div>
-                      <div className="w-20 h-2 bg-white/60 rounded-full mb-1"></div>
-                      <div className="w-24 h-1.5 bg-white/40 rounded-full mb-3"></div>
-                      <div className="space-y-1.5 w-full max-w-32">
-                        <div className="h-3 bg-white/50 rounded-md"></div>
-                        <div className="h-3 bg-white/50 rounded-md"></div>
-                        <div className="h-3 bg-white/50 rounded-md"></div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Badges */}
-                  <div className="absolute top-2 left-2 flex gap-1">
-                    {template.popular && (
-                      <Badge className="bg-orange-500 text-white text-xs">
-                        <Star className="w-3 h-3 mr-1" />
-                        Popular
-                      </Badge>
-                    )}
-                    {template.new && (
-                      <Badge className="bg-green-500 text-white text-xs">
-                        <Zap className="w-3 h-3 mr-1" />
-                        New
-                      </Badge>
-                    )}
-                  </div>
-
-                  <div className="absolute top-2 right-2">
-                    {getPlanBadge(template.plan)}
-                  </div>
-                </div>
-
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="text-lg">{template.name}</CardTitle>
-                      <CardDescription>{template.category}</CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-
-                <CardContent>
-                  <p className="text-sm text-gray-600 mb-4">{template.preview}</p>
-                  
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1"
-                    >
-                      <Eye className="w-4 h-4 mr-1" />
-                      Preview
-                    </Button>
-                    
-                    <Button
-                      size="sm"
-                      className={`flex-1 ${
-                        canUseTemplate(template.plan)
-                          ? "bg-gradient-hero hover:bg-secondary"
-                          : "bg-gray-300 cursor-not-allowed"
-                      }`}
-                      onClick={() => handleUseTemplate(template)}
-                      disabled={!canUseTemplate(template.plan) || applyingTemplate === template.id}
-                    >
-                      {applyingTemplate === template.id ? "Applying..." : 
-                       canUseTemplate(template.plan) ? "Use Template" : "Upgrade Required"}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          {/* Plan Overview */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <div className="text-2xl font-bold text-gray-600">{templateCounts.free}</div>
+              <div className="text-sm text-gray-500">Free Templates</div>
+            </div>
+            <div className="text-center p-4 bg-blue-50 rounded-lg">
+              <div className="text-2xl font-bold text-blue-600">{templateCounts.starter}</div>
+              <div className="text-sm text-blue-500">Starter Templates</div>
+            </div>
+            <div className="text-center p-4 bg-purple-50 rounded-lg">
+              <div className="text-2xl font-bold text-purple-600">{templateCounts.pro}</div>
+              <div className="text-sm text-purple-500">Pro Templates</div>
+            </div>
+            <div className="text-center p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg">
+              <div className="text-2xl font-bold bg-gradient-hero bg-clip-text text-transparent">{templateCounts.premium}</div>
+              <div className="text-sm text-purple-500">Premium Templates</div>
+            </div>
           </div>
 
-          <div className="text-center mt-12 p-6 bg-blue-50 rounded-lg">
-            <h3 className="text-xl font-bold mb-2">Want More Templates?</h3>
-            <p className="text-gray-600 mb-4">
-              Upgrade your plan to access premium templates and advanced customization options
+          {/* Filters */}
+          <div className="flex flex-col md:flex-row gap-4 mb-8">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                placeholder="Search templates..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-full md:w-48">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map(category => (
+                  <SelectItem key={category} value={category}>
+                    {category === "all" ? "All Categories" : category.charAt(0).toUpperCase() + category.slice(1)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={selectedPlan} onValueChange={setSelectedPlan}>
+              <SelectTrigger className="w-full md:w-48">
+                <SelectValue placeholder="Plan" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Plans</SelectItem>
+                <SelectItem value="free">Free</SelectItem>
+                <SelectItem value="starter">Starter</SelectItem>
+                <SelectItem value="pro">Pro</SelectItem>
+                <SelectItem value="premium">Premium</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Results count */}
+          <div className="mb-6">
+            <p className="text-gray-600">
+              Showing {filteredTemplates.length} template{filteredTemplates.length !== 1 ? 's' : ''}
+              {searchTerm && ` for "${searchTerm}"`}
+              {selectedCategory !== "all" && ` in ${selectedCategory}`}
+              {selectedPlan !== "all" && ` (${selectedPlan} plan)`}
             </p>
-            <Button className="bg-gradient-hero hover:bg-secondary">
-              View Pricing Plans
-            </Button>
           </div>
+
+          {/* Templates Grid */}
+          <TemplatesGrid templates={filteredTemplates} />
+
+          {/* Upgrade CTA */}
+          {plan !== 'premium' && (
+            <div className="text-center mt-16 p-8 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl">
+              <h3 className="text-2xl font-bold mb-3">Unlock More Templates</h3>
+              <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+                {plan === 'free' 
+                  ? `Upgrade to access ${templateCounts.starter + templateCounts.pro + templateCounts.premium} additional professional templates`
+                  : plan === 'starter'
+                  ? `Upgrade to Pro or Premium to access ${templateCounts.pro + templateCounts.premium} more advanced templates`
+                  : `Upgrade to Premium to access ${templateCounts.premium} exclusive premium templates`
+                }
+              </p>
+              <Link to="/pricing">
+                <Button className="bg-gradient-hero hover:scale-105 transition-transform">
+                  <Crown className="w-4 h-4 mr-2" />
+                  View Pricing Plans
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </main>
       <Footer />
