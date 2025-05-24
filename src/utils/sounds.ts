@@ -1,9 +1,10 @@
-
 // Define available sounds
 export const sounds = {
   uiTap: '/sounds/ui-tap.wav',
   success: '/sounds/success.wav',
-  error: '/sounds/error.wav'
+  error: '/sounds/error.wav',
+  loadingComplete: '/sounds/success.wav', // Reuse success sound for loading complete
+  notification: '/sounds/success.wav' // Reuse success sound for notifications
 };
 
 // Play sound function with error handling
