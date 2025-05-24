@@ -1,11 +1,9 @@
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { toast } from "@/hooks/use-toast";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const Cookies = () => {
   const [cookiePreferences, setCookiePreferences] = useState({
@@ -14,312 +12,238 @@ const Cookies = () => {
     marketing: false,
     preferences: true
   });
-  
-  const handleCheckboxChange = (key: string, checked: boolean) => {
-    setCookiePreferences(prev => ({
-      ...prev,
-      [key]: checked
-    }));
-  };
-  
+
   const handleSavePreferences = () => {
-    console.log("Saved cookie preferences:", cookiePreferences);
-    toast({
-      title: "Cookie Preferences Saved",
-      description: "Your cookie preferences have been updated successfully."
-    });
+    // Save cookie preferences to localStorage
+    localStorage.setItem('cookiePreferences', JSON.stringify(cookiePreferences));
+    // Implementation would update actual cookie consent
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-grow">
-        <div className="container mx-auto py-16 px-4">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-3xl md:text-4xl font-bold mb-8">Cookie Policy</h1>
-            
-            <div className="prose prose-lg max-w-none">
-              <p className="text-muted-foreground">Last updated: May 20, 2025</p>
-              
-              <div className="my-8 p-4 bg-muted rounded-lg text-sm">
-                <p className="font-medium">Summary:</p>
-                <p>
-                  This Cookie Policy explains how Droplink uses cookies and similar technologies to recognize 
-                  you when you visit our website. It explains what these technologies are and why we use them, 
-                  as well as your rights to control our use of them. We use necessary cookies for essential functions, 
-                  analytics cookies to understand usage, marketing cookies for advertising, and preferences cookies for 
-                  customization. You can manage your cookie settings at any time.
+      <main className="flex-grow py-12 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold mb-6 text-primary">Cookie Policy</h1>
+            <p className="text-xl text-gray-600">
+              Last updated: January 2024
+            </p>
+          </div>
+
+          <div className="space-y-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>What Are Cookies?</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  Cookies are small text files that are stored on your device when you visit a website. 
+                  They help us provide you with a better experience by remembering your preferences and 
+                  understanding how you use our service.
                 </p>
-              </div>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">1. What Are Cookies?</h2>
-              <p>
-                Cookies are small data files that are placed on your computer or mobile device when you visit a website. 
-                Cookies are widely used by website owners to make their websites work, or to work more efficiently, as well 
-                as to provide reporting information.
-              </p>
-              <p>
-                Cookies set by the website owner (in this case, Droplink) are called "first-party cookies." Cookies set by 
-                parties other than the website owner are called "third-party cookies." Third-party cookies enable third-party 
-                features or functionality to be provided on or through the website (e.g., advertising, interactive content, and 
-                analytics). The parties that set these third-party cookies can recognize your device both when it visits the 
-                website in question and also when it visits certain other websites.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">2. Why Do We Use Cookies?</h2>
-              <p>
-                We use first-party and third-party cookies for several reasons. Some cookies are required for technical reasons 
-                for our website to operate, and we refer to these as "essential" or "strictly necessary" cookies. Other cookies 
-                enable us to track and target the interests of our users to enhance the experience on our website. Third parties 
-                serve cookies through our website for advertising, analytics, and other purposes.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">3. Types of Cookies We Use</h2>
-              <div className="space-y-6 mt-6">
-                <div className="p-4 border border-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Essential Cookies</h3>
-                  <p>
-                    These cookies are necessary for the website to function and cannot be switched off in our systems. They are 
-                    usually only set in response to actions made by you which amount to a request for services, such as setting 
-                    your privacy preferences, logging in, or filling in forms. These cookies do not store any personally identifiable 
-                    information.
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Types of Cookies We Use</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="border-l-4 border-green-500 pl-4">
+                  <h4 className="font-semibold text-green-800">Necessary Cookies</h4>
+                  <p className="text-gray-600 mt-1">
+                    These cookies are essential for the website to function properly. They enable basic 
+                    features like security, network management, and accessibility.
                   </p>
+                  <ul className="list-disc pl-6 text-gray-600 mt-2 space-y-1">
+                    <li>Authentication and login state</li>
+                    <li>Security features and CSRF protection</li>
+                    <li>Load balancing and performance</li>
+                  </ul>
                 </div>
-                
-                <div className="p-4 border border-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Analytics Cookies</h3>
-                  <p>
-                    These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our 
-                    site. They help us to know which pages are the most and least popular and see how visitors move around the site. 
-                    All information these cookies collect is aggregated and therefore anonymous.
+
+                <div className="border-l-4 border-blue-500 pl-4">
+                  <h4 className="font-semibold text-blue-800">Analytics Cookies</h4>
+                  <p className="text-gray-600 mt-1">
+                    These cookies help us understand how visitors interact with our website by 
+                    collecting and reporting information anonymously.
                   </p>
+                  <ul className="list-disc pl-6 text-gray-600 mt-2 space-y-1">
+                    <li>Page views and user behavior</li>
+                    <li>Performance metrics</li>
+                    <li>Error tracking and diagnostics</li>
+                  </ul>
                 </div>
-                
-                <div className="p-4 border border-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Marketing Cookies</h3>
-                  <p>
-                    These cookies may be set through our site by our advertising partners. They may be used by those companies to 
-                    build a profile of your interests and show you relevant advertisements on other sites. They do not store directly 
-                    personal information, but are based on uniquely identifying your browser and internet device.
+
+                <div className="border-l-4 border-purple-500 pl-4">
+                  <h4 className="font-semibold text-purple-800">Preference Cookies</h4>
+                  <p className="text-gray-600 mt-1">
+                    These cookies remember your preferences and settings to provide you with a 
+                    more personalized experience.
                   </p>
+                  <ul className="list-disc pl-6 text-gray-600 mt-2 space-y-1">
+                    <li>Language and region preferences</li>
+                    <li>Theme and display settings</li>
+                    <li>Dashboard customizations</li>
+                  </ul>
                 </div>
-                
-                <div className="p-4 border border-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Preferences Cookies</h3>
-                  <p>
-                    These cookies enable the website to provide enhanced functionality and personalization. They may be set by us or 
-                    by third-party providers whose services we have added to our pages. If you do not allow these cookies, then some 
-                    or all of these services may not function properly.
+
+                <div className="border-l-4 border-orange-500 pl-4">
+                  <h4 className="font-semibold text-orange-800">Marketing Cookies</h4>
+                  <p className="text-gray-600 mt-1">
+                    These cookies are used to track visitors across websites to display relevant 
+                    and engaging advertisements.
                   </p>
+                  <ul className="list-disc pl-6 text-gray-600 mt-2 space-y-1">
+                    <li>Advertising campaign tracking</li>
+                    <li>Social media integration</li>
+                    <li>Third-party analytics</li>
+                  </ul>
                 </div>
-              </div>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">4. Specific Cookies We Use</h2>
-              <table className="w-full border-collapse mb-6">
-                <thead>
-                  <tr className="bg-muted">
-                    <th className="border p-2 text-left">Name</th>
-                    <th className="border p-2 text-left">Provider</th>
-                    <th className="border p-2 text-left">Purpose</th>
-                    <th className="border p-2 text-left">Expiry</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="border p-2">session_id</td>
-                    <td className="border p-2">Droplink</td>
-                    <td className="border p-2">Maintains user session</td>
-                    <td className="border p-2">Session</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">auth_token</td>
-                    <td className="border p-2">Droplink</td>
-                    <td className="border p-2">Remembers if you're logged in</td>
-                    <td className="border p-2">30 days</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">preferences</td>
-                    <td className="border p-2">Droplink</td>
-                    <td className="border p-2">Stores your site preferences</td>
-                    <td className="border p-2">1 year</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">_ga</td>
-                    <td className="border p-2">Google Analytics</td>
-                    <td className="border p-2">Statistical purposes</td>
-                    <td className="border p-2">2 years</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">_gid</td>
-                    <td className="border p-2">Google Analytics</td>
-                    <td className="border p-2">Statistical purposes</td>
-                    <td className="border p-2">24 hours</td>
-                  </tr>
-                </tbody>
-              </table>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">5. How to Control Cookies</h2>
-              <h3 className="text-xl font-bold mt-6 mb-3">5.1 Browser Settings</h3>
-              <p>
-                You can set or amend your web browser controls to accept or refuse cookies. If you choose to reject cookies, 
-                you may still use our website though your access to some functionality and areas of our website may be restricted.
-              </p>
-              <p>
-                Each browser works differently, so check your browser's "Help" menu to learn the correct way to modify your cookies.
-              </p>
-              
-              <h3 className="text-xl font-bold mt-6 mb-3">5.2 Our Cookie Management Tool</h3>
-              <p>
-                In addition to browser settings, you can use our Cookie Management Tool below to customize your cookie preferences.
-              </p>
-              
-              <div className="p-6 mt-6 bg-muted rounded-lg">
-                <h4 className="text-lg font-semibold mb-4">Cookie Preferences</h4>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Cookie Preferences</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600 mb-4">
+                  You can control which cookies we use on your device. Note that disabling certain 
+                  cookies may affect the functionality of our website.
+                </p>
+
                 <div className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <Checkbox 
-                      id="necessary" 
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <h4 className="font-medium">Necessary Cookies</h4>
+                      <p className="text-sm text-gray-600">Required for basic functionality</p>
+                    </div>
+                    <input 
+                      type="checkbox" 
                       checked={cookiePreferences.necessary} 
-                      onCheckedChange={(checked) => handleCheckboxChange("necessary", checked as boolean)}
-                      disabled
+                      disabled 
+                      className="scale-125"
                     />
-                    <div className="space-y-1 leading-none">
-                      <label 
-                        htmlFor="necessary" 
-                        className="font-medium text-sm cursor-not-allowed flex gap-2 items-center"
-                      >
-                        Essential Cookies
-                        <span className="bg-primary text-white text-xs py-0.5 px-1 rounded">Required</span>
-                      </label>
-                      <p className="text-sm text-muted-foreground">
-                        These cookies are necessary for the website to function properly.
-                      </p>
-                    </div>
                   </div>
-                  
-                  <div className="flex items-start space-x-3">
-                    <Checkbox 
-                      id="analytics" 
-                      checked={cookiePreferences.analytics} 
-                      onCheckedChange={(checked) => handleCheckboxChange("analytics", checked as boolean)}
-                    />
-                    <div className="space-y-1 leading-none">
-                      <label 
-                        htmlFor="analytics" 
-                        className="font-medium text-sm cursor-pointer"
-                      >
-                        Analytics Cookies
-                      </label>
-                      <p className="text-sm text-muted-foreground">
-                        Help us understand how visitors interact with our website.
-                      </p>
+
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <h4 className="font-medium">Analytics Cookies</h4>
+                      <p className="text-sm text-gray-600">Help us improve our service</p>
                     </div>
+                    <input 
+                      type="checkbox" 
+                      checked={cookiePreferences.analytics}
+                      onChange={(e) => setCookiePreferences({
+                        ...cookiePreferences,
+                        analytics: e.target.checked
+                      })}
+                      className="scale-125"
+                    />
                   </div>
-                  
-                  <div className="flex items-start space-x-3">
-                    <Checkbox 
-                      id="marketing" 
-                      checked={cookiePreferences.marketing} 
-                      onCheckedChange={(checked) => handleCheckboxChange("marketing", checked as boolean)}
-                    />
-                    <div className="space-y-1 leading-none">
-                      <label 
-                        htmlFor="marketing" 
-                        className="font-medium text-sm cursor-pointer"
-                      >
-                        Marketing Cookies
-                      </label>
-                      <p className="text-sm text-muted-foreground">
-                        Used to track visitors across websites to display relevant advertisements.
-                      </p>
+
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <h4 className="font-medium">Preference Cookies</h4>
+                      <p className="text-sm text-gray-600">Remember your settings</p>
                     </div>
+                    <input 
+                      type="checkbox" 
+                      checked={cookiePreferences.preferences}
+                      onChange={(e) => setCookiePreferences({
+                        ...cookiePreferences,
+                        preferences: e.target.checked
+                      })}
+                      className="scale-125"
+                    />
                   </div>
-                  
-                  <div className="flex items-start space-x-3">
-                    <Checkbox 
-                      id="preferences" 
-                      checked={cookiePreferences.preferences} 
-                      onCheckedChange={(checked) => handleCheckboxChange("preferences", checked as boolean)}
-                    />
-                    <div className="space-y-1 leading-none">
-                      <label 
-                        htmlFor="preferences" 
-                        className="font-medium text-sm cursor-pointer"
-                      >
-                        Preferences Cookies
-                      </label>
-                      <p className="text-sm text-muted-foreground">
-                        Allow the website to remember choices you make and provide enhanced features.
-                      </p>
+
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <h4 className="font-medium">Marketing Cookies</h4>
+                      <p className="text-sm text-gray-600">Personalized advertising</p>
                     </div>
+                    <input 
+                      type="checkbox" 
+                      checked={cookiePreferences.marketing}
+                      onChange={(e) => setCookiePreferences({
+                        ...cookiePreferences,
+                        marketing: e.target.checked
+                      })}
+                      className="scale-125"
+                    />
                   </div>
                 </div>
-                
-                <div className="mt-6 flex gap-3">
-                  <Button onClick={handleSavePreferences}>Save Preferences</Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setCookiePreferences({
-                        necessary: true,
-                        analytics: false,
-                        marketing: false,
-                        preferences: false
-                      });
-                    }}
-                  >
-                    Reject All
-                  </Button>
-                  <Button 
-                    variant="secondary" 
-                    onClick={() => {
-                      setCookiePreferences({
-                        necessary: true,
-                        analytics: true,
-                        marketing: true,
-                        preferences: true
-                      });
-                    }}
-                  >
-                    Accept All
-                  </Button>
-                </div>
-              </div>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">6. Changes to This Cookie Policy</h2>
-              <p>
-                We may update this Cookie Policy from time to time in order to reflect, for example, changes to the cookies we use 
-                or for other operational, legal, or regulatory reasons. Please therefore re-visit this Cookie Policy regularly to 
-                stay informed about our use of cookies and related technologies.
-              </p>
-              <p>
-                The date at the top of this Cookie Policy indicates when it was last updated.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">7. Contact Information</h2>
-              <p>
-                If you have any questions about our use of cookies or this Cookie Policy, please contact us at:
-              </p>
-              <p>
-                <a href="mailto:privacy@droplink.io" className="text-primary hover:underline">privacy@droplink.io</a><br />
-                Droplink Inc.<br />
-                1234 Privacy Lane<br />
-                San Francisco, CA 94105<br />
-                USA
-              </p>
-              
-              <div className="mt-12 p-4 border border-muted rounded-lg">
-                <p className="font-medium mb-2">For more information about how we protect your data, please see our:</p>
-                <ul className="list-disc ml-6">
-                  <li>
-                    <Link to="/privacy" className="text-primary hover:underline">Privacy Policy</Link>
-                  </li>
-                  <li>
-                    <Link to="/terms" className="text-primary hover:underline">Terms of Service</Link>
-                  </li>
+
+                <Button 
+                  onClick={handleSavePreferences}
+                  className="w-full mt-4 bg-gradient-hero hover:bg-secondary"
+                >
+                  Save Preferences
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Managing Cookies</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  You can also manage cookies through your browser settings:
+                </p>
+                <ul className="list-disc pl-6 text-gray-600 space-y-2">
+                  <li>Chrome: Settings → Privacy and security → Cookies and other site data</li>
+                  <li>Firefox: Settings → Privacy & Security → Cookies and Site Data</li>
+                  <li>Safari: Preferences → Privacy → Manage Website Data</li>
+                  <li>Edge: Settings → Cookies and site permissions → Cookies and site data</li>
                 </ul>
-              </div>
-            </div>
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4">
+                  <p className="text-yellow-800 text-sm">
+                    <strong>Note:</strong> Blocking all cookies may prevent some features of our 
+                    website from working properly.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Third-Party Cookies</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  Our website may contain links to third-party websites and services that have their 
+                  own cookie policies:
+                </p>
+                <ul className="list-disc pl-6 text-gray-600 space-y-1">
+                  <li>Pi Network authentication</li>
+                  <li>Analytics providers (Google Analytics)</li>
+                  <li>Social media platforms</li>
+                  <li>Payment processors</li>
+                </ul>
+                <p className="text-gray-600">
+                  We recommend reviewing the cookie policies of these third parties.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Contact Us</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  If you have any questions about our use of cookies, please contact us:
+                </p>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="font-medium">Email: privacy@droplink.space</p>
+                  <p className="font-medium">Subject: Cookie Policy Inquiry</p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>

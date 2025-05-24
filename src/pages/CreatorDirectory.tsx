@@ -1,275 +1,200 @@
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import CTA from "@/components/CTA";
+import { Search, Users, ExternalLink, Star } from "lucide-react";
+import { useState } from "react";
 
 const CreatorDirectory = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("all");
-  
+
   const creators = [
     {
-      id: 1,
-      username: "artbymia",
-      name: "Mia Chen",
-      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      category: "artist",
-      featured: true,
-      bio: "Digital artist specializing in Pi-themed artwork and NFTs"
+      username: "techpioneer",
+      displayName: "Tech Pioneer",
+      bio: "Blockchain enthusiast and Pi Network educator",
+      category: "Technology",
+      followers: "12.5K",
+      rating: 4.9,
+      verified: true,
+      avatar: "🚀"
     },
     {
-      id: 2,
-      username: "techexplorer",
-      name: "Alex Rivera",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      category: "technology",
-      featured: false,
-      bio: "Technology educator explaining Pi Network concepts"
+      username: "cryptoartist",
+      displayName: "Crypto Artist",
+      bio: "Digital artist creating NFTs on Pi Network",
+      category: "Art & Design",
+      followers: "8.2K",
+      rating: 4.8,
+      verified: true,
+      avatar: "🎨"
     },
     {
-      id: 3,
-      username: "fitnesswithsam",
-      name: "Sam Johnson",
-      image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      category: "fitness",
-      featured: true,
-      bio: "Fitness coach offering Pi-payable workout programs"
+      username: "pitrader",
+      displayName: "Pi Trader",
+      bio: "Trading insights and Pi market analysis",
+      category: "Finance",
+      followers: "15.1K",
+      rating: 4.7,
+      verified: false,
+      avatar: "📈"
     },
     {
-      id: 4,
-      username: "musicbyluna",
-      name: "Luna Park",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      category: "music",
-      featured: false,
-      bio: "Independent musician selling tracks and accepting Pi tips"
+      username: "healthguru",
+      displayName: "Health Guru",
+      bio: "Wellness coach accepting Pi for consultations",
+      category: "Health & Fitness",
+      followers: "6.8K",
+      rating: 4.9,
+      verified: true,
+      avatar: "💪"
     },
     {
-      id: 5,
-      username: "cooknwithkai",
-      name: "Kai Wong",
-      image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      category: "food",
-      featured: true,
-      bio: "Chef sharing recipes and cooking tutorials for Pi Network"
+      username: "foodiechef",
+      displayName: "Foodie Chef",
+      bio: "Culinary artist sharing recipes and cooking tips",
+      category: "Food & Lifestyle",
+      followers: "9.3K",
+      rating: 4.6,
+      verified: false,
+      avatar: "👨‍🍳"
     },
     {
-      id: 6,
-      username: "travelwithemma",
-      name: "Emma Clark",
-      image: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      category: "travel",
-      featured: false,
-      bio: "Travel blogger documenting Pi-friendly destinations"
-    },
-    {
-      id: 7,
-      username: "devjordan",
-      name: "Jordan Lee",
-      image: "https://images.unsplash.com/photo-1542740348-39501cd6e2b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      category: "technology",
-      featured: true,
-      bio: "Developer creating tools for the Pi ecosystem"
-    },
-    {
-      id: 8,
-      username: "mindfulnesscoach",
-      name: "Olivia Green",
-      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      category: "wellness",
-      featured: false,
-      bio: "Mindfulness coach offering guided meditations for Pi"
-    },
-    {
-      id: 9,
-      username: "fashionista",
-      name: "Maya Rodriguez",
-      image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      category: "fashion",
-      featured: true,
-      bio: "Fashion designer selling sustainable clothing for Pi"
-    },
-    {
-      id: 10,
-      username: "pieconomist",
-      name: "David Kim",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      category: "finance",
-      featured: false,
-      bio: "Economist analyzing Pi Network's ecosystem growth"
-    },
-    {
-      id: 11,
-      username: "gamergirl",
-      name: "Zoe Taylor",
-      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      category: "gaming",
-      featured: true,
-      bio: "Gamer integrating Pi Network payments into gaming"
-    },
-    {
-      id: 12,
-      username: "writerdude",
-      name: "Nathan Smith",
-      image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      category: "writing",
-      featured: false,
-      bio: "Author publishing Pi-exclusive short stories and novels"
+      username: "musicmaker",
+      displayName: "Music Maker",
+      bio: "Independent musician selling albums for Pi",
+      category: "Music",
+      followers: "11.7K",
+      rating: 4.8,
+      verified: true,
+      avatar: "🎵"
     }
   ];
-  
-  const filteredCreators = activeTab === "all" 
-    ? creators.filter(creator => 
-        creator.username.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        creator.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        creator.bio.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : creators.filter(creator => 
-        creator.category === activeTab &&
-        (creator.username.toLowerCase().includes(searchQuery.toLowerCase()) || 
-         creator.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-         creator.bio.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
+  const categories = [
+    "All", "Technology", "Art & Design", "Finance", "Health & Fitness", 
+    "Food & Lifestyle", "Music", "Education", "Gaming", "Travel"
+  ];
+
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const filteredCreators = creators.filter(creator => {
+    const matchesSearch = creator.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         creator.bio.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         creator.category.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || creator.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-grow">
-        <section className="py-16 px-4 bg-muted">
-          <div className="container mx-auto max-w-5xl text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Discover Amazing Creators</h1>
-            <p className="text-xl mb-10 max-w-3xl mx-auto">
-              Explore our directory of innovative creators using Droplink to share content and accept Pi payments.
+      <main className="flex-grow py-12 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold mb-6 text-primary">Creator Directory</h1>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Discover amazing creators on Pi Network and connect with the community
             </p>
-            
-            <div className="flex flex-col md:flex-row gap-4 max-w-3xl mx-auto mb-8">
-              <div className="relative flex-grow">
-                <Input
-                  type="text"
-                  placeholder="Search by name, username, or description..."
-                  className="pl-10"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                />
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
+          </div>
+
+          {/* Search and Filters */}
+          <div className="mb-8 space-y-4">
+            <div className="relative max-w-md mx-auto">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Input
+                type="text"
+                placeholder="Search creators..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-2">
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  variant={selectedCategory === category ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(category)}
+                  className={selectedCategory === category ? "bg-gradient-hero hover:bg-secondary" : ""}
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-              <Button asChild className="md:w-auto w-full">
-                <Link to="/signup">Join Directory</Link>
+                  {category}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Creators Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {filteredCreators.map((creator, index) => (
+              <Card key={index} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl">{creator.avatar}</div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <CardTitle className="text-lg">{creator.displayName}</CardTitle>
+                        {creator.verified && (
+                          <Badge variant="secondary" className="text-xs">
+                            ✓ Verified
+                          </Badge>
+                        )}
+                      </div>
+                      <CardDescription>@{creator.username}</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 mb-3">{creator.bio}</p>
+                  
+                  <div className="flex items-center justify-between mb-4">
+                    <Badge variant="outline">{creator.category}</Badge>
+                    <div className="flex items-center gap-1 text-sm text-gray-600">
+                      <Users className="w-4 h-4" />
+                      {creator.followers}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                      <span className="text-sm font-medium">{creator.rating}</span>
+                    </div>
+                    <Button size="sm" variant="outline">
+                      <ExternalLink className="w-4 h-4 mr-1" />
+                      Visit Profile
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {filteredCreators.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-600 mb-4">No creators found matching your search.</p>
+              <Button variant="outline" onClick={() => {setSearchQuery(""); setSelectedCategory("All")}}>
+                Clear Filters
               </Button>
             </div>
-            
-            <Tabs defaultValue="all" className="max-w-3xl mx-auto" onValueChange={setActiveTab}>
-              <TabsList className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 mb-8">
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="artist">Art</TabsTrigger>
-                <TabsTrigger value="music">Music</TabsTrigger>
-                <TabsTrigger value="technology">Tech</TabsTrigger>
-                <TabsTrigger value="fashion">Fashion</TabsTrigger>
-                <TabsTrigger value="fitness">Fitness</TabsTrigger>
-                <TabsTrigger value="food">Food</TabsTrigger>
-              </TabsList>
-            </Tabs>
+          )}
+
+          {/* Join CTA */}
+          <div className="text-center p-6 bg-gradient-hero text-white rounded-lg">
+            <h3 className="text-xl font-bold mb-2">Join the Creator Directory</h3>
+            <p className="mb-4 opacity-90">
+              Get featured in our directory and connect with thousands of Pi Network users
+            </p>
+            <Button variant="outline" className="bg-white text-primary hover:bg-gray-100">
+              Apply to Join
+            </Button>
           </div>
-        </section>
-        
-        <section className="py-16 px-4">
-          <div className="container mx-auto">
-            {filteredCreators.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {filteredCreators.map(creator => (
-                  <div key={creator.id} className="bg-background rounded-xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col">
-                    <div className="flex items-center gap-4">
-                      <img 
-                        src={creator.image} 
-                        alt={creator.name} 
-                        className="w-16 h-16 rounded-full object-cover"
-                      />
-                      <div>
-                        <h3 className="text-lg font-semibold">{creator.name}</h3>
-                        <p className="text-primary font-medium">@{creator.username}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4 mb-6">
-                      <p className="text-muted-foreground">{creator.bio}</p>
-                    </div>
-                    
-                    <div className="mt-auto flex items-center justify-between">
-                      <Badge variant={creator.featured ? "default" : "outline"}>
-                        {creator.category.charAt(0).toUpperCase() + creator.category.slice(1)}
-                      </Badge>
-                      <Button size="sm" asChild>
-                        <a href={`https://droplink.io/${creator.username}`} target="_blank" rel="noopener noreferrer">
-                          Visit
-                        </a>
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-16">
-                <h3 className="text-2xl font-semibold mb-3">No creators found</h3>
-                <p className="text-muted-foreground mb-8">Try a different search or category</p>
-                <Button onClick={() => {setSearchQuery(""); setActiveTab("all");}}>
-                  Clear Search
-                </Button>
-              </div>
-            )}
-          </div>
-        </section>
-        
-        {/* Become a Creator */}
-        <section className="py-16 px-4 bg-muted">
-          <div className="container mx-auto max-w-4xl">
-            <div className="bg-card rounded-xl p-8 md:p-10 shadow-sm">
-              <div className="md:flex items-center gap-8">
-                <div className="md:w-3/5 mb-6 md:mb-0">
-                  <h2 className="text-3xl font-bold mb-4">Want to be featured in our directory?</h2>
-                  <p className="text-lg mb-6">
-                    Create your Droplink profile and join our growing community of Pi Network creators.
-                    Get discovered by thousands of potential fans and customers.
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <Button size="lg" asChild>
-                      <Link to="/signup">Create Your Profile</Link>
-                    </Button>
-                    <Button variant="outline" size="lg" asChild>
-                      <Link to="/features">Learn More</Link>
-                    </Button>
-                  </div>
-                </div>
-                <div className="md:w-2/5">
-                  <img 
-                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                    alt="Creators collaborating" 
-                    className="rounded-lg"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        <CTA />
+        </div>
       </main>
       <Footer />
     </div>

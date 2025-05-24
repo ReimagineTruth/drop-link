@@ -1,339 +1,312 @@
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { toast } from "@/hooks/use-toast";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Shield, Download, Trash2, Eye, Edit, AlertCircle } from "lucide-react";
 
 const GDPR = () => {
-  const [dataRequestType, setDataRequestType] = useState<string | null>(null);
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  
-  const handleSubmitRequest = (e: React.FormEvent) => {
-    e.preventDefault();
-    // This would normally connect to a backend service
-    console.log("GDPR request submitted:", {
-      type: dataRequestType,
-      email,
-      message
-    });
-    
-    toast({
-      title: "Request Submitted",
-      description: "We'll process your request within 30 days as required by GDPR."
-    });
-    
-    // Reset form
-    setDataRequestType(null);
-    setEmail("");
-    setMessage("");
+  const handleDataRequest = (type: string) => {
+    // Implementation would handle actual data requests
+    console.log(`Processing ${type} request`);
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-grow">
-        <div className="container mx-auto py-16 px-4">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-3xl md:text-4xl font-bold mb-8">GDPR Compliance</h1>
-            
-            <div className="prose prose-lg max-w-none">
-              <p className="text-muted-foreground">Last updated: May 21, 2025</p>
-              
-              <div className="my-8 p-4 bg-muted rounded-lg text-sm">
-                <p className="font-medium">Summary:</p>
-                <p>
-                  This GDPR Policy explains how Droplink collects, uses, and protects your personal data in accordance with the General Data Protection Regulation (GDPR). 
-                  We collect only necessary information, process it lawfully, and respect your rights to access, correct, delete, and port your data. 
-                  You may withdraw consent at any time, and we maintain appropriate security measures to protect your information.
+      <main className="flex-grow py-12 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold mb-6 text-primary">GDPR Compliance</h1>
+            <p className="text-xl text-gray-600">
+              Your data protection rights under the General Data Protection Regulation
+            </p>
+          </div>
+
+          <div className="space-y-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-primary" />
+                  Your GDPR Rights
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  Under the General Data Protection Regulation (GDPR), EU residents have the following rights:
                 </p>
-              </div>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">1. Introduction</h2>
-              <p>
-                At Droplink, we are committed to protecting your privacy and ensuring the security of your personal information. 
-                This General Data Protection Regulation (GDPR) Policy outlines how we collect, process, and handle personal data 
-                of European Union (EU) residents and citizens in compliance with the GDPR.
-              </p>
-              <p>
-                The GDPR is a regulation that requires businesses to protect the personal data and privacy of EU citizens for transactions that occur within EU member states. 
-                This policy applies to all our operations, including our website, products, and services.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">2. Data Controller</h2>
-              <p>
-                For the purposes of the GDPR, Droplink Inc. is the data controller responsible for your personal information. 
-                If you have any questions about this policy or our data practices, please contact us at:
-              </p>
-              <p>
-                <a href="mailto:privacy@droplink.io" className="text-primary hover:underline">privacy@droplink.io</a><br />
-                Droplink Inc.<br />
-                1234 Privacy Lane<br />
-                San Francisco, CA 94105<br />
-                USA
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">3. Principles of Data Processing</h2>
-              <div className="space-y-4 mt-6">
-                <p>We process personal data in accordance with the following principles:</p>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>Lawfulness, fairness, and transparency</strong>: We process data lawfully, fairly, and in a transparent manner.</li>
-                  <li><strong>Purpose limitation</strong>: We collect data for specified, explicit, and legitimate purposes.</li>
-                  <li><strong>Data minimization</strong>: We limit data collection to what is necessary for the purposes for which it is processed.</li>
-                  <li><strong>Accuracy</strong>: We take reasonable steps to ensure personal data is accurate and kept up to date.</li>
-                  <li><strong>Storage limitation</strong>: We keep data for no longer than necessary for the purposes for which it is processed.</li>
-                  <li><strong>Integrity and confidentiality</strong>: We process data in a manner that ensures appropriate security.</li>
-                  <li><strong>Accountability</strong>: We are responsible for and can demonstrate compliance with these principles.</li>
-                </ul>
-              </div>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">4. Types of Data We Collect</h2>
-              <p>We may collect the following personal data from you:</p>
-              <div className="space-y-4 mt-6">
-                <div className="p-4 border border-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Account Data</h3>
-                  <p>
-                    Information you provide when you create an account with us, such as your name, email address, username, and profile picture.
-                  </p>
-                </div>
                 
-                <div className="p-4 border border-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Profile Data</h3>
-                  <p>
-                    Information you add to your public profile, such as biography, social media links, and other content you choose to share.
-                  </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2">Right to Access</h4>
+                    <p className="text-sm text-gray-600">
+                      Request access to your personal data and information about how we process it.
+                    </p>
+                  </div>
+                  
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2">Right to Rectification</h4>
+                    <p className="text-sm text-gray-600">
+                      Request correction of inaccurate or incomplete personal data.
+                    </p>
+                  </div>
+                  
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2">Right to Erasure</h4>
+                    <p className="text-sm text-gray-600">
+                      Request deletion of your personal data under certain circumstances.
+                    </p>
+                  </div>
+                  
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2">Right to Portability</h4>
+                    <p className="text-sm text-gray-600">
+                      Request transfer of your data to another service provider.
+                    </p>
+                  </div>
+                  
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2">Right to Restrict Processing</h4>
+                    <p className="text-sm text-gray-600">
+                      Request limitation of how we process your personal data.
+                    </p>
+                  </div>
+                  
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2">Right to Object</h4>
+                    <p className="text-sm text-gray-600">
+                      Object to processing of your data for certain purposes.
+                    </p>
+                  </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Data Request Center</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <p className="text-gray-600">
+                  Submit requests to exercise your GDPR rights. We will respond within 30 days.
+                </p>
                 
-                <div className="p-4 border border-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Usage Data</h3>
-                  <p>
-                    Information about how you use our website, products, and services, including links you create, clicks, views, and engagement metrics.
-                  </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Eye className="w-5 h-5 text-blue-500" />
+                      <h4 className="font-semibold">Access My Data</h4>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Get a copy of all personal data we have about you.
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => handleDataRequest('access')}
+                      className="w-full"
+                    >
+                      Request Data Access
+                    </Button>
+                  </Card>
+
+                  <Card className="p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Download className="w-5 h-5 text-green-500" />
+                      <h4 className="font-semibold">Export My Data</h4>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Download your data in a portable format.
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => handleDataRequest('export')}
+                      className="w-full"
+                    >
+                      Export Data
+                    </Button>
+                  </Card>
+
+                  <Card className="p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Edit className="w-5 h-5 text-yellow-500" />
+                      <h4 className="font-semibold">Correct My Data</h4>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Request correction of inaccurate information.
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => handleDataRequest('correct')}
+                      className="w-full"
+                    >
+                      Request Correction
+                    </Button>
+                  </Card>
+
+                  <Card className="p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Trash2 className="w-5 h-5 text-red-500" />
+                      <h4 className="font-semibold">Delete My Data</h4>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Request permanent deletion of your account and data.
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => handleDataRequest('delete')}
+                      className="w-full border-red-200 text-red-600 hover:bg-red-50"
+                    >
+                      Request Deletion
+                    </Button>
+                  </Card>
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Data Processing Lawful Basis</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  We process your personal data based on the following lawful grounds:
+                </p>
                 
-                <div className="p-4 border border-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Technical Data</h3>
-                  <p>
-                    Information about your device, browser, IP address, time zone, and cookies when you visit our website.
-                  </p>
-                </div>
-                
-                <div className="p-4 border border-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Transaction Data</h3>
-                  <p>
-                    Information related to payments and transactions you make on our platform, including Pi cryptocurrency transactions.
-                  </p>
-                </div>
-              </div>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">5. Legal Basis for Processing</h2>
-              <p>We process your personal data based on one or more of the following legal grounds:</p>
-              <div className="space-y-4 mt-4">
-                <div className="p-4 bg-background rounded-lg shadow-sm">
-                  <h3 className="text-xl font-semibold text-primary mb-2">Consent</h3>
-                  <p>Where you have given us explicit consent to process your data for specific purposes.</p>
-                </div>
-                <div className="p-4 bg-background rounded-lg shadow-sm">
-                  <h3 className="text-xl font-semibold text-primary mb-2">Contractual Necessity</h3>
-                  <p>Where processing is necessary to fulfill our contractual obligations to you.</p>
-                </div>
-                <div className="p-4 bg-background rounded-lg shadow-sm">
-                  <h3 className="text-xl font-semibold text-primary mb-2">Legal Obligation</h3>
-                  <p>Where processing is necessary for compliance with legal obligations.</p>
-                </div>
-                <div className="p-4 bg-background rounded-lg shadow-sm">
-                  <h3 className="text-xl font-semibold text-primary mb-2">Legitimate Interests</h3>
-                  <p>Where processing is necessary for our legitimate interests, provided they do not override your rights and interests.</p>
-                </div>
-              </div>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">6. Your Rights Under GDPR</h2>
-              <p>As an EU citizen or resident, you have the following rights regarding your personal data:</p>
-              <div className="mt-4 space-y-4">
-                <div className="p-4 bg-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Right to Access</h3>
-                  <p>You have the right to request a copy of the personal information we hold about you.</p>
-                </div>
-                <div className="p-4 bg-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Right to Rectification</h3>
-                  <p>You have the right to request that we correct any inaccurate or incomplete personal information about you.</p>
-                </div>
-                <div className="p-4 bg-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Right to Erasure (Right to be Forgotten)</h3>
-                  <p>You have the right to request the deletion of your personal data when it is no longer necessary for the purposes for which it was collected.</p>
-                </div>
-                <div className="p-4 bg-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Right to Restrict Processing</h3>
-                  <p>You have the right to request that we restrict the processing of your personal data under certain circumstances.</p>
-                </div>
-                <div className="p-4 bg-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Right to Data Portability</h3>
-                  <p>You have the right to receive your personal data in a structured, commonly used, and machine-readable format.</p>
-                </div>
-                <div className="p-4 bg-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Right to Object</h3>
-                  <p>You have the right to object to the processing of your personal data in certain circumstances.</p>
-                </div>
-                <div className="p-4 bg-muted rounded-lg">
-                  <h3 className="text-xl font-bold mb-2">Rights Related to Automated Decision-Making</h3>
-                  <p>You have the right not to be subject to a decision based solely on automated processing that produces legal effects concerning you.</p>
-                </div>
-              </div>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">7. Exercising Your Rights</h2>
-              <p>
-                To exercise any of your rights regarding your personal data, please submit a request through our data subject request form below or contact us at <a href="mailto:privacy@droplink.io" className="text-primary hover:underline">privacy@droplink.io</a>.
-              </p>
-              <p>
-                We will respond to your request within 30 days. In some cases, we may need to verify your identity before processing your request.
-              </p>
-              
-              <div className="p-6 mt-8 bg-muted rounded-lg">
-                <h3 className="text-xl font-bold mb-4">Data Subject Request Form</h3>
-                <form onSubmit={handleSubmitRequest} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Request Type</label>
-                    <div className="space-y-2">
-                      <div className="flex items-center">
-                        <input 
-                          type="radio" 
-                          id="access" 
-                          name="requestType" 
-                          className="mr-2" 
-                          checked={dataRequestType === 'access'} 
-                          onChange={() => setDataRequestType('access')}
-                        />
-                        <label htmlFor="access">Access my data</label>
-                      </div>
-                      <div className="flex items-center">
-                        <input 
-                          type="radio" 
-                          id="rectification" 
-                          name="requestType" 
-                          className="mr-2" 
-                          checked={dataRequestType === 'rectification'} 
-                          onChange={() => setDataRequestType('rectification')}
-                        />
-                        <label htmlFor="rectification">Correct my data</label>
-                      </div>
-                      <div className="flex items-center">
-                        <input 
-                          type="radio" 
-                          id="erasure" 
-                          name="requestType" 
-                          className="mr-2" 
-                          checked={dataRequestType === 'erasure'} 
-                          onChange={() => setDataRequestType('erasure')}
-                        />
-                        <label htmlFor="erasure">Delete my data</label>
-                      </div>
-                      <div className="flex items-center">
-                        <input 
-                          type="radio" 
-                          id="portability" 
-                          name="requestType" 
-                          className="mr-2" 
-                          checked={dataRequestType === 'portability'} 
-                          onChange={() => setDataRequestType('portability')}
-                        />
-                        <label htmlFor="portability">Export my data</label>
-                      </div>
-                      <div className="flex items-center">
-                        <input 
-                          type="radio" 
-                          id="restriction" 
-                          name="requestType" 
-                          className="mr-2" 
-                          checked={dataRequestType === 'restriction'} 
-                          onChange={() => setDataRequestType('restriction')}
-                        />
-                        <label htmlFor="restriction">Restrict processing of my data</label>
-                      </div>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                    <div>
+                      <h4 className="font-semibold">Contractual Necessity</h4>
+                      <p className="text-sm text-gray-600">
+                        Processing necessary to provide our services as outlined in our Terms of Service.
+                      </p>
                     </div>
                   </div>
                   
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium mb-2">Your Email</label>
-                    <input 
-                      type="email" 
-                      id="email" 
-                      value={email} 
-                      onChange={(e) => setEmail(e.target.value)} 
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                      required
-                    />
+                  <div className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                    <div>
+                      <h4 className="font-semibold">Legitimate Interest</h4>
+                      <p className="text-sm text-gray-600">
+                        Analytics and service improvement, fraud prevention, and security.
+                      </p>
+                    </div>
                   </div>
                   
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium mb-2">Details of Your Request</label>
-                    <textarea 
-                      id="message" 
-                      value={message} 
-                      onChange={(e) => setMessage(e.target.value)} 
-                      rows={4} 
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    ></textarea>
+                  <div className="flex items-start gap-3 p-3 bg-yellow-50 rounded-lg">
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
+                    <div>
+                      <h4 className="font-semibold">Consent</h4>
+                      <p className="text-sm text-gray-600">
+                        Marketing communications and optional features (you can withdraw consent anytime).
+                      </p>
+                    </div>
                   </div>
                   
-                  <Button type="submit" disabled={!dataRequestType || !email}>Submit Request</Button>
-                </form>
-              </div>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">8. Data Security</h2>
-              <p>
-                We implement appropriate technical and organizational measures to ensure a level of security appropriate to the risk, 
-                including encryption of personal data, regular security assessments, and secure access controls.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">9. Data Transfers</h2>
-              <p>
-                We may transfer your personal data to countries outside the European Economic Area (EEA). 
-                When we do so, we ensure that appropriate safeguards are in place to protect your data, 
-                such as Standard Contractual Clauses approved by the European Commission.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">10. Data Breach Notification</h2>
-              <p>
-                In the event of a personal data breach, we will notify the relevant supervisory authority within 72 hours of becoming aware of the breach, 
-                where feasible. If the breach is likely to result in a high risk to your rights and freedoms, 
-                we will notify you without undue delay.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">11. Data Protection Officer</h2>
-              <p>
-                We have appointed a Data Protection Officer (DPO) responsible for overseeing our data protection strategy and implementation. 
-                You can contact our DPO at <a href="mailto:dpo@droplink.io" className="text-primary hover:underline">dpo@droplink.io</a>.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">12. Complaints</h2>
-              <p>
-                If you have concerns about how we process your personal data, please contact us at <a href="mailto:privacy@droplink.io" className="text-primary hover:underline">privacy@droplink.io</a>. 
-                You also have the right to lodge a complaint with a supervisory authority in the EU member state where you reside, work, or where an alleged infringement of the GDPR has occurred.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">13. Changes to This Policy</h2>
-              <p>
-                We may update this GDPR Policy from time to time. The date at the top of this policy indicates when it was last updated. 
-                We will notify you of any material changes to this policy as required by law.
-              </p>
-              
-              <div className="mt-12 p-4 border border-muted rounded-lg">
-                <p className="font-medium mb-2">For more information about how we protect your data, please see our:</p>
-                <ul className="list-disc ml-6">
-                  <li>
-                    <Link to="/privacy" className="text-primary hover:underline">Privacy Policy</Link>
-                  </li>
-                  <li>
-                    <Link to="/cookies" className="text-primary hover:underline">Cookie Policy</Link>
-                  </li>
-                  <li>
-                    <Link to="/terms" className="text-primary hover:underline">Terms of Service</Link>
-                  </li>
+                  <div className="flex items-start gap-3 p-3 bg-purple-50 rounded-lg">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                    <div>
+                      <h4 className="font-semibold">Legal Obligation</h4>
+                      <p className="text-sm text-gray-600">
+                        Compliance with applicable laws and regulations.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Data Retention</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  We retain your personal data for different periods depending on the type of data:
+                </p>
+                
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-3">Data Type</th>
+                        <th className="text-left p-3">Retention Period</th>
+                        <th className="text-left p-3">Reason</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b">
+                        <td className="p-3">Account Information</td>
+                        <td className="p-3">Until account deletion</td>
+                        <td className="p-3">Service provision</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="p-3">Usage Analytics</td>
+                        <td className="p-3">26 months</td>
+                        <td className="p-3">Service improvement</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="p-3">Payment Records</td>
+                        <td className="p-3">7 years</td>
+                        <td className="p-3">Legal obligation</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3">Support Communications</td>
+                        <td className="p-3">3 years</td>
+                        <td className="p-3">Customer service</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5 text-orange-500" />
+                  Data Protection Authority
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  If you're not satisfied with how we handle your GDPR request, you have the right to 
+                  lodge a complaint with your local data protection authority.
+                </p>
+                
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2">Our Data Protection Officer</h4>
+                  <p className="text-sm">Email: dpo@droplink.space</p>
+                  <p className="text-sm">Response time: Within 72 hours</p>
+                </div>
+                
+                <p className="text-sm text-gray-600">
+                  For EU residents, you can find your local data protection authority at: 
+                  <a href="https://edpb.europa.eu/about-edpb/board/members_en" className="text-primary underline">
+                    European Data Protection Board
+                  </a>
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>International Data Transfers</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  We may transfer your personal data outside the European Economic Area (EEA). 
+                  When we do, we ensure appropriate safeguards are in place:
+                </p>
+                
+                <ul className="list-disc pl-6 text-gray-600 space-y-2">
+                  <li>Adequacy decisions by the European Commission</li>
+                  <li>Standard Contractual Clauses (SCCs)</li>
+                  <li>Binding Corporate Rules (BCRs)</li>
+                  <li>Certification schemes and codes of conduct</li>
                 </ul>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>

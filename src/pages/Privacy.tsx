@@ -1,203 +1,214 @@
 
-import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Privacy = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-grow">
-        <div className="container mx-auto py-16 px-4">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-3xl md:text-4xl font-bold mb-8">Privacy Policy</h1>
-            
-            <div className="prose prose-lg max-w-none">
-              <p className="text-muted-foreground">Last updated: May 20, 2025</p>
-              
-              <div className="my-8 p-4 bg-muted rounded-lg text-sm">
-                <p className="font-medium">Summary:</p>
-                <p>
-                  This Privacy Policy explains what information we collect when you use Droplink, 
-                  how we use it, and how you can control your data. We collect account information, 
-                  profile content, usage data, and information from Pi Network integration. We use this 
-                  information to provide our services, improve user experience, and ensure security. 
-                  We don't sell your data but may share it with service providers or for legal compliance. 
-                  You can access, correct, or delete your data through your account settings.
+      <main className="flex-grow py-12 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold mb-6 text-primary">Privacy Policy</h1>
+            <p className="text-xl text-gray-600">
+              Last updated: January 2024
+            </p>
+          </div>
+
+          <div className="space-y-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>1. Information We Collect</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  We collect information you provide directly to us and information automatically 
+                  collected when you use our service.
                 </p>
-              </div>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">1. Introduction</h2>
-              <p>
-                At Droplink ("we," "our," or "us"), we respect your privacy and are committed to protecting your personal data. 
-                This Privacy Policy explains how we collect, use, store, and share information when you use our website, 
-                applications, and services (collectively, the "Services").
-              </p>
-              <p>
-                Please read this Privacy Policy carefully to understand our practices regarding your personal data. By accessing 
-                or using our Services, you acknowledge that you have read and understood this Privacy Policy.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">2. Information We Collect</h2>
-              <h3 className="text-xl font-bold mt-6 mb-3">2.1 Information You Provide to Us</h3>
-              <p>
-                We collect information you provide directly to us, including:
-              </p>
-              <ul>
-                <li><strong>Account Information:</strong> When you register for an account, we collect your username, email address, password, and optionally your name and profile picture.</li>
-                <li><strong>Profile Content:</strong> Information you add to your Droplink profile, including links, descriptions, images, and other content you choose to share.</li>
-                <li><strong>Communications:</strong> Information you provide when you contact us for support or communicate with us for any reason.</li>
-                <li><strong>Payment Information:</strong> If you subscribe to a paid plan, we collect Pi Network payment information necessary to process your transaction.</li>
-              </ul>
-              
-              <h3 className="text-xl font-bold mt-6 mb-3">2.2 Information We Collect Automatically</h3>
-              <p>
-                When you use our Services, we automatically collect certain information, including:
-              </p>
-              <ul>
-                <li><strong>Usage Information:</strong> Details of your use of our Services, including log data, clicks, page views, and traffic sources.</li>
-                <li><strong>Device Information:</strong> Information about the device you use to access our Services, including hardware model, operating system, unique device identifiers, and mobile network information.</li>
-                <li><strong>Location Information:</strong> General location data based on your IP address.</li>
-                <li><strong>Cookies and Similar Technologies:</strong> We use cookies and similar technologies to collect information about how you interact with our Services. For more information, please see our <Link to="/cookies" className="text-primary hover:underline">Cookie Policy</Link>.</li>
-              </ul>
-              
-              <h3 className="text-xl font-bold mt-6 mb-3">2.3 Information from Pi Network Integration</h3>
-              <p>
-                When you connect your Pi Network account to Droplink, we may receive information from Pi Network, including:
-              </p>
-              <ul>
-                <li>Your Pi Network username</li>
-                <li>Account verification status</li>
-                <li>Payment transaction details when you make or receive payments through our Services</li>
-              </ul>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">3. How We Use Your Information</h2>
-              <p>
-                We use the information we collect for various purposes, including to:
-              </p>
-              <ul>
-                <li>Provide, maintain, and improve our Services</li>
-                <li>Process transactions and manage your account</li>
-                <li>Send you technical notices, updates, security alerts, and support messages</li>
-                <li>Respond to your comments, questions, and requests</li>
-                <li>Monitor and analyze trends, usage, and activities in connection with our Services</li>
-                <li>Detect, prevent, and address technical issues, fraud, or illegal activities</li>
-                <li>Personalize and improve your experience with our Services</li>
-                <li>Develop new products, services, features, and functionality</li>
-              </ul>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">4. How We Share Your Information</h2>
-              <p>
-                We may share your information in the following circumstances:
-              </p>
-              <ul>
-                <li><strong>Service Providers:</strong> We may share your information with third-party vendors, consultants, and other service providers who need access to such information to carry out work on our behalf.</li>
-                <li><strong>Analytics Partners:</strong> We may share aggregated or de-identified information with third parties for industry analysis, demographic profiling, and other purposes.</li>
-                <li><strong>Compliance with Laws:</strong> We may disclose your information if required to do so by law or in response to valid requests by public authorities.</li>
-                <li><strong>Business Transfers:</strong> In the event of a merger, acquisition, or sale of all or a portion of our assets, user information may be transferred as part of the transaction.</li>
-                <li><strong>With Your Consent:</strong> We may share your information with your consent or at your direction.</li>
-              </ul>
-              <p>
-                We do not sell your personal information to third parties for their own marketing purposes.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">5. Data Retention</h2>
-              <p>
-                We retain your information for as long as necessary to provide you with our Services and for other essential purposes 
-                such as complying with our legal obligations, resolving disputes, and enforcing our agreements.
-              </p>
-              <p>
-                If you delete your account, we will delete or anonymize your personal information, but we may retain certain information 
-                if necessary for legitimate business or legal purposes.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">6. Your Rights and Choices</h2>
-              <h3 className="text-xl font-bold mt-6 mb-3">6.1 Account Information</h3>
-              <p>
-                You can update, correct, or delete your account information at any time by logging into your account and accessing your 
-                account settings. If you cannot access certain information through your account settings, you may contact us for assistance.
-              </p>
-              
-              <h3 className="text-xl font-bold mt-6 mb-3">6.2 Marketing Communications</h3>
-              <p>
-                You may opt out of receiving promotional communications from us by following the instructions in those communications. 
-                Even if you opt out, you will continue to receive non-promotional communications from us regarding our Services.
-              </p>
-              
-              <h3 className="text-xl font-bold mt-6 mb-3">6.3 Cookies</h3>
-              <p>
-                You can manage your cookie preferences through your browser settings. For more information, please see our 
-                <Link to="/cookies" className="text-primary hover:underline ml-1">Cookie Policy</Link>.
-              </p>
-              
-              <h3 className="text-xl font-bold mt-6 mb-3">6.4 Data Protection Rights</h3>
-              <p>
-                Depending on your location, you may have certain rights regarding your personal data, such as:
-              </p>
-              <ul>
-                <li>The right to access your personal data</li>
-                <li>The right to rectify inaccurate personal data</li>
-                <li>The right to request the deletion of your personal data</li>
-                <li>The right to restrict or object to the processing of your personal data</li>
-                <li>The right to data portability</li>
-                <li>The right to withdraw consent</li>
-              </ul>
-              <p>
-                To exercise these rights, please contact us at <a href="mailto:privacy@droplink.io" className="text-primary hover:underline">privacy@droplink.io</a>.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">7. Security</h2>
-              <p>
-                We take reasonable measures to help protect your personal data from loss, theft, misuse, and unauthorized access, 
-                disclosure, alteration, and destruction. However, no method of transmission over the internet or electronic storage 
-                is 100% secure, and we cannot guarantee absolute security.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">8. Children's Privacy</h2>
-              <p>
-                Our Services are not directed to children under the age of 16. We do not knowingly collect personal data from children 
-                under 16. If you become aware that a child has provided us with personal information without parental consent, please 
-                contact us. If we become aware that we have collected personal data from a child under 16 without verification of 
-                parental consent, we will take steps to remove that information from our servers.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">9. International Data Transfers</h2>
-              <p>
-                We may transfer your personal data to countries other than the country in which you initially provided the information. 
-                These countries may not have the same data protection laws as your country. By using our Services, you consent to the 
-                transfer of your data as described in this Privacy Policy.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">10. Changes to This Privacy Policy</h2>
-              <p>
-                We may update this Privacy Policy from time to time to reflect changes to our practices or for other operational, legal, 
-                or regulatory reasons. If we make material changes, we will notify you by email or through a notice on our website prior 
-                to the changes becoming effective. Your continued use of our Services after any changes indicates your acceptance of the 
-                new Privacy Policy.
-              </p>
-              
-              <h2 className="text-2xl font-bold mt-8 mb-4">11. Contact Information</h2>
-              <p>
-                If you have any questions, concerns, or requests regarding this Privacy Policy or our privacy practices, please contact 
-                us at:
-              </p>
-              <p>
-                <a href="mailto:privacy@droplink.io" className="text-primary hover:underline">privacy@droplink.io</a><br />
-                Droplink Inc.<br />
-                1234 Privacy Lane<br />
-                San Francisco, CA 94105<br />
-                USA
-              </p>
-              
-              <div className="mt-12 p-4 border border-muted rounded-lg">
-                <p className="font-medium mb-2">By using Droplink, you acknowledge that you have read, understood, and agree to this Privacy Policy.</p>
-                <p>
-                  For more information about how we protect your data, please see our 
-                  <Link to="/help/data-security" className="text-primary hover:underline mx-1">Data Security Guide</Link> 
-                  or contact us at <a href="mailto:privacy@droplink.io" className="text-primary hover:underline">privacy@droplink.io</a>.
+                
+                <h4 className="font-semibold">Information you provide:</h4>
+                <ul className="list-disc pl-6 text-gray-600 space-y-1">
+                  <li>Pi Network username and profile information</li>
+                  <li>Profile content (bio, links, custom pages)</li>
+                  <li>Payment information for subscriptions</li>
+                  <li>Communications with our support team</li>
+                </ul>
+
+                <h4 className="font-semibold">Automatically collected information:</h4>
+                <ul className="list-disc pl-6 text-gray-600 space-y-1">
+                  <li>Usage data and analytics</li>
+                  <li>Device information and IP addresses</li>
+                  <li>Cookies and similar tracking technologies</li>
+                  <li>Page views and click data</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>2. How We Use Your Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  We use the information we collect to provide, maintain, and improve our services:
                 </p>
-              </div>
-            </div>
+                <ul className="list-disc pl-6 text-gray-600 space-y-2">
+                  <li>Provide and personalize our services</li>
+                  <li>Process transactions and billing</li>
+                  <li>Send important service communications</li>
+                  <li>Provide customer support</li>
+                  <li>Analyze usage patterns to improve our service</li>
+                  <li>Detect and prevent fraud or abuse</li>
+                  <li>Comply with legal obligations</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>3. Information Sharing</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  We do not sell, trade, or rent your personal information to third parties. We may 
+                  share your information in limited circumstances:
+                </p>
+                <ul className="list-disc pl-6 text-gray-600 space-y-2">
+                  <li>With your consent</li>
+                  <li>To comply with legal obligations</li>
+                  <li>To protect our rights and safety</li>
+                  <li>With service providers who assist us</li>
+                  <li>In connection with a business transfer</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>4. Pi Network Integration</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  Our service integrates with Pi Network for authentication and payments. When you 
+                  connect your Pi Network account:
+                </p>
+                <ul className="list-disc pl-6 text-gray-600 space-y-2">
+                  <li>We receive your Pi Network username and basic profile information</li>
+                  <li>Pi Network's privacy policy applies to data they collect</li>
+                  <li>We may process Pi payment transactions on your behalf</li>
+                  <li>You can disconnect your Pi Network account at any time</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>5. Data Security</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  We implement appropriate technical and organizational measures to protect your 
+                  personal information:
+                </p>
+                <ul className="list-disc pl-6 text-gray-600 space-y-2">
+                  <li>Encryption of data in transit and at rest</li>
+                  <li>Regular security assessments and updates</li>
+                  <li>Access controls and authentication requirements</li>
+                  <li>Monitoring for unauthorized access</li>
+                  <li>Incident response procedures</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>6. Your Rights and Choices</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  You have certain rights regarding your personal information:
+                </p>
+                <ul className="list-disc pl-6 text-gray-600 space-y-2">
+                  <li>Access and update your profile information</li>
+                  <li>Delete your account and associated data</li>
+                  <li>Export your data</li>
+                  <li>Opt out of marketing communications</li>
+                  <li>Control cookie preferences</li>
+                  <li>Request information about data processing</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>7. Cookies and Tracking</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  We use cookies and similar technologies to enhance your experience:
+                </p>
+                <ul className="list-disc pl-6 text-gray-600 space-y-2">
+                  <li>Essential cookies for service functionality</li>
+                  <li>Analytics cookies to understand usage patterns</li>
+                  <li>Preference cookies to remember your settings</li>
+                  <li>You can control cookies through your browser settings</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>8. Data Retention</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  We retain your information for as long as necessary to provide our services and 
+                  comply with legal obligations. When you delete your account, we will delete or 
+                  anonymize your personal information within 30 days.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>9. International Data Transfers</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  Your information may be transferred to and processed in countries other than your 
+                  own. We ensure appropriate safeguards are in place to protect your information 
+                  during such transfers.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>10. Changes to This Policy</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  We may update this Privacy Policy from time to time. We will notify you of any 
+                  changes by posting the new policy on this page and updating the "Last updated" date.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>11. Contact Us</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600">
+                  If you have any questions about this Privacy Policy, please contact us:
+                </p>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="font-medium">Email: privacy@droplink.space</p>
+                  <p className="font-medium">Data Protection Officer: dpo@droplink.space</p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
