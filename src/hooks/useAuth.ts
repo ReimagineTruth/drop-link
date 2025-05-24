@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { User } from '@supabase/supabase-js';
+import { signOutFromPi } from '@/utils/pi-sdk';
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -73,6 +74,10 @@ export const useAuth = () => {
 
   const signOut = async () => {
     try {
+      // Sign out from Pi Network first
+      signOutFromPi();
+      
+      // Then sign out from Supabase
       await supabase.auth.signOut();
       
       // Cleanup of auth-related storage
@@ -84,6 +89,9 @@ export const useAuth = () => {
       localStorage.removeItem('piUserId');
       localStorage.removeItem('piAccessToken');
       localStorage.removeItem('subscriptionEnd');
+      localStorage.removeItem('pi_access_token');
+      localStorage.removeItem('pi_user_id');
+      localStorage.removeItem('pi_username');
       
       // Clear Supabase storage items
       localStorage.removeItem('supabase.auth.token');

@@ -51,15 +51,23 @@ const Signup = () => {
     
     try {
       setPiAuthenticating(true);
-      const authResult = await authenticateWithPi(["username"]);
+      console.log("Starting Pi signup authentication...");
+      
+      const authResult = await authenticateWithPi(["username", "payments", "wallet_address"]);
       
       if (authResult?.user) {
-        console.log("Pi authentication successful:", authResult);
+        console.log("Pi authentication successful for signup:", authResult);
+        
+        // Store Pi auth data
+        localStorage.setItem('pi_access_token', authResult.accessToken);
+        localStorage.setItem('pi_user_id', authResult.user.uid);
+        localStorage.setItem('pi_username', authResult.user.username || '');
         
         // Set auth result and show consent prompt
         setPiAuthResult(authResult);
         setShowConsentPrompt(true);
       } else {
+        console.error("Pi signup authentication failed - no user data returned");
         toast({
           title: "Authentication Failed",
           description: "Could not authenticate with Pi Network. Please try again.",
@@ -70,7 +78,7 @@ const Signup = () => {
       console.error("Pi signup error:", error);
       toast({
         title: "Authentication Error",
-        description: "An error occurred during Pi authentication.",
+        description: error instanceof Error ? error.message : "An error occurred during Pi authentication.",
         variant: "destructive",
       });
     } finally {
@@ -80,43 +88,67 @@ const Signup = () => {
   
   const handleConsentAccepted = async () => {
     try {
-      if (!piAuthResult?.user) return;
+      if (!piAuthResult?.user) {
+        console.error("No Pi auth result available for signup");
+        return;
+      }
+      
+      console.log("Processing signup consent for user:", piAuthResult.user.uid);
       
       // Check if user already exists
       const { data: existingUser } = await supabase
         .from('user_profiles')
         .select('*')
-        .eq('username', piAuthResult.user.username)
+        .eq('id', piAuthResult.user.uid)
         .maybeSingle();
         
       if (existingUser) {
+        console.log("User already exists, signing them in instead");
+        
         // User already exists, sign them in instead
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: `pi_${piAuthResult.user.uid}@pinetwork.user`,
+          password: piAuthResult.user.uid
+        });
+        
+        if (error) {
+          console.error("Supabase sign in error for existing user:", error);
+          throw error;
+        }
+        
         toast({
           title: "Account Already Exists",
           description: "Signing you in with your existing account",
         });
+        setShowConsentPrompt(false);
         navigate('/dashboard');
         return;
       }
       
-      // Create a random password for the Pi user
-      const randomPassword = Math.random().toString(36).slice(2) + Math.random().toString(36).toUpperCase().slice(2);
+      console.log("Creating new user account");
+      
+      // Create a secure password for the Pi user
+      const securePassword = `${piAuthResult.user.uid}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
       
       // Use Supabase Auth to create a new user
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: `pi_${piAuthResult.user.uid}@pinetwork.user`,
-        password: randomPassword,
+        password: securePassword,
         options: {
           data: {
             username: piAuthResult.user.username,
-            pi_uid: piAuthResult.user.uid
+            pi_uid: piAuthResult.user.uid,
+            auth_method: 'pi_network'
           }
         }
       });
       
       if (authError) {
+        console.error("Supabase auth signup error:", authError);
         throw new Error(authError.message);
       }
+      
+      console.log("Supabase auth user created:", authData.user?.id);
       
       // Create a user profile
       const { error: profileError } = await supabase
@@ -124,15 +156,19 @@ const Signup = () => {
         .insert({
           id: piAuthResult.user.uid,
           username: piAuthResult.user.username,
-          display_name: piAuthResult.user.username
+          display_name: piAuthResult.user.username,
+          auth_method: 'pi_network'
         });
         
       if (profileError) {
-        console.error("Error creating profile:", profileError);
+        console.error("Error creating user profile:", profileError);
+        // Don't throw here as the auth user was created successfully
+      } else {
+        console.log("User profile created successfully");
       }
       
       toast({
-        title: "Pi Authentication Successful",
+        title: "Pi Registration Successful",
         description: `Welcome, @${piAuthResult.user.username || "Pioneer"}! You're now registered with Pi Network.`,
       });
       
@@ -140,16 +176,23 @@ const Signup = () => {
       setShowConsentPrompt(false);
       navigate('/dashboard');
     } catch (error) {
-      console.error("Error after consent:", error);
+      console.error("Error after signup consent:", error);
       toast({
-        title: "Error",
-        description: "An error occurred while processing your information",
+        title: "Signup Error",
+        description: error instanceof Error ? error.message : "An error occurred while creating your account",
         variant: "destructive",
       });
     }
   };
 
   const handleConsentDeclined = async () => {
+    console.log("User declined signup consent");
+    
+    // Clear Pi auth data
+    localStorage.removeItem('pi_access_token');
+    localStorage.removeItem('pi_user_id');
+    localStorage.removeItem('pi_username');
+    
     toast({
       title: "Consent Declined",
       description: "You need to accept the data sharing terms to use Droplink with Pi Network.",
@@ -167,13 +210,32 @@ const Signup = () => {
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-primary">Create Your Droplink</h1>
             <p className="text-gray-600 mt-2">Join our community on Pi Network</p>
+            
+            {/* Enhanced Pi Browser requirement notice */}
             {!isPiBrowser && (
-              <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                <p className="text-sm text-orange-800 font-medium">
-                  ⚠️ Pi Browser Required for Registration
+              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <div className="flex items-center justify-center mb-2">
+                  <svg className="w-5 h-5 text-red-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <span className="font-medium text-red-800">Pi Browser Required</span>
+                </div>
+                <p className="text-sm text-red-700">
+                  Registration with Pi Network is only available in Pi Browser. Please open this app in Pi Browser to sign up.
                 </p>
-                <p className="text-xs text-orange-700 mt-1">
-                  Please open this app in Pi Browser to sign up
+              </div>
+            )}
+            
+            {isPiBrowser && (
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center justify-center mb-1">
+                  <svg className="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="font-medium text-green-800">Pi Browser Detected</span>
+                </div>
+                <p className="text-sm text-green-700">
+                  Perfect! You can now register with Pi Network.
                 </p>
               </div>
             )}

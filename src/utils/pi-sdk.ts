@@ -52,6 +52,15 @@ export const isRunningInPiBrowser = (): boolean => {
         console.log("Pi Browser detected via hostname");
         return true;
       }
+      
+      // Additional Pi Browser detection methods
+      if (window.navigator && window.navigator.userAgent) {
+        const ua = window.navigator.userAgent;
+        if (ua.includes('PiBrowser') || ua.includes('Pi/')) {
+          console.log("Pi Browser detected via enhanced user agent check");
+          return true;
+        }
+      }
     }
     console.log("Not running in Pi Browser - all detection checks failed");
     return false;
@@ -122,8 +131,40 @@ export const authenticateWithPi = async (
   }
 };
 
+// Check if user is authenticated with Pi
+export const isPiAuthenticated = (): boolean => {
+  try {
+    if (!isRunningInPiBrowser() || !window.Pi) {
+      return false;
+    }
+    
+    // Check if there's a stored access token
+    const storedToken = localStorage.getItem('pi_access_token');
+    return !!storedToken;
+  } catch (error) {
+    console.error("Error checking Pi authentication status:", error);
+    return false;
+  }
+};
+
+// Sign out from Pi
+export const signOutFromPi = (): void => {
+  try {
+    // Clear Pi-related storage
+    localStorage.removeItem('pi_access_token');
+    localStorage.removeItem('pi_user_id');
+    localStorage.removeItem('pi_username');
+    
+    console.log("Signed out from Pi Network");
+  } catch (error) {
+    console.error("Error signing out from Pi:", error);
+  }
+};
+
 export default {
   isRunningInPiBrowser,
   initPiNetwork,
   authenticateWithPi,
+  isPiAuthenticated,
+  signOutFromPi,
 };

@@ -21,7 +21,8 @@ export function PiAuthButton() {
 
   // Initialize Pi SDK when component mounts
   useEffect(() => {
-    initPiNetwork();
+    const initialized = initPiNetwork();
+    console.log("Pi SDK initialization in PiAuthButton:", initialized);
   }, []);
 
   const handlePiAuth = async () => {
@@ -41,15 +42,23 @@ export function PiAuthButton() {
     
     try {
       setIsAuthenticating(true);
+      console.log("Starting Pi authentication...");
+      
       const authResult = await authenticateWithPi(["username", "payments", "wallet_address"]);
       
       if (authResult?.user) {
         console.log("Pi authentication successful:", authResult);
         
+        // Store Pi auth data
+        localStorage.setItem('pi_access_token', authResult.accessToken);
+        localStorage.setItem('pi_user_id', authResult.user.uid);
+        localStorage.setItem('pi_username', authResult.user.username || '');
+        
         // Set the auth result and show consent prompt
         setPiAuthResult(authResult);
         setShowConsentPrompt(true);
       } else {
+        console.error("Pi authentication failed - no user data returned");
         toast({
           title: "Authentication Failed",
           description: "Could not authenticate with Pi Network. Please try again.",
@@ -60,7 +69,7 @@ export function PiAuthButton() {
       console.error("Pi authentication error:", error);
       toast({
         title: "Authentication Error",
-        description: "An error occurred during Pi authentication.",
+        description: error instanceof Error ? error.message : "An error occurred during Pi authentication.",
         variant: "destructive",
       });
     } finally {
@@ -70,7 +79,12 @@ export function PiAuthButton() {
 
   const handleConsentAccepted = async () => {
     try {
-      if (!piAuthResult?.user) return;
+      if (!piAuthResult?.user) {
+        console.error("No Pi auth result available");
+        return;
+      }
+      
+      console.log("Processing consent acceptance for user:", piAuthResult.user.uid);
       
       // Check if user exists
       const { data: existingUser } = await supabase
@@ -80,6 +94,8 @@ export function PiAuthButton() {
         .maybeSingle();
         
       if (existingUser) {
+        console.log("Existing user found, signing in");
+        
         // User exists, sign them in with Pi credentials
         const { data, error } = await supabase.auth.signInWithPassword({
           email: `pi_${piAuthResult.user.uid}@pinetwork.user`,
@@ -87,8 +103,11 @@ export function PiAuthButton() {
         });
         
         if (error) {
+          console.error("Supabase sign in error:", error);
           throw error;
         }
+        
+        console.log("Successfully signed in existing user");
         
         // Refresh user data
         await refreshUserData();
@@ -103,6 +122,8 @@ export function PiAuthButton() {
         // Always redirect to dashboard after successful login
         navigate('/dashboard');
       } else {
+        console.log("User not found, redirecting to signup");
+        
         // User doesn't exist, redirect to signup
         toast({
           title: "Account Not Found",
@@ -122,6 +143,13 @@ export function PiAuthButton() {
   };
 
   const handleConsentDeclined = async () => {
+    console.log("User declined consent");
+    
+    // Clear Pi auth data
+    localStorage.removeItem('pi_access_token');
+    localStorage.removeItem('pi_user_id');
+    localStorage.removeItem('pi_username');
+    
     // If user declines, logout and redirect to home
     try {
       await supabase.auth.signOut();
