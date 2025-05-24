@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,21 +13,21 @@ const DemoPiProfilePage = () => {
   const [selectedPlan, setSelectedPlan] = useState<PlanType>('pro');
   const [tipAmount, setTipAmount] = useState(0);
 
-  const planFeatures = {
+  const planFeatures: Record<PlanType, string[]> = {
     free: ['1 Link Only', 'Basic Profile', 'Pi AdNetwork', 'No .pi Domain', 'Shows Droplink Badge', 'No Pi Tips', 'No Product Sales'],
     starter: ['.pi Domain Connection', 'Unlimited Links', 'Pi Tips', 'Basic Analytics', 'Hide Droplink Badge'],
     pro: ['.pi Domain Connection', 'Pi Tips & Products', 'Digital Sales', 'Performance Analytics', 'Custom Themes', 'Hide Droplink Badge'],
     premium: ['.pi Domain Connection', 'Pi Payments Pro', 'Priority Support', 'Data Export', 'Whitelabel', 'Hide Droplink Badge']
   };
 
-  const planColors = {
+  const planColors: Record<PlanType, string> = {
     free: 'bg-gray-500',
     starter: 'bg-green-500',
     pro: 'bg-blue-500',
     premium: 'bg-purple-500'
   };
 
-  const planIcons = {
+  const planIcons: Record<PlanType, JSX.Element> = {
     free: <Lock className="w-4 h-4" />,
     starter: <Heart className="w-4 h-4" />,
     pro: <ShoppingCart className="w-4 h-4" />,
