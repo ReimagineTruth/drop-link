@@ -7,6 +7,7 @@ import { useUser } from "@/context/UserContext";
 import { useUserPermissions } from "@/hooks/useUserPermissions";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { applyTemplateToProfile } from "@/services/templateService";
 
 type TemplateCardProps = {
   template: {
@@ -30,22 +31,20 @@ export const getPlanBadge = (plan: string) => {
     case "pro":
       return <Badge variant="secondary" className="text-xs bg-purple-50 text-purple-600">Pro</Badge>;
     case "premium":
-      return <Badge className="bg-gradient-hero text-white text-xs">Premium</Badge>;
+      return <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs">Premium</Badge>;
     default:
       return null;
   }
 };
 
 const TemplateCard = ({ template }: TemplateCardProps) => {
-  const { isLoggedIn } = useUser();
+  const { isLoggedIn, user } = useUser();
   const { plan: userPlan, permissions } = useUserPermissions();
   const [applying, setApplying] = useState(false);
 
   const canUseTemplate = () => {
-    // Admin users can use all templates
     if (permissions.hasFullAdminAccess) return true;
     
-    // Check if user's plan level is sufficient for this template
     const planHierarchy = { free: 0, starter: 1, pro: 2, premium: 3 };
     const userPlanLevel = planHierarchy[userPlan] || 0;
     const templatePlanLevel = planHierarchy[template.plan] || 0;
@@ -59,7 +58,7 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
   };
 
   const handleUseTemplate = async () => {
-    if (!isLoggedIn) {
+    if (!isLoggedIn || !user) {
       toast({
         title: "Login Required",
         description: "You need to log in to use this template",
@@ -80,14 +79,14 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
 
     setApplying(true);
     try {
-      // Simulate applying template
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await applyTemplateToProfile(user.id, template.id);
       
       toast({
         title: "Template Applied Successfully!",
         description: `The ${template.name} template has been applied to your profile`,
       });
     } catch (error) {
+      console.error("Template application error:", error);
       toast({
         title: "Error",
         description: "Failed to apply template. Please try again.",
@@ -103,7 +102,6 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
   return (
     <div className={`group bg-background rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all ${isLocked ? 'opacity-75' : ''}`}>
       <div className="relative overflow-hidden">
-        {/* Template preview with more detailed mock content */}
         <div 
           className="w-full h-48 md:h-56 relative"
           style={{
@@ -112,26 +110,17 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
               : `linear-gradient(45deg, ${template.colors[0]}, ${template.colors[1]})`
           }}
         >
-          {/* Enhanced template mock content */}
+          {/* Enhanced template preview */}
           <div className="flex flex-col items-center justify-center h-full px-4 relative">
-            {/* Profile avatar */}
             <div className="w-12 md:w-16 h-12 md:h-16 bg-white/20 backdrop-blur-sm rounded-full mb-2 border-2 border-white/30"></div>
-            
-            {/* Name and bio */}
             <div className="w-20 md:w-24 h-2.5 md:h-3 bg-white/80 rounded-full mb-1.5"></div>
             <div className="w-24 md:w-32 h-1.5 md:h-2 bg-white/60 rounded-full mb-3"></div>
-            
-            {/* Featured link */}
             <div className="w-24 md:w-32 h-5 md:h-6 bg-white/90 rounded-full mb-2 shadow-sm"></div>
-            
-            {/* Regular links */}
             <div className="flex flex-col items-center gap-1 md:gap-1.5 w-full max-w-[200px]">
               <div className="w-full h-3 md:h-4 bg-white/50 rounded-md backdrop-blur-sm"></div>
               <div className="w-full h-3 md:h-4 bg-white/50 rounded-md backdrop-blur-sm"></div>
               <div className="w-4/5 h-3 md:h-4 bg-white/50 rounded-md backdrop-blur-sm"></div>
             </div>
-            
-            {/* Social icons */}
             <div className="flex gap-2 mt-2">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="w-4 h-4 bg-white/40 rounded-full"></div>
@@ -139,7 +128,6 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
             </div>
           </div>
           
-          {/* Lock overlay for restricted templates */}
           {isLocked && (
             <div className="absolute inset-0 bg-black/20 flex items-center justify-center backdrop-blur-[1px]">
               <div className="text-center text-white">
@@ -152,7 +140,6 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
           )}
         </div>
         
-        {/* Badges */}
         <div className="absolute top-2 md:top-3 left-2 md:left-3 flex gap-1 md:gap-2">
           {template.popular && <Badge className="bg-orange-500 text-white text-xs"><Star className="h-2.5 w-2.5 md:h-3 md:w-3 mr-1" /> Popular</Badge>}
           {template.new && <Badge variant="secondary" className="bg-green-500 text-white text-xs"><Zap className="h-2.5 w-2.5 md:h-3 md:w-3 mr-1" /> New</Badge>}
@@ -185,7 +172,7 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
             className={`${
               isLocked 
                 ? 'bg-gray-400 hover:bg-gray-500 cursor-not-allowed' 
-                : 'bg-gradient-hero hover:scale-105 transition-transform'
+                : 'bg-gradient-to-r from-primary to-blue-600 hover:scale-105 transition-transform'
             } text-xs md:text-sm px-2 md:px-3`}
             onClick={handleUseTemplate}
             disabled={applying || isLocked}

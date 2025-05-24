@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -8,13 +9,13 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { createPiPayment } from "@/services/piPaymentService";
 import { Helmet } from "react-helmet-async";
+import { getUserTemplate } from "@/services/templateService";
 
 // Import refactored components
 import ThemeVariants from "@/components/profile/ThemeVariants";
 import LoadingState from "@/components/profile/LoadingState";
 import ErrorState from "@/components/profile/ErrorState";
 import TipModal from "@/components/profile/TipModal";
-import RecentTips from "@/components/profile/RecentTips";
 
 interface Link {
   id: string;
@@ -31,7 +32,7 @@ interface ProfileData {
   display_name: string | null;
   bio: string | null;
   avatar_url: string | null;
-  theme?: string;
+  theme?: any;
   links: Link[];
 }
 
@@ -70,6 +71,9 @@ const ProfilePage = () => {
           return;
         }
         
+        // Fetch user's template
+        const userTemplate = await getUserTemplate(profileData.id);
+        
         // Fetch links data
         const { data: linksData, error: linksError } = await supabase
           .from('links')
@@ -97,10 +101,8 @@ const ProfilePage = () => {
         
         // Process links to categorize them
         const processedLinks = linksData ? linksData.map(link => {
-          // Determine link type based on URL or position
           let type: "featured" | "social" | "regular" | undefined = undefined;
           
-          // Check if it's a social link
           if (
             link.url.includes('instagram.com') ||
             link.url.includes('twitter.com') ||
@@ -114,13 +116,9 @@ const ProfilePage = () => {
             link.icon.toLowerCase() === 'youtube'
           ) {
             type = "social";
-          } 
-          // First two links are featured by default
-          else if (linksData.indexOf(link) < 2) {
+          } else if (linksData.indexOf(link) < 2) {
             type = "featured";
-          }
-          // Everything else is regular
-          else {
+          } else {
             type = "regular";
           }
           
@@ -134,7 +132,7 @@ const ProfilePage = () => {
         
         setProfileData({
           ...profileData,
-          theme: 'linktree', // Default theme
+          theme: userTemplate || 'linktree',
           links: processedLinks && processedLinks.length > 0 ? processedLinks : defaultLinks,
         });
         
@@ -151,6 +149,12 @@ const ProfilePage = () => {
   }, [username]);
 
   const handleLinkClick = async (link: Link) => {
+    // Handle tip link specially
+    if (link.url === "#tip-in-pi") {
+      handleTipClick();
+      return;
+    }
+
     // Register link click in analytics
     if (profileData?.id) {
       try {
@@ -261,7 +265,6 @@ const ProfilePage = () => {
         <meta property="og:type" content="profile" />
       </Helmet>
       
-      {/* Only show ads for starter plan users if they're logged in */}
       {showAds && (
         <div className="mx-4 mb-4">
           <PiAdsNetwork placementId="profile-page" />
@@ -269,7 +272,7 @@ const ProfilePage = () => {
       )}
       
       <ThemeVariants
-        theme={profileData.theme || 'linktree'}
+        theme={profileData.theme}
         links={profileData.links}
         onLinkClick={handleLinkClick}
         username={profileData.username}
