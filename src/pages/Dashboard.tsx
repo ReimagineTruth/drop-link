@@ -6,11 +6,8 @@ import { useUser } from "@/context/UserContext";
 import { useUserPermissions } from "@/hooks/useUserPermissions";
 import DashboardLoading from "@/components/dashboard/DashboardLoading";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import LinksSection from "@/components/dashboard/LinksSection";
-import AnalyticsSection from "@/components/dashboard/AnalyticsSection";
-import MetadataSettings from "@/components/dashboard/MetadataSettings";
+import DashboardTabs from "@/components/dashboard/DashboardTabs";
 import LoginPrompt from "@/components/dashboard/LoginPrompt";
-import LockedFeaturesSection from "@/components/dashboard/LockedFeaturesSection";
 import { authenticateWithPi } from "@/services/piPaymentService";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -196,7 +193,7 @@ const Dashboard = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow py-12 px-4">
-        <div className="container mx-auto max-w-4xl space-y-8">
+        <div className="container mx-auto max-w-6xl space-y-8">
           {isDeveloperMode && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
               <div className="flex items-center gap-2">
@@ -224,10 +221,7 @@ const Dashboard = () => {
             subscription={subscription || null} 
           />
           
-          <LinksSection />
-          <AnalyticsSection subscription={subscription || null} />
-          <LockedFeaturesSection />
-          <MetadataSettings />
+          <DashboardTabs />
         </div>
       </main>
       <Footer />

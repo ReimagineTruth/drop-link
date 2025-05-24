@@ -39,16 +39,21 @@ export function useLinks(userId: string | undefined) {
   }, [userId]);
 
   const handleReorderLink = async (direction: 'up' | 'down', linkId: string, currentPosition: number) => {
-    // Find the link to swap positions with
-    const targetLink = links.find(link => {
-      if (direction === 'up') {
-        return link.position < currentPosition;
-      } else {
-        return link.position > currentPosition;
-      }
-    });
+    const sortedLinks = [...links].sort((a, b) => a.position - b.position);
+    const currentIndex = sortedLinks.findIndex(link => link.id === linkId);
     
-    if (!targetLink) return;
+    if (currentIndex === -1) return;
+    
+    let targetIndex: number;
+    if (direction === 'up') {
+      targetIndex = currentIndex - 1;
+    } else {
+      targetIndex = currentIndex + 1;
+    }
+    
+    if (targetIndex < 0 || targetIndex >= sortedLinks.length) return;
+    
+    const targetLink = sortedLinks[targetIndex];
     
     try {
       // Swap positions
@@ -57,7 +62,6 @@ export function useLinks(userId: string | undefined) {
         { id: targetLink.id, position: currentPosition }
       ];
       
-      // Update both links positions in a transaction
       for (const update of updates) {
         const { error } = await supabase
           .from('links')
@@ -67,8 +71,7 @@ export function useLinks(userId: string | undefined) {
         if (error) throw error;
       }
       
-      // Refresh links
-      fetchLinks();
+      await fetchLinks();
       
     } catch (error) {
       console.error("Error reordering links:", error);
