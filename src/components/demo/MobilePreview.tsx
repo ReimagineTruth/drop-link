@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -147,10 +146,16 @@ const MobilePreview = ({ selectedPlan, onTip, tipAmount }: MobilePreviewProps) =
           )}
         </div>
 
-        {/* Pi AdNetwork for free plan */}
+        {/* Pi AdNetwork for free plan - Platform ads (revenue goes to platform) */}
         {selectedPlan === 'free' && (
           <div className="mb-4">
-            <PiAdsNetwork placementId="demo-profile-ad" />
+            <div className="text-center mb-2">
+              <p className="text-xs text-gray-500">Platform Advertisement</p>
+            </div>
+            <PiAdsNetwork placementId="demo-profile-platform-ad" />
+            <div className="text-center mt-1">
+              <p className="text-xs text-gray-400">Ad revenue supports platform development</p>
+            </div>
           </div>
         )}
 
@@ -245,7 +250,7 @@ const MobilePreview = ({ selectedPlan, onTip, tipAmount }: MobilePreviewProps) =
                 🔒 Upgrade to monetize with Pi
               </p>
               <p className="text-xs text-yellow-600 text-center">
-                Free plan: 1 link only • Pi AdNetwork • No Pi tips • No product sales
+                Free plan: 1 link only • Platform ads • No Pi tips • No product sales
               </p>
             </div>
           )}
