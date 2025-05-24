@@ -1,5 +1,18 @@
+
 export const templatesData = [
-  // Free plan templates (15 templates)
+  // Free plan templates (1 template only - default blue)
+  {
+    id: 3,
+    name: "Clean Blue",
+    category: "basic",
+    image: "https://images.unsplash.com/photo-1593077676642-3acbd7a80b7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: true,
+    new: false,
+    plan: "free",
+    colors: ["#e3f2fd", "#1976d2"]
+  },
+
+  // Starter plan templates (33 templates)
   {
     id: 1,
     name: "Minimal White",
@@ -7,7 +20,7 @@ export const templatesData = [
     image: "https://images.unsplash.com/photo-1617957718587-60a442884bee?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     popular: true,
     new: false,
-    plan: "free",
+    plan: "starter",
     colors: ["#ffffff", "#000000"]
   },
   {
@@ -17,18 +30,8 @@ export const templatesData = [
     image: "https://images.unsplash.com/photo-1581059729227-8a690cd41d2e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     popular: false,
     new: false,
-    plan: "free",
+    plan: "starter",
     colors: ["#f8f9fa", "#6c757d"]
-  },
-  {
-    id: 3,
-    name: "Clean Blue",
-    category: "basic",
-    image: "https://images.unsplash.com/photo-1593077676642-3acbd7a80b7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: false,
-    plan: "free",
-    colors: ["#e3f2fd", "#1976d2"]
   },
   {
     id: 4,
@@ -37,7 +40,7 @@ export const templatesData = [
     image: "https://images.unsplash.com/photo-1545259741-2ea3ebf92fe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     popular: false,
     new: false,
-    plan: "free",
+    plan: "starter",
     colors: ["#e8f5e8", "#2e7d32"]
   },
   {
@@ -47,7 +50,7 @@ export const templatesData = [
     image: "https://images.unsplash.com/photo-1559521783-1d1599583485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     popular: true,
     new: false,
-    plan: "free",
+    plan: "starter",
     colors: ["#fce4ec", "#c2185b"]
   },
   {
@@ -57,7 +60,7 @@ export const templatesData = [
     image: "https://images.unsplash.com/photo-1527323585280-9036d09125a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     popular: false,
     new: false,
-    plan: "free",
+    plan: "starter",
     colors: ["#f3e5f5", "#7b1fa2"]
   },
   {
@@ -67,7 +70,7 @@ export const templatesData = [
     image: "https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     popular: false,
     new: false,
-    plan: "free",
+    plan: "starter",
     colors: ["#000000", "#ffffff"]
   },
   {
@@ -77,7 +80,7 @@ export const templatesData = [
     image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     popular: false,
     new: false,
-    plan: "free",
+    plan: "starter",
     colors: ["#faf5f0", "#8d6e63"]
   },
   {
@@ -87,7 +90,7 @@ export const templatesData = [
     image: "https://images.unsplash.com/photo-1617824254359-0941a234789b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     popular: false,
     new: true,
-    plan: "free",
+    plan: "starter",
     colors: ["#e0f2f1", "#00695c"]
   },
   {
@@ -97,11 +100,9 @@ export const templatesData = [
     image: "https://images.unsplash.com/photo-1625234188513-6054f53aed20?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     popular: false,
     new: false,
-    plan: "free",
+    plan: "starter",
     colors: ["#fffde7", "#f57f17"]
   },
-
-  // Starter plan templates (20 templates)
   {
     id: 11,
     name: "Aqua Gradient",
@@ -202,8 +203,158 @@ export const templatesData = [
     plan: "starter",
     colors: ["#ffa726", "#ff5722"]
   },
+  {
+    id: 56,
+    name: "Simple Mint",
+    category: "basic",
+    image: "https://images.unsplash.com/photo-1617957718587-60a442884bee?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "starter",
+    colors: ["#f0fff4", "#90ee90"]
+  },
+  {
+    id: 57,
+    name: "Basic Coral",
+    category: "basic",
+    image: "https://images.unsplash.com/photo-1581059729227-8a690cd41d2e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: false,
+    plan: "starter",
+    colors: ["#fff5ee", "#ff7f50"]
+  },
+  {
+    id: 58,
+    name: "Clean Slate",
+    category: "minimal",
+    image: "https://images.unsplash.com/photo-1593077676642-3acbd7a80b7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: true,
+    new: false,
+    plan: "starter",
+    colors: ["#f8f8ff", "#708090"]
+  },
+  {
+    id: 59,
+    name: "Fresh Lime",
+    category: "basic",
+    image: "https://images.unsplash.com/photo-1545259741-2ea3ebf92fe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "starter",
+    colors: ["#f5fffa", "#32cd32"]
+  },
+  {
+    id: 60,
+    name: "Soft Lavender",
+    category: "basic",
+    image: "https://images.unsplash.com/photo-1559521783-1d1599583485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: false,
+    plan: "starter",
+    colors: ["#f8f0ff", "#dda0dd"]
+  },
+  {
+    id: 61,
+    name: "Basic Peach",
+    category: "basic",
+    image: "https://images.unsplash.com/photo-1527323585280-9036d09125a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: false,
+    plan: "starter",
+    colors: ["#fff8dc", "#ffdab9"]
+  },
+  {
+    id: 62,
+    name: "Simple Cyan",
+    category: "basic",
+    image: "https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "starter",
+    colors: ["#e0ffff", "#00ced1"]
+  },
+  {
+    id: 63,
+    name: "Basic Orange",
+    category: "basic",
+    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: false,
+    plan: "starter",
+    colors: ["#fff8e1", "#ffa500"]
+  },
+  {
+    id: 64,
+    name: "Clean White",
+    category: "minimal",
+    image: "https://images.unsplash.com/photo-1617824254359-0941a234789b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: true,
+    new: false,
+    plan: "starter",
+    colors: ["#ffffff", "#f5f5f5"]
+  },
+  {
+    id: 65,
+    name: "Soft Rose",
+    category: "basic",
+    image: "https://images.unsplash.com/photo-1625234188513-6054f53aed20?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: false,
+    plan: "starter",
+    colors: ["#fff0f5", "#ffc0cb"]
+  },
+  {
+    id: 71,
+    name: "Ocean Depths",
+    category: "gradient",
+    image: "https://images.unsplash.com/photo-1526376043067-5af36c35cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "starter",
+    colors: ["#1e3c72", "#2a5298", "#1e90ff"]
+  },
+  {
+    id: 72,
+    name: "Tropical Paradise",
+    category: "colorful",
+    image: "https://images.unsplash.com/photo-1519619091416-f5d7e5200702?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: true,
+    new: false,
+    plan: "starter",
+    colors: ["#ff9a56", "#ffcc70", "#ff6b9d"]
+  },
+  {
+    id: 73,
+    name: "Mountain Mist",
+    category: "nature",
+    image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: false,
+    plan: "starter",
+    colors: ["#bdc3c7", "#2c3e50", "#95a5a6"]
+  },
+  {
+    id: 74,
+    name: "Aurora Sky",
+    category: "gradient",
+    image: "https://images.unsplash.com/photo-1464822759844-d150baec3e5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "starter",
+    colors: ["#74b9ff", "#0984e3", "#6c5ce7"]
+  },
+  {
+    id: 75,
+    name: "Desert Sand",
+    category: "warm",
+    image: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: false,
+    plan: "starter",
+    colors: ["#f39c12", "#e67e22", "#d35400"]
+  },
 
-  // Pro plan templates (25 templates) 
+  // Pro plan templates (33 templates)
   {
     id: 21,
     name: "Ocean Professional",
@@ -354,314 +505,6 @@ export const templatesData = [
     plan: "pro",
     colors: ["#ff8a65", "#ffab40"]
   },
-
-  // Premium plan templates (15 templates) - Most exclusive
-  {
-    id: 36,
-    name: "Marina Deluxe",
-    category: "premium",
-    image: "https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: true,
-    plan: "premium",
-    colors: ["#1a2980", "#26d0ce"]
-  },
-  {
-    id: 37,
-    name: "Royal Ripple",
-    category: "luxury",
-    image: "https://images.unsplash.com/photo-1617824254359-0941a234789b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: true,
-    plan: "premium",
-    colors: ["#5433ff", "#20bdff", "#a5fecb"]
-  },
-  {
-    id: 38,
-    name: "Crystal Deep",
-    category: "premium",
-    image: "https://images.unsplash.com/photo-1519619091416-f5d7e5200702?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: true,
-    plan: "premium",
-    colors: ["#0f0c29", "#302b63", "#24243e"]
-  },
-  {
-    id: 39,
-    name: "Diamond Cascade",
-    category: "luxury",
-    image: "https://images.unsplash.com/photo-1526376043067-5af36c35cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: true,
-    new: false,
-    plan: "premium",
-    colors: ["#4facfe", "#00f2fe"]
-  },
-  {
-    id: 40,
-    name: "Quantum Field",
-    category: "futuristic",
-    image: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: true,
-    new: false,
-    plan: "premium",
-    colors: ["#667eea", "#764ba2"]
-  },
-  {
-    id: 41,
-    name: "Platinum Waves",
-    category: "business",
-    image: "https://images.unsplash.com/photo-1545259741-2ea3ebf92fe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: false,
-    plan: "premium",
-    colors: ["#3a7bd5", "#00d2ff"]
-  },
-  {
-    id: 42,
-    name: "Elite Gradient",
-    category: "exclusive",
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: true,
-    plan: "premium",
-    colors: ["#f093fb", "#f5576c"]
-  },
-  {
-    id: 43,
-    name: "Cosmic Elite",
-    category: "space",
-    image: "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: false,
-    plan: "premium",
-    colors: ["#4776e6", "#8e54e9"]
-  },
-  {
-    id: 44,
-    name: "Infinity Blend",
-    category: "abstract",
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: true,
-    new: false,
-    plan: "premium",
-    colors: ["#ff9a9e", "#fecfef", "#fecfef"]
-  },
-  {
-    id: 45,
-    name: "Ultimate Prism",
-    category: "premium",
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: true,
-    plan: "premium",
-    colors: ["#ff0099", "#493240"]
-  },
-
-  // Additional Premium plan templates (10 more templates) - Templates 46-55
-  {
-    id: 46,
-    name: "Stellar Gradient",
-    category: "cosmic",
-    image: "https://images.unsplash.com/photo-1559521783-1d1599583485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: true,
-    plan: "premium",
-    colors: ["#ff6b6b", "#4ecdc4", "#45b7d1"]
-  },
-  {
-    id: 47,
-    name: "Neo Glass",
-    category: "futuristic",
-    image: "https://images.unsplash.com/photo-1527323585280-9036d09125a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: true,
-    new: false,
-    plan: "premium",
-    colors: ["#667eea", "#764ba2", "#f093fb"]
-  },
-  {
-    id: 48,
-    name: "Royal Crown",
-    category: "luxury",
-    image: "https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: true,
-    plan: "premium",
-    colors: ["#ffd700", "#ff6b35", "#f7931e"]
-  },
-  {
-    id: 49,
-    name: "Cyber Matrix",
-    category: "tech",
-    image: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: false,
-    plan: "premium",
-    colors: ["#00ff41", "#0080ff", "#8000ff"]
-  },
-  {
-    id: 50,
-    name: "Velvet Dreams",
-    category: "luxury",
-    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: true,
-    plan: "premium",
-    colors: ["#8e44ad", "#c0392b", "#e74c3c"]
-  },
-
-  // New Free Templates (15 more) - Templates 56-70
-  {
-    id: 56,
-    name: "Simple Mint",
-    category: "basic",
-    image: "https://images.unsplash.com/photo-1617957718587-60a442884bee?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: true,
-    plan: "free",
-    colors: ["#f0fff4", "#90ee90"]
-  },
-  {
-    id: 57,
-    name: "Basic Coral",
-    category: "basic",
-    image: "https://images.unsplash.com/photo-1581059729227-8a690cd41d2e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: false,
-    plan: "free",
-    colors: ["#fff5ee", "#ff7f50"]
-  },
-  {
-    id: 58,
-    name: "Clean Slate",
-    category: "minimal",
-    image: "https://images.unsplash.com/photo-1593077676642-3acbd7a80b7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: true,
-    new: false,
-    plan: "free",
-    colors: ["#f8f8ff", "#708090"]
-  },
-  {
-    id: 59,
-    name: "Fresh Lime",
-    category: "basic",
-    image: "https://images.unsplash.com/photo-1545259741-2ea3ebf92fe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: true,
-    plan: "free",
-    colors: ["#f5fffa", "#32cd32"]
-  },
-  {
-    id: 60,
-    name: "Soft Lavender",
-    category: "basic",
-    image: "https://images.unsplash.com/photo-1559521783-1d1599583485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: false,
-    plan: "free",
-    colors: ["#f8f0ff", "#dda0dd"]
-  },
-  {
-    id: 61,
-    name: "Basic Peach",
-    category: "basic",
-    image: "https://images.unsplash.com/photo-1527323585280-9036d09125a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: false,
-    plan: "free",
-    colors: ["#fff8dc", "#ffdab9"]
-  },
-  {
-    id: 62,
-    name: "Simple Cyan",
-    category: "basic",
-    image: "https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: true,
-    plan: "free",
-    colors: ["#e0ffff", "#00ced1"]
-  },
-  {
-    id: 63,
-    name: "Basic Orange",
-    category: "basic",
-    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: false,
-    plan: "free",
-    colors: ["#fff8e1", "#ffa500"]
-  },
-  {
-    id: 64,
-    name: "Clean White",
-    category: "minimal",
-    image: "https://images.unsplash.com/photo-1617824254359-0941a234789b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: true,
-    new: false,
-    plan: "free",
-    colors: ["#ffffff", "#f5f5f5"]
-  },
-  {
-    id: 65,
-    name: "Soft Rose",
-    category: "basic",
-    image: "https://images.unsplash.com/photo-1625234188513-6054f53aed20?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: false,
-    plan: "free",
-    colors: ["#fff0f5", "#ffc0cb"]
-  },
-
-  // New Starter Templates (15 more) - Templates 71-85
-  {
-    id: 71,
-    name: "Ocean Depths",
-    category: "gradient",
-    image: "https://images.unsplash.com/photo-1526376043067-5af36c35cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: true,
-    plan: "starter",
-    colors: ["#1e3c72", "#2a5298", "#1e90ff"]
-  },
-  {
-    id: 72,
-    name: "Tropical Paradise",
-    category: "colorful",
-    image: "https://images.unsplash.com/photo-1519619091416-f5d7e5200702?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: true,
-    new: false,
-    plan: "starter",
-    colors: ["#ff9a56", "#ffcc70", "#ff6b9d"]
-  },
-  {
-    id: 73,
-    name: "Mountain Mist",
-    category: "nature",
-    image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: false,
-    plan: "starter",
-    colors: ["#bdc3c7", "#2c3e50", "#95a5a6"]
-  },
-  {
-    id: 74,
-    name: "Aurora Sky",
-    category: "gradient",
-    image: "https://images.unsplash.com/photo-1464822759844-d150baec3e5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: true,
-    plan: "starter",
-    colors: ["#74b9ff", "#0984e3", "#6c5ce7"]
-  },
-  {
-    id: 75,
-    name: "Desert Sand",
-    category: "warm",
-    image: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    popular: false,
-    new: false,
-    plan: "starter",
-    colors: ["#f39c12", "#e67e22", "#d35400"]
-  },
   {
     id: 76,
     name: "Emerald Forest",
@@ -669,7 +512,7 @@ export const templatesData = [
     image: "https://images.unsplash.com/photo-1522208181-b468de2c9c88?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     popular: true,
     new: false,
-    plan: "starter",
+    plan: "pro",
     colors: ["#00b894", "#00a085", "#55a3ff"]
   },
   {
@@ -679,7 +522,7 @@ export const templatesData = [
     image: "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     popular: false,
     new: true,
-    plan: "starter",
+    plan: "pro",
     colors: ["#fd79a8", "#e84393", "#ff6b6b"]
   },
   {
@@ -689,7 +532,7 @@ export const templatesData = [
     image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     popular: false,
     new: false,
-    plan: "starter",
+    plan: "pro",
     colors: ["#74b9ff", "#0984e3", "#a29bfe"]
   },
   {
@@ -699,7 +542,7 @@ export const templatesData = [
     image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     popular: false,
     new: false,
-    plan: "starter",
+    plan: "pro",
     colors: ["#2d3436", "#636e72", "#74b9ff"]
   },
   {
@@ -709,11 +552,9 @@ export const templatesData = [
     image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     popular: true,
     new: false,
-    plan: "starter",
+    plan: "pro",
     colors: ["#fdcb6e", "#e17055", "#fd79a8"]
   },
-
-  // New Pro Templates (15 more) - Templates 86-100
   {
     id: 86,
     name: "Digital Neon",
@@ -863,5 +704,307 @@ export const templatesData = [
     new: true,
     plan: "pro",
     colors: ["#667eea", "#764ba2", "#f093fb"]
+  },
+
+  // Premium plan templates (33 templates)
+  {
+    id: 36,
+    name: "Marina Deluxe",
+    category: "premium",
+    image: "https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "premium",
+    colors: ["#1a2980", "#26d0ce"]
+  },
+  {
+    id: 37,
+    name: "Royal Ripple",
+    category: "luxury",
+    image: "https://images.unsplash.com/photo-1617824254359-0941a234789b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "premium",
+    colors: ["#5433ff", "#20bdff", "#a5fecb"]
+  },
+  {
+    id: 38,
+    name: "Crystal Deep",
+    category: "premium",
+    image: "https://images.unsplash.com/photo-1519619091416-f5d7e5200702?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "premium",
+    colors: ["#0f0c29", "#302b63", "#24243e"]
+  },
+  {
+    id: 39,
+    name: "Diamond Cascade",
+    category: "luxury",
+    image: "https://images.unsplash.com/photo-1526376043067-5af36c35cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: true,
+    new: false,
+    plan: "premium",
+    colors: ["#4facfe", "#00f2fe"]
+  },
+  {
+    id: 40,
+    name: "Quantum Field",
+    category: "futuristic",
+    image: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: true,
+    new: false,
+    plan: "premium",
+    colors: ["#667eea", "#764ba2"]
+  },
+  {
+    id: 41,
+    name: "Platinum Waves",
+    category: "business",
+    image: "https://images.unsplash.com/photo-1545259741-2ea3ebf92fe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: false,
+    plan: "premium",
+    colors: ["#3a7bd5", "#00d2ff"]
+  },
+  {
+    id: 42,
+    name: "Elite Gradient",
+    category: "exclusive",
+    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "premium",
+    colors: ["#f093fb", "#f5576c"]
+  },
+  {
+    id: 43,
+    name: "Cosmic Elite",
+    category: "space",
+    image: "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: false,
+    plan: "premium",
+    colors: ["#4776e6", "#8e54e9"]
+  },
+  {
+    id: 44,
+    name: "Infinity Blend",
+    category: "abstract",
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: true,
+    new: false,
+    plan: "premium",
+    colors: ["#ff9a9e", "#fecfef", "#fecfef"]
+  },
+  {
+    id: 45,
+    name: "Ultimate Prism",
+    category: "premium",
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "premium",
+    colors: ["#ff0099", "#493240"]
+  },
+  {
+    id: 46,
+    name: "Stellar Gradient",
+    category: "cosmic",
+    image: "https://images.unsplash.com/photo-1559521783-1d1599583485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "premium",
+    colors: ["#ff6b6b", "#4ecdc4", "#45b7d1"]
+  },
+  {
+    id: 47,
+    name: "Neo Glass",
+    category: "futuristic",
+    image: "https://images.unsplash.com/photo-1527323585280-9036d09125a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: true,
+    new: false,
+    plan: "premium",
+    colors: ["#667eea", "#764ba2", "#f093fb"]
+  },
+  {
+    id: 48,
+    name: "Royal Crown",
+    category: "luxury",
+    image: "https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "premium",
+    colors: ["#ffd700", "#ff6b35", "#f7931e"]
+  },
+  {
+    id: 49,
+    name: "Cyber Matrix",
+    category: "tech",
+    image: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: false,
+    plan: "premium",
+    colors: ["#00ff41", "#0080ff", "#8000ff"]
+  },
+  {
+    id: 50,
+    name: "Velvet Dreams",
+    category: "luxury",
+    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "premium",
+    colors: ["#8e44ad", "#c0392b", "#e74c3c"]
+  },
+  {
+    id: 51,
+    name: "Luxury Marble",
+    category: "luxury",
+    image: "https://images.unsplash.com/photo-1617957718587-60a442884bee?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: true,
+    new: false,
+    plan: "premium",
+    colors: ["#ffffff", "#d4af37", "#2c3e50"]
+  },
+  {
+    id: 52,
+    name: "Elite Chrome",
+    category: "exclusive",
+    image: "https://images.unsplash.com/photo-1581059729227-8a690cd41d2e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "premium",
+    colors: ["#c0c0c0", "#708090", "#2f4f4f"]
+  },
+  {
+    id: 53,
+    name: "Mystic Aurora",
+    category: "cosmic",
+    image: "https://images.unsplash.com/photo-1593077676642-3acbd7a80b7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: false,
+    plan: "premium",
+    colors: ["#00ff7f", "#32cd32", "#9932cc"]
+  },
+  {
+    id: 54,
+    name: "Premium Sunset",
+    category: "premium",
+    image: "https://images.unsplash.com/photo-1545259741-2ea3ebf92fe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: true,
+    new: false,
+    plan: "premium",
+    colors: ["#ff6b35", "#f7931e", "#ffbe0b"]
+  },
+  {
+    id: 55,
+    name: "Diamond Elite",
+    category: "luxury",
+    image: "https://images.unsplash.com/photo-1559521783-1d1599583485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "premium",
+    colors: ["#b8860b", "#ffd700", "#ffffe0"]
+  },
+  {
+    id: 101,
+    name: "Executive Gold",
+    category: "business",
+    image: "https://images.unsplash.com/photo-1527323585280-9036d09125a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "premium",
+    colors: ["#ffd700", "#b8860b", "#8b4513"]
+  },
+  {
+    id: 102,
+    name: "Platinum Galaxy",
+    category: "space",
+    image: "https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: true,
+    new: false,
+    plan: "premium",
+    colors: ["#e6e6fa", "#9370db", "#4b0082"]
+  },
+  {
+    id: 103,
+    name: "Royal Emerald",
+    category: "luxury",
+    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: false,
+    plan: "premium",
+    colors: ["#50c878", "#228b22", "#006400"]
+  },
+  {
+    id: 104,
+    name: "Crystal Palace",
+    category: "futuristic",
+    image: "https://images.unsplash.com/photo-1617824254359-0941a234789b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "premium",
+    colors: ["#e0ffff", "#add8e6", "#87ceeb"]
+  },
+  {
+    id: 105,
+    name: "Velvet Noir",
+    category: "dark",
+    image: "https://images.unsplash.com/photo-1625234188513-6054f53aed20?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: true,
+    new: false,
+    plan: "premium",
+    colors: ["#2c2c2c", "#800080", "#ff1493"]
+  },
+  {
+    id: 106,
+    name: "Supreme Gradient",
+    category: "abstract",
+    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "premium",
+    colors: ["#ff0080", "#8000ff", "#0080ff"]
+  },
+  {
+    id: 107,
+    name: "Elite Fusion",
+    category: "exclusive",
+    image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: false,
+    plan: "premium",
+    colors: ["#ff6347", "#ff4500", "#dc143c"]
+  },
+  {
+    id: 108,
+    name: "Cosmic Royalty",
+    category: "cosmic",
+    image: "https://images.unsplash.com/photo-1464822759844-d150baec3e5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: true,
+    new: false,
+    plan: "premium",
+    colors: ["#4b0082", "#8a2be2", "#da70d6"]
+  },
+  {
+    id: 109,
+    name: "Luxe Chrome",
+    category: "luxury",
+    image: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: true,
+    plan: "premium",
+    colors: ["#c0c0c0", "#696969", "#2f4f4f"]
+  },
+  {
+    id: 110,
+    name: "Diamond Infinity",
+    category: "premium",
+    image: "https://images.unsplash.com/photo-1522208181-b468de2c9c88?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    popular: false,
+    new: false,
+    plan: "premium",
+    colors: ["#ffffff", "#b0c4de", "#4682b4"]
   }
 ];
