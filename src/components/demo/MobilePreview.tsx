@@ -1,7 +1,9 @@
+
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink } from "lucide-react";
+import PiAdsNetwork from "@/components/PiAdsNetwork";
 
 type PlanType = 'free' | 'starter' | 'pro' | 'premium';
 
@@ -145,6 +147,38 @@ const MobilePreview = ({ selectedPlan, onTip, tipAmount }: MobilePreviewProps) =
           )}
         </div>
 
+        {/* Pi AdNetwork for free plan */}
+        {selectedPlan === 'free' && (
+          <div className="mb-4">
+            <PiAdsNetwork placementId="demo-profile-ad" />
+          </div>
+        )}
+
+        {/* Template Preview for Pro/Premium plans */}
+        {(selectedPlan === 'pro' || selectedPlan === 'premium') && (
+          <div className="mb-4">
+            <div className="text-center mb-3">
+              <h4 className="text-sm font-semibold text-gray-700">✨ Template Previews</h4>
+              <p className="text-xs text-gray-500">Choose from {selectedPlan === 'premium' ? '99' : '66'} premium templates</p>
+            </div>
+            <div className="grid grid-cols-5 gap-1 mb-3">
+              {[
+                { name: "Ocean Pro", bg: "bg-gradient-to-br from-blue-400 to-blue-600" },
+                { name: "Coral Reef", bg: "bg-gradient-to-br from-pink-400 to-orange-500" },
+                { name: "Digital Matrix", bg: "bg-gradient-to-br from-green-400 to-blue-500" },
+                { name: "Corporate Elite", bg: "bg-gradient-to-br from-indigo-500 to-purple-600" },
+                { name: "Creative Burst", bg: "bg-gradient-to-br from-purple-500 to-pink-500" }
+              ].map((template, index) => (
+                <div key={index} className={`${template.bg} rounded-md h-12 flex items-center justify-center transition-transform hover:scale-105 cursor-pointer`}>
+                  <span className="text-white text-xs font-bold text-center leading-tight px-1">
+                    {template.name.split(' ')[0]}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Droplink Badge */}
         {showDroplinkBadge && (
           <div className="absolute bottom-4 right-4">
@@ -211,7 +245,7 @@ const MobilePreview = ({ selectedPlan, onTip, tipAmount }: MobilePreviewProps) =
                 🔒 Upgrade to monetize with Pi
               </p>
               <p className="text-xs text-yellow-600 text-center">
-                Free plan: 1 link only • No Pi tips • No product sales
+                Free plan: 1 link only • Pi AdNetwork • No Pi tips • No product sales
               </p>
             </div>
           )}
