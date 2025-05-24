@@ -4,10 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { AlertCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { AnimatedContainer } from "@/components/ui/animated-container";
 import { supabase } from "@/integrations/supabase/client";
 
 interface CustomDomainFormProps {
@@ -17,19 +14,23 @@ interface CustomDomainFormProps {
   onUpdate?: () => void;
 }
 
-const CustomDomainForm = ({ 
-  initialDomain, 
-  userId, 
-  isPremiumUser,
-  onUpdate 
-}: CustomDomainFormProps) => {
-  const [isCustomDomain, setIsCustomDomain] = useState(!!initialDomain);
+const CustomDomainForm = ({ initialDomain, userId, isPremiumUser, onUpdate }: CustomDomainFormProps) => {
   const [customDomain, setCustomDomain] = useState(initialDomain || '');
   const [isValidating, setIsValidating] = useState(false);
 
   const handleSaveCustomDomain = async () => {
     try {
       setIsValidating(true);
+      
+      // Validate the domain format
+      if (customDomain && !customDomain.match(/^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]*\.[a-zA-Z]{2,}$/)) {
+        toast({
+          title: "Invalid domain format",
+          description: "Please enter a valid domain (e.g., mydomain.com)",
+          variant: "destructive",
+        });
+        return;
+      }
       
       if (!userId) {
         toast({
@@ -39,24 +40,28 @@ const CustomDomainForm = ({
         });
         return;
       }
-      
-      if (!isPremiumUser) {
+
+      if (!isPremiumUser && customDomain) {
         toast({
           title: "Premium Feature",
-          description: "Custom domains require a Pro or Premium subscription.",
+          description: "Custom domains are available for premium users only.",
           variant: "destructive",
         });
         return;
       }
       
-      // Only update custom domain if enabled
-      const domainToSave = isCustomDomain ? customDomain : null;
-      
-      // Basic domain validation
-      if (domainToSave && !domainToSave.match(/^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/)) {
+      // Check if domain is already taken - using maybeSingle to avoid type issues
+      const { data: existingDomain, error: domainError } = await supabase
+        .from('user_profiles')
+        .select('id')
+        .eq('custom_domain', customDomain)
+        .neq('id', userId)
+        .maybeSingle();
+        
+      if (existingDomain) {
         toast({
-          title: "Invalid domain format",
-          description: "Please enter a valid domain (e.g., example.com)",
+          title: "Domain already taken",
+          description: "This custom domain is already registered by another user.",
           variant: "destructive",
         });
         return;
@@ -65,22 +70,22 @@ const CustomDomainForm = ({
       // Update the profile directly
       const { error } = await supabase
         .from('user_profiles')
-        .update({ custom_domain: domainToSave })
+        .update({ custom_domain: customDomain || null })
         .eq('id', userId);
       
       if (error) throw error;
       
       toast({
-        title: "Custom Domain Updated",
-        description: domainToSave 
-          ? `Your custom domain has been set to ${domainToSave}` 
+        title: "Domain Updated",
+        description: customDomain 
+          ? `Your custom domain has been set to ${customDomain}` 
           : "Your custom domain has been removed",
       });
       
       if (onUpdate) onUpdate();
       
     } catch (error) {
-      console.error("Error updating custom domain:", error);
+      console.error("Error updating domain:", error);
       toast({
         title: "Update Failed",
         description: "There was an error updating your domain settings.",
@@ -94,44 +99,33 @@ const CustomDomainForm = ({
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
-        <Label htmlFor="custom-domain" className="flex items-center">
-          Custom Domain
-          {!isPremiumUser && (
-            <Badge className="ml-2 bg-amber-500">Pro & Premium</Badge>
-          )}
-        </Label>
-        <Switch
-          checked={isCustomDomain}
-          onCheckedChange={setIsCustomDomain}
-          disabled={!isPremiumUser}
-        />
+        <Label htmlFor="custom-domain">Custom Domain</Label>
+        {isPremiumUser ? (
+          <Badge className="bg-gradient-hero">Premium</Badge>
+        ) : (
+          <Badge variant="outline">Premium Required</Badge>
+        )}
       </div>
-      {isCustomDomain && (
-        <AnimatedContainer animation="fade" className="space-y-2">
-          <Input
-            id="custom-domain"
-            placeholder="yourdomain.com"
-            value={customDomain}
-            onChange={(e) => setCustomDomain(e.target.value)}
-            disabled={!isPremiumUser}
-          />
-          <div className="flex items-start gap-2 text-xs text-muted-foreground">
-            <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-            <p>
-              You'll need to add a CNAME record to your domain pointing to 
-              <code className="bg-muted px-1 rounded mx-1">droplink.space</code>
-              in your domain provider's DNS settings.
-            </p>
-          </div>
-          <Button
-            onClick={handleSaveCustomDomain}
-            disabled={isValidating || !isPremiumUser}
-            className="mt-2"
-          >
-            {isValidating ? "Saving..." : "Save Custom Domain"}
-          </Button>
-        </AnimatedContainer>
-      )}
+      <Input
+        id="custom-domain"
+        placeholder="mydomain.com"
+        value={customDomain}
+        onChange={(e) => setCustomDomain(e.target.value)}
+        disabled={!isPremiumUser}
+      />
+      <p className="text-xs text-muted-foreground">
+        {isPremiumUser 
+          ? "Use your own custom domain (e.g., mydomain.com)" 
+          : "Upgrade to Premium to use custom domains"
+        }
+      </p>
+      <Button 
+        onClick={handleSaveCustomDomain} 
+        disabled={isValidating || !isPremiumUser}
+        className="mt-2"
+      >
+        {isValidating ? "Saving..." : "Save Custom Domain"}
+      </Button>
     </div>
   );
 };

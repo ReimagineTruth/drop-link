@@ -238,6 +238,62 @@ export type Database = {
         }
         Relationships: []
       }
+      user_metadata: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
+          title: string | null
+          twitter_description: string | null
+          twitter_image: string | null
+          twitter_title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          title?: string | null
+          twitter_description?: string | null
+          twitter_image?: string | null
+          twitter_title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          title?: string | null
+          twitter_description?: string | null
+          twitter_image?: string | null
+          twitter_title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_metadata_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_profiles: {
         Row: {
           avatar_url: string | null

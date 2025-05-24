@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -21,6 +22,7 @@ import { UpgradeModalProvider } from "@/hooks/useUpgradeModal";
 import ConsentPrompt from "@/components/auth/ConsentPrompt";
 import { useConsentStatus } from "@/hooks/useConsentStatus";
 import MetadataSettings from "@/components/dashboard/MetadataSettings";
+import PiDomainManager from "@/components/admin/PiDomainManager";
 
 // Import custom hooks
 import { usePiPayment } from "@/hooks/usePiPayment";
